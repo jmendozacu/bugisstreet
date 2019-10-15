@@ -1,0 +1,148 @@
+<script type="text/javascript">
+	if (typeof jQuery == 'undefined'){
+		document.write(unescape("%3Cscript src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+	}
+</script>
+<?php $helper=Mage::helper('marketplace'); ?>
+<li class="field" id="wantptr" >
+
+	<?php
+	if(Mage::getStoreConfig('marketplace/marketplace_profile/profile_hint_status') && Mage::getStoreConfig('marketplace/marketplace_profile/become_seller')){?>
+		<img src="<?php echo $this->getSkinUrl('marketplace/images/quest.png'); ?>" class='questimg' title="<?php echo Mage::getStoreConfig('marketplace/marketplace_profile/become_seller') ?>"/>
+	<?php
+	} ?>
+	<div class="input-box">
+        <input type="checkbox"  value="1" id="wantpartner" name="wantpartner" class="cs-input">
+	</div>
+    <label style="" for="wantpartner" class="cs-label"><?php echo $helper->__('Do You Want To Become Seller?') ?> </label>
+	<div id="wk_load_conf">
+		<img src="<?php echo $this->getSkinUrl('marketplace/images/ajax-loader-tr.gif'); ?>" height="20px" width="20px"/>
+	</div>
+</li>
+<script>
+<?php
+if(Mage::getStoreConfig('marketplace/marketplace_profile/profile_hint_status') && Mage::getStoreConfig('marketplace/marketplace_profile/shopurl_seller')){
+	$shopurl_hint = '<img src="'.$this->getSkinUrl('marketplace/images/quest.png').'" class="questimg" title="'.Mage::getStoreConfig('marketplace/marketplace_profile/shopurl_seller').'"/>';
+
+} ?>
+var $wk_jq= jQuery.noConflict();
+$wk_jq(function(){
+    var an = 1;
+    $wk_jq("#contactno").keyup(function () {
+        if($wk_jq('#contactno').val()!='' && $wk_jq('#shopdescription').val()!=''){
+            if(an==0) {
+                if($wk_jq('#agree-seller').is(":checked")) {
+                    $wk_jq('.button').removeAttr('disabled');
+                }
+            }
+        }
+        else{
+            $wk_jq('.button').attr('disabled','disabled');
+        }
+
+    });
+    $wk_jq("#shopdescription").keyup(function () {
+        if($wk_jq('#contactno').val()!='' && $wk_jq('#shopdescription').val()!=''){
+            if(an==0) {
+                if($wk_jq('#agree-seller').is(":checked")) {
+                    $wk_jq('.button').removeAttr('disabled');
+                }
+            }
+        }
+        else{
+            $wk_jq('.button').attr('disabled','disabled');
+        }
+
+    });
+    $wk_jq('#agree-seller').change(function(){
+            if($wk_jq(this).is(":checked")){
+                if(an==0){
+                    if($wk_jq('#contactno').val()!='' && $wk_jq('#shopdescription').val()!='') {
+                        $wk_jq('.button').removeAttr('disabled');
+                    }
+                }
+            }
+            else if($wk_jq(this).is(":not(:checked)")){
+                $wk_jq('.button').attr('disabled','disabled');
+            }
+    });
+
+	$wk_jq('#is_subscribed').parents('li').after($wk_jq('#wantptr'));
+	$wk_jq('#wantptr').show();
+	$wk_jq('#wantpartner').change(function(){
+        if($wk_jq(this).is(":checked")){
+            $wk_jq('.account-test').addClass('test-view');
+            $wk_jq('.test-but').addClass('test-button');
+			$wk_jq('.button').attr('disabled','disabled');
+			$username=$wk_jq('<li/>').addClass('profileurl')
+									 .append($wk_jq('<label/>')
+										.addClass('required')
+									    .text('<?php echo $helper->__('Shop URL'); ?>')
+										.append($wk_jq('<em/>').text('*')))
+									 .append('<?php echo $shopurl_hint ?>')
+								     .append($wk_jq('<div/>')
+										.addClass('input-box')
+										.append($wk_jq('<input/>').addClass('input-text')
+											.attr('title','<?php echo $helper->__(' Shop URL For Your Marketplace Shop ')?>')
+										    .addClass('required-entry')
+											.attr('type','text')
+											.attr('name','profileurl'))
+                                        .append($wk_jq('<div/>').addClass('bg-input'))
+										  //  .addClass('required-entry')
+										//	.attr('type','text')
+										//	.attr('name','profileurl'))
+								    );
+			$wk_jq('#agree-seller').parents('li').after($username);
+		}else if($wk_jq(this).is(":not(:checked)")){
+            if ($wk_jq('.account-test').hasClass('test-view')){
+                $wk_jq('.account-test').removeClass('test-view');
+            }
+            if ($wk_jq('.test-but').hasClass('test-button')){
+                $wk_jq('.test-but').removeClass('test-button');
+            }
+			$wk_jq('.button').removeAttr('disabled');
+			$wk_jq('.profileurl').remove();
+		}
+	});
+	$wk_jq('ul').delegate('.profileurl input','keyup',function(){
+		$wk_jq(this).val($wk_jq(this).val().replace(/[^a-z^A-Z^0-9\.\-]/g,''));
+	});
+	$wk_jq('#form-validate').delegate('.account-test input','change', function(){
+		$wk_jq('.unavailable,.available').remove();
+        var profile = $wk_jq('#shopname').val();
+        profile = profile.toLowerCase();
+		$wk_jq('.button').attr('disabled','disabled');
+        $wk_jq('.profileurl input').val(profile);
+        $wk_jq('.profileurl input').val($wk_jq('.profileurl input').val().replace(/[^a-z^A-Z^0-9\.\-]/g,''));
+        var profileurl = $wk_jq('.profileurl input').val();
+		if(profile!=''){
+			/*$wk_jq('#wk_load_conf').show();*/
+			$wk_jq.ajax({
+				url:'<?php echo $this->getUrl('marketplace/seller/usernameverify',array('_secure'=>true))?>',
+				type:'POST',
+				data:{profileurl:profileurl},
+				dataType:'JSON',
+				success:function(data){
+					/*$wk_jq('#wk_load_conf').hide();*/
+					if(data==0){
+                        an = data;
+                        if($wk_jq('#agree-seller').is(":checked") ){
+                            if($wk_jq('#contactno').val()!='' && $wk_jq('#shopdescription').val()!=''){
+                                $wk_jq('.button').removeAttr('disabled');
+                            }
+                        }
+						//$wk_jq('.button').removeAttr('disabled');
+						$wk_jq('.profileurl').append($wk_jq('<span/>').addClass('available success-msg').text('available'));
+					}else{
+                        an=1;
+						$wk_jq('.profileurl').append($wk_jq('<span/>').addClass('unavailable error-msg').text('unavailable'));
+					}
+				}
+			});
+		}
+        else{
+            an=1;
+        }
+	});
+});
+</script>

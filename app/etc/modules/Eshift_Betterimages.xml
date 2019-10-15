@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Eshift_Betterimages>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends></depends>
+        </Eshift_Betterimages>
+    </modules>
+</config>

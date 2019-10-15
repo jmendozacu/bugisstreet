@@ -1,0 +1,115 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $_product = $this->getProduct(); ?>
+<?php
+
+$helper=Mage::helper('marketplace');
+$productowner=Mage::getModel('marketplace/product')->isCustomerProduct($_product['entity_id']);
+/*echo '<pre>';print_r($productowner);echo '</pre>';*/
+$productowner2 = Mage::getModel('marketplace/product')->getCollection()
+    ->addFieldToFilter('mageproductid', $productowner['productid'])
+    ->addFieldToFilter('userid', $productowner['userid']);
+foreach($productowner2 as $asd){
+    $list_shippings = explode( ',', $asd->getAllowedShipping());
+}
+
+$arrMapShipping = array(
+    'mpperproductshipping' => 'mp_shipping_charge',
+    'mpperproductshipping2' => 'mp_shipping_charge2',
+    'mpperproductshipping3' => 'mp_shipping_charge3',
+    'mpperproductshipping4' => 'mp_shipping_charge4',
+    'mpperproductshipping5' => 'mp_shipping_charge5',
+    'mpperproductshipping6' => 'mp_shipping_charge6',
+    'mpperproductshipping7' => 'mp_shipping_charge7',
+    'mpperproductshipping8' => 'mp_shipping_charge8',
+    'mpperproductshipping9' => 'mp_shipping_charge9',
+    'mpperproductshipping10' => 'mp_shipping_charge10',
+);
+if($productowner['userid']!=""){
+    $_seller = Mage::getModel('customer/customer')->load($productowner['userid']);
+    $_cursym = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();
+    $allowedshipping = json_decode($_seller->getAllowedShipping(),true);
+    ?>
+    <div class="product-options">
+        <dl class="last">
+            <dt><label class="required">Shipping method</label></dt>
+            <dd>
+                <div class="input-box">
+                    <select class="required-entry super-attribute-select" id="custom_shipping_method" name="custom_shipping_method">
+                        <option value="">Choose an Option...</option>
+                        <?php
+                        foreach($list_shippings as $shipping){
+                            $amount = $_product->getData($arrMapShipping[$shipping]);
+                            ?>
+                            <option value="<?php echo $shipping ?>" rel=""><?php echo Mage::getStoreConfig("carriers/$shipping/title").': '.$_cursym.$amount; ?></option>
+                        <?php
+                        }
+                        ?>
+                        <?php /*foreach($allowedshipping as $s){
+                            $amount = $_product->getData($arrMapShipping[$s]);
+                            */?><!--
+                            <option value="<?php /*echo $s */?>" rel="<?php /*echo $amount */?>"><?php /*echo Mage::getStoreConfig("carriers/$s/title").' : '.$_cursym.$amount */?></option>
+                        --><?php /*} */?>
+                    </select>
+                    <div class="validation-advice shiping-validate" style="display: none">This is a required field.</div>
+                </div>
+            </dd>
+        </dl>
+    </div>
+
+    <script>
+        jQuery('#custom_shipping_method').change(function(){
+        });
+    </script>
+<?php
+}
+?>
+<?php $buttonTitle = $this->__('Add to Cart'); ?>
+<?php if($_product->isSaleable()): ?>
+    <div class="add-to-cart">
+        <?php if(!$_product->isGrouped()): ?>
+            <div class="qty-wrapper">
+                <label for="qty"><?php echo $this->__('Qty:') ?></label>
+                <input type="text" pattern="\d*" name="qty" id="qty" maxlength="12" value="<?php echo max($this->getProductDefaultQty() * 1, 1) ?>" title="<?php echo $this->__('Qty') ?>" class="input-text qty" />
+            </div>
+        <?php endif; ?>
+        <div class="add-to-cart-buttons">
+            <button type="button" title="<?php echo $buttonTitle ?>" id="product-addtocart-button" class="button btn-cart" onclick="addto(this);"><span><span><?php echo $buttonTitle ?></span></span></button>
+            <?php echo $this->getChildHtml('', true, true) ?>
+        </div>
+    </div>
+<?php endif; ?>
+<?php
+    $product = Mage::getModel('catalog/product')->load($_product['entity_id']);
+
+?>
+<script>
+    function addto(e){
+        productAddToCartForm.submit(e)
+    }
+
+</script>

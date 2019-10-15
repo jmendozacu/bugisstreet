@@ -1,0 +1,150 @@
+<?php
+$partner = Webkul_Marketplace_Block_Collection::getProfileDetail();
+$seller_url = $partner['profileurl'];
+?>
+<?php if ($this->getCollection()->getSize()): ?>
+    <?php if ($this->getUseContainer()): ?>
+        <div class="pager pager-no-toolbar">
+    <?php endif ?>
+    <?php if ($this->getShowAmounts() || $this->getShowPerPage()): ?>
+        <div class="count-container">
+            <?php if ($this->getShowAmounts()): ?>
+                <?php if ($this->getLastPageNum() > 1): ?>
+                    <p class="amount amount--has-pages">
+                        <?php echo $this->__('Items %s to %s of %s total', $this->getFirstNum(), $this->getLastNum(), $this->getTotalNum()) ?>
+                    </p>
+                <?php else: ?>
+                    <p class="amount amount--no-pages">
+                        <strong><?php echo $this->__('%s Item(s)', $this->getTotalNum()) ?></strong>
+                    </p>
+                <?php endif; ?>
+            <?php endif ?>
+            <?php if ($this->getShowPerPage()): ?>
+                <div class="limiter" style="display: none">
+                    <label><?php echo $this->__('Show') ?></label>
+                    <select onchange="setLocation(this.value)" title="<?php echo $this->__('Results per page'); ?>">
+                        <?php foreach ($this->getAvailableLimit() as $_key => $_limit): ?>
+                            <option
+                                value="<?php echo $this->getLimitUrl($_key) ?>"<?php if ($this->isLimitCurrent($_key)): ?> selected="selected"<?php endif ?>>
+                                <?php echo $_limit ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php endif ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->getLastPageNum() > 1): ?>
+        <div class="pages">
+            <label style="float: left; text-transform: none; font-weight: bold"><?php echo $this->__('Page:') ?></label>
+            <ol style="float: left">
+                <?php if (!$this->isFirstPage()): ?>
+                    <li>
+                        <a class="previous<?php if (!$this->getAnchorTextForPrevious()): ?> i-previous<?php endif; ?>"
+                           href="<?php echo $this->getPreviousPageUrl() ?>" title="<?php echo $this->__('Previous') ?>">
+                            <?php if (!$this->getAnchorTextForPrevious()): ?>
+                                <?php echo $this->__('Previous') ?>
+                            <?php else: ?>
+                                <?php echo $this->getAnchorTextForPrevious() ?>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <?php if ($this->canShowFirst()): ?>
+                    <?php
+                    if ($seller_url != "") {
+                        $paper_url = $this->getFirstPageUrl();
+                        $paper_url = explode("?p=", $paper_url);
+                        $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $paper_url[1];
+                    } else {
+                        $new_paper_url = $this->getFirstPageUrl();
+                    }
+                    ?>
+                    <li><a class="first" href="<?php echo $new_paper_url; ?>">1</a></li>
+                <?php endif; ?>
+                <?php if ($this->canShowPreviousJump()): ?>
+                    <?php
+                    if ($seller_url != "") {
+                        $paper_url = $this->getPreviousJumpUrl();
+                        $paper_url = explode("?p=", $paper_url);
+                        $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $paper_url[1];
+                    } else {
+                        $new_paper_url = $this->getPreviousJumpUrl();
+                    }
+                    ?>
+                    <li><a class="previous_jump" title="" href="<?php echo $new_paper_url; ?>">...</a></li>
+                <?php endif; ?>
+                <?php foreach ($this->getFramePages() as $_page): ?>
+                    <?php if ($this->isPageCurrent($_page)): ?>
+                        <li class="current"><?php echo $_page ?></li>
+                    <?php else: ?>
+                        <?php
+                        if ($seller_url != "") {
+                            $paper_url = $this->getPageUrl($_page);
+                            $paper_url = explode("?p=", $paper_url);
+                            $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $_page;
+                        } else {
+                            $new_paper_url = $this->getPageUrl($_page);
+                        }
+                        ?>
+                        <li><a href="<?php echo $new_paper_url; ?>"><?php echo $_page ?></a></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <?php if ($this->canShowNextJump()): ?>
+
+                    <?php
+                    if ($seller_url != "") {
+                        $paper_url = $this->getNextJumpUrl();
+                        $paper_url = explode("?p=", $paper_url);
+                        $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $paper_url[1];
+                    } else {
+                        $new_paper_url = $this->getNextJumpUrl();
+                    }
+                    ?>
+
+                    <li><a class="next_jump" title="" href="<?php echo $new_paper_url; ?>">...</a></li>
+                <?php endif; ?>
+
+                <?php if ($this->canShowLast()): ?>
+
+                    <?php
+                    if ($seller_url != "") {
+                        $paper_url = $this->getLastPageUrl();
+                        $paper_url = explode("?p=", $paper_url);
+                        $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $paper_url[1];
+                    } else {
+                        $new_paper_url = $this->getLastPageUrl();
+                    }
+                    ?>
+
+                    <li><a class="last" href="<?php echo $new_paper_url; ?>"><?php echo $this->getLastPageNum() ?></a>
+                    </li>
+                <?php endif; ?>
+                <?php if (!$this->isLastPage()): ?>
+                    <li>
+                        <?php
+                        if ($seller_url != "") {
+                            $paper_url = $this->getNextPageUrl();
+                            $paper_url = explode("?p=", $paper_url);
+                            $new_paper_url = $paper_url[0] . $seller_url . "?p=" . $paper_url[1];
+                        } else {
+                            $new_paper_url = $this->getNextPageUrl();
+                        }
+                        ?>
+                        <a class="next<?php if (!$this->getAnchorTextForNext()): ?> i-next<?php endif; ?>"
+                           href="<?php echo $new_paper_url ?>" title="<?php echo $this->__('Next') ?>">
+                            <?php if (!$this->getAnchorTextForNext()): ?>
+                                <?php echo $this->__('Next') ?>
+                            <?php else: ?>
+                                <?php echo $this->getAnchorTextForNext() ?>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ol>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->getUseContainer()): ?>
+        </div>
+    <?php endif ?>
+<?php endif ?>

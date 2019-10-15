@@ -1,0 +1,27 @@
+
+<?php
+$currentUrl = Mage::helper('core/url')->getCurrentUrl();
+$url = Mage::getSingleton('core/url')->parseUrl($currentUrl);
+$path = $url->getPath();
+$pathFragments = explode('/', $path);
+$end = $pathFragments['5'];
+$_code = 'mpperproductshipping9';
+$_title = Mage::getStoreConfig("carriers/$_code/title");
+
+if(Mage::getStoreConfig("carriers/$_code/active")==1){
+$allowedshipping = json_decode(Mage::getSingleton('customer/session')->getCustomer()->getAllowedShipping(),true);
+$shipcharges=Mage::getModel('catalog/product')->load($this->getRequest()->getParam('id'))->getMpShippingCharge9();
+$customerObj  = Mage::getSingleton('customer/session')->getCustomer();
+?>
+	<li class="shipping_custom">
+        <?php if($end=="new"):?>
+            <input  type="checkbox" name="shippingmethod[]" value="<?php echo $_code;?>" />
+        <?php else: ?>
+            <input  type="checkbox" name="shippingmethod[]" <?php echo in_array($_code,$allowedshipping)? "checked='checked'":"";?> value="<?php echo $_code;?>" />
+        <?php endif; ?>
+	<label><?php echo $_title; ?>:</label>
+	<div class="input-box">
+		<input type="text" class="validate-zero-or-greater input-text custom_ship" value="<?php if($shipcharges){echo $shipcharges;}else{echo '0';}?>" name="mp_shipping_charge9" id="mp_shipping_charge9"/>
+	</div>
+</li>
+<?php } ?>

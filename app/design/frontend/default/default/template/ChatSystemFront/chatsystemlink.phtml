@@ -1,0 +1,28 @@
+<li>
+	<?php
+		$_product=Mage::registry('current_product'); 
+		$productowner=Mage::getModel('marketplace/userprofile')->isCustomerProducttemp($_product['entity_id']);
+		if($productowner['userid']!=""){
+			$customerid=Mage::getSingleton('customer/session')->getCustomerId();
+			if($customerid){
+				$collection = Mage::getModel('log/visitor_online')->prepare()->getCollection()
+							->addFieldToFilter('customer_id',array('eq'=>$productowner['userid']));
+				if($customerid==$productowner['userid']){
+					$collection->addFieldToFilter('customer_id',array('neq'=>$customerid));
+				}
+				$collection->addFieldToSelect('customer_id');
+				$collection->distinct(true);
+				$collection->addCustomerData();
+				$buyerids = array();
+				foreach($collection as $buyer){
+					$buyer=Mage::getModel('customer/customer')->load($buyer->getCustomerId());?>
+					<div class="wk_cs_chat_buddies c_buddies" id="list-<?php echo $buyer->getId() ?>">
+						<span>Chat Online</span>
+						<span id="wk_cs_admin_signal" class="wk_cs_signal_on c_l"></span>
+						<span class="wk_cs_buddy_name cs_name"><?php echo $buyer->getName();?></span>
+					</div>	
+				<?php
+				}
+			}
+		}?>
+</li>

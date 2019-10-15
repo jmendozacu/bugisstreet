@@ -1,0 +1,113 @@
+<?php
+	/**
+	 * Gift Voucher View Product template
+	*/
+?>
+<?php
+	$_product = $this->getProduct();
+	$_giftAmount = $this->getGiftAmount($_product);
+	$_formData = $this->getFormConfigData();
+?>
+<div class="giftvoucher-product-info">
+	<input type="hidden" value="<?php echo Mage::app()->getStore()->getCurrentCurrencyCode() ?>" name="currency_giftcode">
+	<?php if ($_giftAmount['type'] == 'range'): ?>
+		<p></p><p>
+			<label for="amount"><?php echo $this->__('Enter Amount:') ?></label>
+			<input id="amount" name="amount" class="input-text required-entry validate-greater-than-zero" onchange="validateInputRange(this);" value="<?php echo $_formData->getAmount() ?>" />
+			(<span class="price"><?php echo $_giftAmount['from_txt'] ?></span> -  <span class="price"><?php echo $_giftAmount['to_txt'] ?></span>)
+			<script type="text/javascript">
+			//<![CDATA[
+			function validateInputRange(el){
+				var gift_amount_min = <?php echo $_giftAmount['from'] ?>;
+				var gift_amount_max = <?php echo $_giftAmount['to'] ?>;
+				if (el.value < gift_amount_min)
+					el.value = gift_amount_min;
+				if (el.value > gift_amount_max)
+					el.value = gift_amount_max;
+			}
+			//]]>
+			</script>
+		</p>
+	<?php elseif($_giftAmount['type'] == 'dropdown'): ?>
+		<div class="bracket">
+			<dl><dt><?php echo $this->__('Gift Card*') ?></dt>
+				<dd>
+					<select id="amount" name="amount" class="required-entry select dropdown">
+					<?php $options = array_combine($_giftAmount['options'],$_giftAmount['options_txt']) ?>
+					<?php foreach ($options as $value=>$label): ?>
+						<option value="<?php echo $value ?>" <?php if($value == $_formData->getAmount()) echo 'selected' ?> ><?php echo $label ?></option>
+					<?php endforeach ?>
+					</select>
+				</dd>
+			</dl>
+		</div><!-- end of bracket div-->
+	<?php elseif($_giftAmount['type'] == 'static'): ?>
+		<div class="price-box">
+			<span class="regular-price">
+				<span class="price">
+					<?php echo $_giftAmount['value_txt'] ?>
+					<input type="hidden" name="amount" value="<?php echo $_giftAmount['value'] ?>" />
+				</span>
+			</span>
+		</div>
+	<?php elseif($_giftAmount['type'] == 'any'): ?>
+		<p></p><p>
+			<label for="amount"><?php echo $this->__('Enter Amount:') ?></label>
+			<input id="amount" name="amount" class="input-text required-entry validate-greater-than-zero" value="<?php echo $_formData->getAmount() ?>" />
+		</p>
+	<?php endif ?>
+    <?php if ($this->getGiftAmountDescription()): ?>
+        <p class="giftvoucher-amount-desc"><?php echo $this->getGiftAmountDescription() ?></p>
+    <?php endif ?>
+	<p>
+		<input type="checkbox" value="1" name="send_friend" id="send_friend" checked style="display: none;"/>
+		<script type="text/javascript">
+		//<![CDATA[
+		function sendFriend(el){
+			var receiver = $('giftvoucher-receiver');
+			var giftmedia = $('giftmedia');
+			if (el.checked){
+				if (receiver) receiver.show();
+				if (giftmedia) giftmedia.show();
+			}else{
+				if (receiver) receiver.hide();
+				if (giftmedia) giftmedia.hide();
+			}
+		}
+		//]]>
+		</script>
+	</p>
+	<div class="giftvoucher-receiver" id="giftvoucher-receiver">
+		<div class="bracket">
+			<dl><dt><?php echo $this->__('Recipient Name*') ?></dt>
+				<dd><input type="text" class="input-text required-entry text-input validate[required]" name="recipient_name" id="recipient_name" value="<?php echo $_formData->getRecipientName() ?>" /></dd>
+			</dl>
+			<dl><dt><?php echo $this->__('Recipient Email*') ?></dt>
+				<dd><input type="text" class="input-text required-entry validate-email text-input validate[required]" name="recipient_email" id="recipient_email" value="<?php echo $_formData->getRecipientEmail() ?>" /></dd>
+			</dl>
+		</div><!-- end of bracket div -->
+		<?php if ($this->enableCustomMessage()): ?>
+			
+		<dl><dt>Message</dt>
+			<dd><textarea name="message" id="message" rows="8" cols="30"><?php echo $_formData->getMessage() ?></textarea><br />
+			<i style="font-size:0.85em;">* Required fields</i></dd>
+		</dl>
+			<script type="text/javascript">
+			//<![CDATA[
+			var remaining_max = <?php echo $this->messageMaxLen() ?>;
+			function changeRemaining(el){
+				if (el.value.length > remaining_max){
+					el.value = el.value.substring(0,remaining_max);
+				}
+				$('giftvoucher_char_remaining').innerHTML = remaining_max - el.value.length;
+				var giftmedia = $('giftmedia-pre');
+				if (giftmedia)
+					giftmedia.innerHTML = el.value;
+			}
+			//]]>
+			</script>
+		</p>
+		<?php endif ?>
+	</div>
+	<p></p>
+</div>

@@ -1,0 +1,173 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+
+<?php $_shipment = $this->getShipment() ?>
+<?php $_order = $this->getOrder() ?>
+
+<?php if ($_shipment && $_order): ?>
+
+    <?php $_items = $_order->getAllItems() ?>
+    <?php $_itemCount = count($_items) ?>
+    <!--<table class="items" cellpadding="0" cellspacing="0" border="0">
+        <thead>
+        <tr>
+            <th class="cell-name">
+                <?php /*if($_itemCount > 1): echo $this->__('Items in your order'); else: echo $this->__('Item in your order'); endif; */ ?>
+            </th>
+            <th class="cell-name align-center">
+                <?php /*echo $this->__('Sku'); */ ?>
+            </th>
+            <th class="cell-name align-right">
+                <?php /*echo $this->__('Qty'); */ ?>
+            </th>
+        </tr>
+        </thead>
+
+        <?php /*$i=0; foreach ($_shipment->getAllItems() as $_item): */ ?>
+        <?php /*if($_item->getOrderItem()->getParentItem()) continue; else $i++; */ ?>
+            <?php /*echo $this->getItemHtml($_item) */ ?>
+        <?php /*endforeach; */ ?>
+    </table>-->
+
+    <tr>
+        <td>
+            <table class="items" cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+                <thead style="background-color: #ccc;">
+                <tr>
+                    <th class="cell-name align-left"
+                        style="padding: 10px;text-align: left;text-transform: uppercase;width: 312px;">
+                        <?php if ($_itemCount > 1): echo $this->__('Items in your order');
+                        else: echo $this->__('Item in your order'); endif; ?>
+                    </th>
+                    <th class="cell-name align-center" style="width: 133px;padding: 10px;text-transform: uppercase;">
+                        <?php echo $this->__('Qty'); ?>
+                    </th>
+                    <th class="cell-name align-right"
+                        style="width: 135px;text-align: right;padding: 10px;text-transform: uppercase;">
+                        <?php echo $this->__('Price'); ?>
+                    </th>
+                </tr>
+                </thead>
+
+                <?php $i = 0;
+                $subtotal = 0;
+                foreach ($_shipment->getAllItems() as $_item): ?>
+                    <?php $i++; ?>
+                    <?php if ($_item->getOrderItem()->getParentItem()) continue; else $i++; ?>
+                    <?php //echo $this->getItemHtml($_item) ?>
+
+                    <!-- Tung edit -->
+                    <tbody>
+                    <tr>
+                        <td class="cell-content product-info" style="padding: 10px;">
+                            <p class="product-name"><?php echo $this->escapeHtml($_item->getName()) ?></p>
+                            <p class="sku"><strong><?php echo $this->__('SKU'); ?>:</strong> <?php echo $this->escapeHtml($_item->getSku()) ?></p>
+                            <?php if ($this->getItemOptions()): ?>
+                                <dl style="margin:0; padding:0;">
+                                    <?php foreach ($this->getItemOptions() as $option): ?>
+                                        <dt><strong><em><?php echo $option['label'] ?></em></strong></dt>
+                                        <dd style="margin:0; padding:0 0 0 9px;"><?php echo nl2br($option['value']) ?></dd>
+                                    <?php endforeach; ?>
+                                </dl>
+                            <?php endif; ?>
+                            <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>
+                            <?php if ($addInfoBlock) :?>
+                                <?php echo $addInfoBlock->setItem($_item->getOrderItem())->toHtml(); ?>
+                            <?php endif; ?>
+                            <?php echo $this->escapeHtml($_item->getDescription()) ?>
+                            <p class="seller">
+                                <?php
+                                $productowner = Mage::getModel('marketplace/product')->isCustomerProduct($_item->getProductId());
+                                ?>
+                                <strong>
+                                    <?php echo $this->helper('sales')->__('Seller') ?>:
+                                </strong>
+                                <?php
+                                $seller_info = Mage::getModel('marketplace/userprofile')->getPartnerProfileById($productowner['userid']);
+                                echo "<span style='color:#ff823b'>".$seller_info['shoptitle']."</span>";
+                                ?>
+                            </p>
+                        </td>
+                        <td class="cell-content align-center" style="text-align: center;padding: 10px;"><?php echo $_item->getQty()*1 ?></td>
+                        <td class="cell-content align-right" style="text-align: right;padding: 10px;">
+                            <?php
+                            $row_price = 0;
+                            $row_price = $_item->getQty()* $_item->getPrice();
+                            $subtotal = $subtotal + $row_price;
+                            echo $_order->formatPrice($row_price); ?>
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+                    <!-- The End -->
+                <?php endforeach; ?>
+                <tfoot>
+                    <tr class="subtotal">
+                        <td colspan="2" align="right" style="padding:3px 9px">
+                            Subtotal
+                        </td>
+                        <td align="right" style="padding:3px 9px">
+                            <span class="price"><?php echo Mage::helper('core')->currency($subtotal, true, false); ?></span>
+                        </td>
+                    </tr>
+                    <tr class="shipping">
+                        <td colspan="2" align="right" style="padding:3px 9px">
+                            Delivery:
+                        </td>
+                        <td align="right" style="padding:3px 9px">
+                            <span class="price">
+                                <?php
+                                $productowner = Mage::getModel('marketplace/product')->isCustomerProduct($_item->getProductId());
+                                $collection = Mage::getModel("mpshippingmanager/tracking")->getCollection()
+                                    ->addFieldToFilter('order_id',array('eq'=>$_order->getEntityId()))
+                                    ->addFieldToFilter('seller_id',array('eq'=>$productowner['userid']));
+                                foreach ($collection as $value) {
+                                    $shipping_amount  = $value->getShippingCharges();
+                                }
+                                echo Mage::helper('core')->currency($shipping_amount, true, false);
+                                //echo $_order->formatPrice($_item->getShippingAmount());
+                                ?>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="grand_total">
+                        <td colspan="2" align="right" style="padding:3px 9px">
+                            <strong>Total</strong>
+                        </td>
+                        <td align="right" style="padding:3px 9px">
+                            <strong><span class="price"><?php echo Mage::helper('core')->currency($subtotal + $shipping_amount, true, false); ?></span></strong>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </td>
+    </tr>
+
+
+<?php endif; ?>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_system_config_edit>
+        <update handle="editor"/>
+        <reference name="head">
+            <action method="setCanLoadTinyMce">
+                <load>1</load>
+            </action>
+        </reference>
+    </adminhtml_system_config_edit>
+    <adminhtml_mprmasystem_index_index>
+        <reference name="content">
+            <block type="mprmasystem/adminhtml_allrma" name="mprmasystem"/>
+        </reference>
+    </adminhtml_mprmasystem_index_index>
+    <adminhtml_mprmasystem_index_reason>
+        <reference name="content">
+            <block type="mprmasystem/adminhtml_rmareason" name="mprma_reason"/>
+        </reference>
+    </adminhtml_mprmasystem_index_reason>
+    <adminhtml_mprmasystem_index_edit>
+        <reference name="content">
+            <block after="-" type="mprmasystem/adminhtml_allrma" name="mprmasystem_images" template="mprmasystem/showimage.phtml"/>
+        </reference>
+    </adminhtml_mprmasystem_index_edit>
+</layout>

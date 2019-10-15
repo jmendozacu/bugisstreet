@@ -1,0 +1,12 @@
+<?php $magentoCurrentUrl = Mage::helper('core/url')->getCurrentUrl();
+$isPartner= Mage::getModel('marketplace/userprofile')->isPartner();
+if($isPartner==1){?>
+<li <?php echo strpos($magentoCurrentUrl,'mpshippingmanager/shipping')? "class=current":"";?>>
+	<?php if(strpos($magentoCurrentUrl,'mpshippingmanager/shipping')){ ?>
+		<strong><?php echo Mage::helper('mpshippingmanager')->__('Manage Shipping') ?></strong>
+	<?php }
+	else{ ?>
+		<a href="<?php echo $this->getUrl('mpshippingmanager/shipping'); ?>"><?php echo Mage::helper('mpshippingmanager')->__('Manage Shipping') ?></a>
+	<?php } ?>
+</li>
+<?php } ?>

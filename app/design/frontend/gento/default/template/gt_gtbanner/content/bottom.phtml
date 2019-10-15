@@ -1,0 +1,16 @@
+<?php $collection = $this->_getCollection(); ?>
+<?php if (count($collection) > 0) : ?>
+
+		<?php foreach ($collection as $item) : ?>
+			<?php $_imageList = $item->getImageList(); ?>
+			<?php if (is_array($_imageList) and sizeof($_imageList) > 0) : ?>
+				<?php $counter=1; foreach ($_imageList as &$_item) : ?>
+                <p<?php if($counter%3==0): ?> class="last"<?php endif; ?>>
+					<a href="<?php echo $_item['label']; ?>" target="_blank">
+						<img src="<?php echo $this->helper('gtbanner/image')->init($_item['file'])->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(TRUE)->resize(314,164); ?>" />
+					</a>
+                </p>
+				<?php $counter++; endforeach; ?>
+			<?php endif; ?>
+		<?php endforeach; ?>
+<?php endif; ?>

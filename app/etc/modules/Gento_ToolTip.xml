@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_ToolTip>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Gento_ToolTip>
+    </modules>
+</config>

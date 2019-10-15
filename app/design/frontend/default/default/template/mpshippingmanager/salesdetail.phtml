@@ -1,0 +1,149 @@
+<?php 
+$helper= Mage::helper('mpshippingmanager');
+$isPartner= Mage::getModel('marketplace/userprofile')->isPartner();
+if($isPartner==1){?>
+	<div class="page-title">
+		<h1 style="float:left;">
+			<?php echo Mage::Helper('mpshippingmanager')->__('Orders Detail Of Product : ').Mage::getModel('catalog/product')->load($this->getRequest()->getParam('id'))->getName();?>
+		</h1>
+	</div>	
+	<div class="wk_mp_design">
+		<div class="block block-account">	
+			<div class="block-title">	
+				<strong><span><h4><?php echo $helper->__('Orders Details') ?></h4></span></strong>
+			</div>
+		</div>
+		<div class="fieldset wk_mp_fieldset">
+			<table cellspacing="0" class="border wk_mp_list_table wk_mp_list_container_table">
+			    <thead>
+			        <tr class="wk_content">
+			    		<th>
+			    			<span class="label name">
+								<?php echo $helper->__('Order Id')?>
+							</span>
+			    		</th>
+			    		<th>
+			    			<span class="label pro_status">
+								<?php echo $helper->__('Buyer Name')?>
+							</span>
+			    		</th>
+			    		<th>
+			    			<span class="label qty">
+								<?php echo $helper->__('Qty')?>
+							</span>
+			    		</th>
+			    		<th>
+			    			<span class="label qty">
+								<?php echo $helper->__('Price')?>
+							</span>
+			    		</th>	
+			    		<th>
+			    			<span class="label qty">
+								<?php echo $helper->__('Sold on')?>
+							</span>
+			    		</th>
+			    		<th>
+			    			<span class="label">
+								<?php echo $helper->__('Action')?>
+							</span>
+			    		</th>
+			    		<th style="text-align:center;">
+			    			<span class="label">
+								<?php echo $helper->__('Download')?>
+							</span>
+			    		</th>			    		
+			    	</tr>
+			    </thead>
+			    <tbody>
+			    	<?php 
+			    	$i = 0;
+					foreach($this->getCollection() as $order){
+						$i++;
+						$shipmentId = 0;
+						$invoiceId = 0;
+						$shipping_coll = Mage::getModel('mpshippingmanager/tracking')->getCollection()
+										->addFieldToFilter('order_id',array('eq'=>$order->getMageorderid()))
+										->addFieldToFilter('seller_id',array('eq'=>Mage::getSingleton('customer/session')->getCustomerId()));
+							foreach ($shipping_coll as $tracking) {
+								$shipmentId = $tracking->getShipmentId();
+								$invoiceId = $tracking->getInvoiceId();
+							}
+						?>
+				    	<tr class="wk_row_view <?php echo $class = ($i == count($this->getCollection()))? 'wk_last_tr':''?>">
+				    		<td>
+								<span class="label name">
+									<?php echo $order->getMagerealorderid();?>
+								</span>
+				    		</td>
+			    			<td>		
+								<span class="label pro_status">
+									<?php echo Mage::getModel('customer/customer')->load($order->getMagebuyerid())->getName();?>
+								</span>
+							</td>
+							<td>
+								<span class="label qty">
+									<?php echo $order->getMagequantity();?>
+								</span>
+							</td>
+							<td>
+								<span class="label qty">
+									<?php echo $order->getActualparterprocost();?>
+								</span>	
+							</td>
+							<td>
+								<span class="label qty">
+									<?php echo $order->getClearedAt();?>
+								</span>	
+							</td>
+							<td>
+								<span class="label qty">
+									<a href="<?php echo $this->getUrl('mpshippingmanager/shipping/invoice')."id/".$order->getMageorderid()?>">
+										<?php echo Mage::Helper('mpshippingmanager')->__('Invoice');?>
+									</a>
+								</span>	
+							</td>
+							<td style="text-align:center;">
+								<span class="label qty">
+									<?php if($shipmentId){ ?>
+										<a href="<?php echo $this->getUrl('mpshippingmanager/shipping/print',array('invoice_id'=>$shipmentId));?>" style="margin-right:5px;">
+											<?php echo $helper->__('Shipping Slip');?>
+										</a>
+									<?php
+									}else{ ?>
+										<span style="margin-right:5px;">
+											<?php echo $helper->__('Shipping Slip');?>
+										</span>
+										<?php
+									}
+									if($invoiceId){ ?>
+										<a href="<?php echo $this->getUrl('mpshippingmanager/shipping/printinvoice',array('invoice_id'=>$invoiceId));?>" >
+											<?php echo $helper->__('Invoice Slip');?>
+										</a>
+									<?php
+									}else{ ?>
+										<span>
+											<?php echo $helper->__('Invoice Slip');?>
+										</span>
+										<?php
+									} ?>
+								</span>	
+							</td>	    		
+				    	</tr>
+				    	<?php
+				    }?>
+			    </tbody>
+			</table>
+		</div>
+		<?php echo $this->getPagerHtml();?>
+		<div class="buttons-set">
+			<p class="back-link">
+				<a href="javascript:;" onclick="javascript: window.history.back();" class="left">&laquo; <?php echo $helper->__('Back') ?></a>
+			</p>
+		</div>
+	</div>
+	</style>
+	<?php	
+ }else{
+	echo "<h2 class='notify'>FOR BECOME SELLER CONTACT TO ADMIN..</h2>";
+}?>
+

@@ -1,0 +1,241 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div class="content">
+<div style="display: none" class="reponsive">
+    <h1 style="font-size: 25px !important;">MY ACCOUNT</h1>
+    <select style="width: 90%" onChange="window.location.href=this.value">
+        <option value="<?php echo $this->getUrl('customer/account/')?>" selected>My Profile</option>
+        <option value="<?php echo $this->getUrl('wishlist/')?>">My Want List</option>
+        <option value="<?php echo $this->getUrl('checkout/cart/')?>">My Cart</option>
+        <option value="<?php echo $this->getUrl('sales/order/history/')?>">My Orders</option>
+        <option value="<?php echo $this->getUrl('review/customer/')?>" >My Reviews</option>
+        <option value="<?php echo $this->getUrl('mprmasystem/index/')?>" >My RMA</option>
+    </select>
+
+</div>
+<div style="width: 80%; float: left" class="dashboard content dash_reponsive">
+    <div class="page-title">
+        <h1><?php echo $this->__('MY PROFILE') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
+    <?php echo $this->getChildHtml('hello') ?>
+    <?php echo $this->getChildHtml('top') ?>
+    <div class="box-account box-info">
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('customer.account.dashboard.extra') ?>
+        <?php echo $this->getChildHtml('info') ?>
+
+    </div>
+
+    <?php echo $this->getChildHtml('address') ?>
+    <?php echo $this->getChildHtml('info1') ?>
+    <?php echo $this->getChildHtml('info2') ?>
+    <?php
+    $customerData = Mage::getSingleton('customer/session')->getCustomer();
+    $id_customer = $customerData->getId();
+    $collection  = Mage::getModel("sales/order")->getCollection()
+        ->addAttributeToSelect('*')
+        ->setOrder('created_at','DESC')
+        ->addFieldToFilter('customer_id',$id_customer);
+    $_orderCnt = $collection->count(); //orders count
+    ?>
+    <?php if($_orderCnt):?>
+        <div class="orderhistory">
+            <div class="title" style="height: 28px; border-bottom: 1px solid #D5D6D8">
+                <h3 style="float: left; text-transform: uppercase">My Orders</h3>
+                <div style="float:right" class="edit">
+                    <a style="font-size: 14px !important;" href="<?php echo $this->getUrl('sales/order/history/')?>">View All</a>
+                </div>
+            </div>
+            <div class="detail">
+                <?php
+                $flag1=0;
+                foreach ($collection as $_order):
+                    $flag1++;
+                    ?>
+                    <div class="detail-1">
+                        <p><span>Order No</span><?php echo $_order->getRealOrderId() ;?></p>
+                        <p><span>Date</span><?php echo $this->formatDate($_order->getCreatedAtStoreDate())?></p>
+                        <p><span>Order Total</span><?php echo $_order->formatPrice($_order->getGrandTotal()); ?></p>
+                        <p style="font-style: italic;"><span style="font-style: normal !important;">Status</span><?php echo $_order->getStatusLabel();?></p>
+                        <a href="<?php echo Mage::getUrl('sales/order/view', array('order_id'=> $_order->getEntityId())) ?>">View Order</a>
+                    </div>
+                    <?php
+                    if($flag1==2){
+                        break;
+                    }
+                endforeach;
+                ?>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php
+    //$partner = $this->getLayout()->createBlock('marketplace/profile')->getProfileDetail();
+    /*$partner=$this->getProfileDetail();*/
+    $baseurl=$this->getUrl('marketplace/seller');
+        if(Mage::getSingleton('customer/session')->isLoggedIn()) {
+            if ($_GET['delete_id']) {
+                $delete_id = $_GET['delete_id'];
+            }
+                $delete_id = explode(' ', $delete_id);
+                /*print_r($delete_id);*/
+                $customerData = Mage::getSingleton('customer/session')->getCustomer();
+                $id_customer = $customerData->getId();
+                $favourites = $customerData->getFavourite();
+                $arrays = explode(',', $favourites);
+
+                /*if (in_array($delete_id, $arrays)) {*/
+                $arrays = array_diff($arrays, $delete_id);
+                /*}*/
+                $arrays = implode(",", $arrays);
+
+                $customerData->setFavourite($arrays);
+                $customerData->save();
+                $favourites = $customerData->getFavourite();
+                $arrays = explode(',', $arrays);
+                /*$my_array = array('a', 'b', 'c', 'd');
+                $to_remove = array('b');
+                $result = array_diff($my_array, $to_remove);*/
+
+        ?>
+        <div class="fav-retailer">
+            <div class="title" style="height: 28px;">
+                <h3 style="float: left">FAVORITE SELLERS</h3>
+                <a href="<?php echo $this->getUrl('favourite_sellers/')?>" style="float:right; font-size: 12px">View All</a>
+            </div>
+            <?php
+            if (empty($favourites)) {
+                echo '<p class="no-favourite">' . $this->__('You have not added any favorite sellers.') . '</p>';
+            } else {
+                ?>
+                <div class="retailers">
+                    <ul style="clear: both;overflow: hidden;margin-bottom: 10px">
+                        <?php
+                        /*$test = array_diff($arrays, array('7'));
+
+                        print_r($test);*/
+
+                        foreach ($arrays as $array) {
+                            /*$customer = Mage::getModel('customer/customer')->load($array);*/
+                            $rowsocial = Mage::getModel('marketplace/userprofile')->getPartnerProfileById($array);
+                            $logo = $rowsocial['logopic'] == '' ? "noimage.png" : $rowsocial['logopic'];
+                            $logo = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'avatar/' . $logo;
+                            ?>
+                            <li style="float: left">
+                                <a href="<?php echo $baseurl . "profile/" . $rowsocial['profileurl']; ?>"
+                                   target="_blank">
+                                    <!--<div class="thumbnail">-->
+                                    <img src="<?php echo $logo; ?>" width="150px" height="150px"/>
+                                    <!--</div>-->
+                                </a>
+
+                                <div class="info">
+                                    <a href="<?php echo $baseurl . "profile/" . $rowsocial['profileurl']; ?>"
+                                       target="_blank">
+                                        <div class="shopname flag">
+                                            <h3><?php echo $rowsocial['shoptitle'] ?></h3>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <input type="hidden" name="delete_fav" value="<?php echo $array ?>">
+
+                                <a href="<?php echo '?delete_id=' . $array ?>" class="popup">
+                                    <div class="deletelink"></div>
+                                </a>
+
+
+                                <!--<input type='submit' name='deluser' value='<?php /*$array */ ?>' class="deletelink">-->
+
+                            </li>
+
+                        <?php
+                        }
+                        ?>
+                    </ul>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+
+
+
+    <?php
+        /*}*/
+    }
+    ?>
+
+
+
+
+
+</div>
+<div class="account-sidemenu">
+
+    <?php echo $this->getChildHtml('customer_account_navigation') ?>
+    <h3 style="font-size: 1em;">
+        MY ACCOUNT
+    </h3>
+    <ul>
+        <li>
+            <a style="color: #999;" class="current" href="<?php echo $this->getUrl('customer/account/')?>">
+                My Profile
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('wishlist/')?>">
+                My Want List
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('checkout/cart/')?>">
+                My Cart
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('sales/order/history/')?>">
+                My Orders
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('review/customer/')?>">
+                My Reviews
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('mprmasystem/index/')?>">
+                My RMA
+            </a>
+        </li>
+        <li>
+            <a  href="<?php echo $this->getUrl('customer/account/logout/')?>">Logout</a>
+        </li>
+    </ul>
+
+</div>
+</div>

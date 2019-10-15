@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_customer_attribute_index>
+        <reference name="content">
+            <block type="customer_attributes/adminhtml_customer_attribute" name="customer_attributes_customer" />
+        </reference>
+    </adminhtml_customer_attribute_index>
+
+    <adminhtml_customer_attribute_edit>
+        <update handle="scope_switcher"/>
+        <reference name="content">
+            <block type="customer_attributes/adminhtml_customer_attribute_edit" name="customer_attribute_edit" />
+        </reference>
+        <reference name="left">
+            <block type="customer_attributes/adminhtml_customer_attribute_edit_tabs" name="customer_attribute_edit_tabs">
+                <block type="customer_attributes/adminhtml_customer_attribute_edit_tab_main" name="customer_attribute_edit_tab_general" />
+                <action method="addTab"><name>general</name><block>customer_attribute_edit_tab_general</block></action>
+                <block type="customer_attributes/adminhtml_customer_attribute_edit_tab_options" name="customer_attribute_edit_tab_options" />
+                <action method="addTab"><name>options</name><block>customer_attribute_edit_tab_options</block></action>
+            </block>
+        </reference>
+        <reference name="js">
+            <block type="customer_attributes/adminhtml_customer_attribute_edit_js" template="customer_attributes/customer/js.phtml" />
+        </reference>
+    </adminhtml_customer_attribute_edit>
+
+    <adminhtml_customer_attribute_new>
+        <remove name="website_switcher" />
+    </adminhtml_customer_attribute_new>
+</layout>
+

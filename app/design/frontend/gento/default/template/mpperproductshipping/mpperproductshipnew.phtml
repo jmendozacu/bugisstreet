@@ -1,0 +1,85 @@
+
+<?php
+$currentUrl = Mage::helper('core/url')->getCurrentUrl();
+$url = Mage::getSingleton('core/url')->parseUrl($currentUrl);
+$path = $url->getPath();
+$pathFragments = explode('/', $path);
+$end = $pathFragments['5'];
+$_code = 'mpperproductshipping';
+$_title = Mage::getStoreConfig("carriers/$_code/title");
+$currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
+$currency = Mage::app()->getLocale()->currency( $currency_code )->getSymbol();
+$currency_symbol = trim($currency);
+	if(Mage::getStoreConfig("carriers/$_code/active")==1){
+	$allowedshipping = json_decode(Mage::getSingleton('customer/session')->getCustomer()->getAllowedShipping(),true);
+	$shipcharges=Mage::getModel('catalog/product')->load($this->getRequest()->getParam('id'))->getMpShippingCharge();
+	$customerObj  = Mage::getSingleton('customer/session')->getCustomer();
+
+    // edit
+    $productowner = Mage::getModel('marketplace/product')->getCollection()
+        ->addFieldToFilter('mageproductid', $this->getRequest()->getParam('id'))
+        ->addFieldToFilter('userid', $customerObj->getId());
+    foreach($productowner as $product){
+        $list_shippings = explode( ',', $product->getAllowedShipping());
+    }
+        
+?>
+<li style="clear: both"><div class="block-title">
+			<strong>
+				<span>
+				<h2 style="width: 42%; float: left; color: #333; font-size: 18px">Choose Shipping Method<em style="color:red">*</em></h2>
+                <h2 style="color: #333; font-size: 18px">Price <?php echo  " (". $currency_symbol.")"; ?></h2>
+				</span>
+			</strong>
+		</div>
+</li>
+<li class="shipping_custom">
+    <?php if($end=="new"):?>
+        <input type="checkbox" checked="checked" name="shippingmethod[]" value="<?php echo $_code;?>" />
+    <?php else: ?>
+        <!--<input  type="checkbox" name="shippingmethod[]" <?php /*echo in_array($_code,$allowedshipping)? "checked='checked'":"";*/?> value="<?php /*echo $_code;*/?>" />-->
+        <input  type="checkbox" name="shippingmethod[]" <?php echo in_array($_code,$list_shippings)? "checked='checked'":"";?> value="<?php echo $_code;?>" />
+    <?php endif; ?>
+	<label><?php echo $_title; ?>:</label>
+	<div class="input-box">
+		<input type="text" class="validate-zero-or-greater input-text custom_ship" value="<?php if($shipcharges){echo $shipcharges;}else{echo '0';}?>" name="mp_shipping_charge" id="mp_shipping_charge"/>
+	</div>
+</li>
+<?php } ?>
+<script>
+	jQuery(document).ready(function(){
+
+		jQuery('input.custom_ship').each(function(){
+            if(jQuery(this).parent().parent().find('input[type=checkbox]').is(':checked')) {
+                var len = jQuery(this).val();
+                var len2 = len.length;
+                if (len2 == 0) {
+                    jQuery(this).parent().find('.custom_ship').val('0');
+                }
+            }
+			//alert(jQuery(this).parent().parent().find('input[type=checkbox]').is(':checked') );
+			//if(jQuery(this).parent().parent().find('input[type=checkbox]').is(':checked')){
+			jQuery(this).change(function(){
+				if(jQuery(this).parent().parent().find('input[type=checkbox]').is(':checked')) {
+					var len = jQuery(this).val();
+					var len2 = len.length;
+					if (len2 == 0) {
+						alert('<?php echo "Please input value for selected shipping method"?>');
+                        jQuery(this).parent().find('.custom_ship').val('0');
+					}
+				}
+			});
+			//}
+		});
+		jQuery('.shipping_custom input[type=checkbox]').change(function(){
+			if(jQuery(this).is(':checked')) {
+				var len = jQuery(this).parent().find('.custom_ship').val();
+				var len2 = len.length;
+				if (len2 == 0) {
+					alert('<?php echo "Please input value for selected shipping method"?>');
+                    jQuery(this).parent().find('.custom_ship').val('0');
+				}
+			}
+		});
+	});
+</script>

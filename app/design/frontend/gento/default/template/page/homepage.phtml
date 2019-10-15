@@ -1,0 +1,285 @@
+<script type="text/javascript" src="<?php //echo $this->getSkinUrl('js/jquery.bxslider.min.js') ?>"></script>
+<link rel="stylesheet" href="<?php //echo $this->getSkinUrl('css/jquery.bxslider.css') ?>">
+<div class="trending" >
+    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('trending')->toHtml(); ?>
+    <div class="trend_right" >
+        <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+            <a href="<?php echo $this->getUrl('customer/account/login/') ?>" style="margin-right:5%;color:#666;">LOGIN</a>
+            <a href="<?php echo $this->getUrl('customer/account/create/') ?>" style="margin-right:0%;color:#666;">REGISTER</a>
+        <?php else: ?>
+            <a href="<?php echo $this->getUrl('customer/account/') ?>" style="margin-right:5%;color:#666;">MY ACCOUNT</a>
+            <a href="<?php echo $this->getUrl('customer/account/logout/') ?>" style="margin-right:0%;color:#ED1C24;">LOGOUT</a>
+        <?php endif; ?>
+    </div>
+</div>
+<div class="clearfix bso-index product-columns">
+    <?php //echo $this->getLayout()->createBlock('gtbanner/content_top')->setTemplate('gt_gtbanner/content/top.phtml')->toHtml(); ?>
+    <?php echo $this->getLayout()->createBlock('bannerslider/default')->setTemplate('bannerslider/bannerslider.phtml')->setBannersliderId('1')->toHtml(); ?>
+
+    <script type="text/javascript">
+        /*jQuery(document).ready(function($) {
+            $('.bxslider').bxSlider({
+                slideWidth: 900
+            });
+        });*/
+    </script>
+
+    <div class="highlight_1_row" style="max-width:860px;margin:0 auto;padding: 10px 0 0 10px;">
+        <div style="width:24.5%;float:left;padding-left: 2%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('men/tops.html') */?>" style="color:#000;font-size:0.8em;">
+                    <div class="imgwrap"></div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('home-page-icon')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:24.5%;float:left;padding-left:2%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('men/tops.html') */?>" style="color:#000;font-size:0.8em;">
+                    <div class="imgwrap"> </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('home-page-icon2')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:24.5%;float:left;padding-left:2%">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('women/dresses.html') */?>" style="color:#000;font-size:0.8em;">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('home-page-icon3')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:24.5%;float:left;padding-left:2%">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('men/tops.html') */?>" style="color:#000;font-size:0.8em;">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('home-page-icon4')->toHtml(); ?>
+            </div>
+        </div>
+    </div>
+    <div class="page-header-title">
+        <div style="clear:both;margin-bottom:20px;"></div>
+        <div style="width:100%;padding:10px;clear: both">
+            <!--<h2 style="font-size:1.7em;">SHOP Popular Categories</h2>-->
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories')->toHtml(); ?>
+        </div>
+    <div style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('women/dresses.html') */?>">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories-thumbnail')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('women/tops.html') */?>">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories-thumbnail-2')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('women/bottoms.html') */?>">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories-thumbnail-3')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('men/tops.html') */?>">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories-thumbnail-4')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl('electronics/phone-accessories.html') */?>">
+                    <div class="imgwrap">  </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-categories-thumbnail-5')->toHtml(); ?>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;margin-bottom:20px;"></div>
+    <div style="width:100%;padding:10px;">
+        <!--<h2 style="font-size:1.7em;">SHOP Popular Products<span style="font-size:0.7em;float:right;padding-right:15px;">
+            <a href="<?php /*echo $this->getUrl('women/tops.html') */?>" style="color:#000;">See more</a></span></h2>-->
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('see-more')->toHtml(); ?>
+    </div>
+    <div style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+
+
+
+        <?php //echo $this->getLayout()->createBlock('featuredproducts/product_list')->setTemplate('inchoo/featuredproducts/block_featured_products.phtml')->toHtml(); ?>
+        <div style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+            <div style="width:24%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <!--<a href="<?php /*echo $this->getUrl('c6702-prisca-skirt.html') */?>">
+                        <div class="imgwrap"> <img src="http://www.bugisstreet.com.sg/media//catalog/product/cache/cat_resized/product5_9.jpg" alt="Popular product 1"> </div>
+                    </a>-->
+
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-products-thumbnail')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:24%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <!-- <a href="http://www.bugisstreet.com.sg/index.php/cachedlist/?cat=318"> -->
+                    <!--<a href="<?php /*echo $this->getUrl('c6701-paige-top.html') */?>">
+                        <div class="imgwrap"> <img src="http://www.bugisstreet.com.sg/media//catalog/product/cache/cat_resized/viola_wedge_1.jpg" alt="Popular product 2"> </div>
+                    </a>-->
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-products-thumbnail-2')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:24%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <!--<a href="<?php /*echo $this->getUrl('c6605-oriena-top.html') */?>">
+                        <div class="imgwrap"> <img src="http://www.bugisstreet.com.sg/media//catalog/product/cache/cat_resized/happy_plugs_earpiece_1.jpg" alt="Popular product 3"> </div>
+                    </a>-->
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-products-thumbnail-3')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:24%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <!--<a href="<?php /*echo $this->getUrl('women/tops/c6401-lin-top.html') */?>">
+                        <div class="imgwrap"> <img src="http://www.bugisstreet.com.sg/media//catalog/product/cache/cat_resized/product5_8.jpg" alt="Popular product 4"> </div>
+                    </a>-->
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('popular-products-thumbnail-4')->toHtml(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tung edit -->
+        <div style="clear:both;margin-bottom:20px;"></div>
+        <div style="width:100%;padding:10px;clear: both">
+            <!--<h2 style="font-size:1.7em;">SHOP Popular Categories</h2>-->
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks')->toHtml(); ?>
+        </div>
+        <div style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+            <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks-category')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks-category-2')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks-category-3')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks-category-4')->toHtml(); ?>
+                </div>
+            </div>
+            <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+                <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sale-picks-category-5')->toHtml(); ?>
+                </div>
+            </div>
+        </div>
+        <!-- End Tung edit -->
+
+
+    <div style="clear:both;margin-bottom:20px;"></div>
+    <div style="width:100%;padding:10px;">
+        <!--<h2 style="font-size:1.7em;">Featured Shops</h2>-->
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops')->toHtml(); ?>
+    </div>
+    <div style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl() */?>marketplace/seller/profile/lyraminn">
+                    <div class="imgwrap"> <img src="<?php /*echo $this->getSkinUrl('images/rainbowbelle.jpg') */?>" alt="Featured shop 1"> </div>
+                </a>-->
+                 <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops-thumbnail')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl() */?>marketplace/seller/profile/lyraminn">
+                    <div class="imgwrap"> <img src="<?php /*echo $this->getSkinUrl('images/2nd_edition_2.jpg') */?>" alt="Featured shop 2"> </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops-thumbnail-2')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+                <!--<a href="<?php /*echo $this->getUrl() */?>marketplace/seller/profile/lyraminn">
+                    <div class="imgwrap"> <img src="<?php /*echo $this->getSkinUrl('images/cupid_1.jpg') */?>" alt="Featured shop 3"> </div>
+                </a>-->
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops-thumbnail-3')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops-thumbnail-4')->toHtml(); ?>
+            </div>
+        </div>
+        <div style="width:19%;float:left;margin-left:0.9%;outline: 1px solid #CCC;padding:0.5%;">
+            <div class="wrapper">
+
+                <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('featured-shops-thumbnail-5')->toHtml(); ?>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div style="clear:both;margin-bottom:20px;"></div>
+    <div class="bottom-site" style="max-width:890px;margin:0 auto;padding: 10px 0 10px 0;">
+        <div style="width:32.33%;float:left;margin-left:0.9%;padding:0.5%;">
+            <div class="wrapper">
+
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('before-the-green-man')->toHtml(); ?>
+
+            </div>
+        </div>
+        <div style="width:32.33%;float:left;margin-left:0.9%;padding:0.5%;">
+            <div class="wrapper">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('declare-your-wear')->toHtml(); ?>
+
+            </div>
+        </div>
+        <div style="width:32.33%;float:left;margin-left:0.9%;padding:0.5%;">
+            <div class="wrapper">
+
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('bso-diaries')->toHtml(); ?>
+
+            </div>
+        </div>
+    </div>
+
+    <div style="width:95%;float:left;padding:8px;font-size:0.8em;">
+
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('register-now')->toHtml(); ?>
+    </div>
+    <div class="wrap-bottom">
+    <div class="home_footer">
+
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('men-women-top-categories')->toHtml(); ?>
+
+
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('top-brands-and-new-shops')->toHtml(); ?>
+
+
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sell-with-us-online')->toHtml(); ?>
+
+
+
+
+        <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('payment-methods')->toHtml(); ?>
+
+
+    </div>
+    </div>
+</div>

@@ -1,0 +1,136 @@
+<div style="display: none" class="reponsive">
+    <h1 style="font-size: 25px !important;">MY ACCOUNT</h1>
+    <select style="width: 90%" onChange="window.location.href=this.value">
+        <option value="<?php echo $this->getUrl('customer/account/')?>">My Profile</option>
+        <option value="<?php echo $this->getUrl('wishlist/')?>">My Want List</option>
+        <option value="<?php echo $this->getUrl('checkout/cart/')?>">My Cart</option>
+        <option value="<?php echo $this->getUrl('sales/order/history/')?>" >My Orders</option>
+        <option value="<?php echo $this->getUrl('review/customer/')?>" >My Reviews</option>
+        <option value="<?php echo $this->getUrl('mprmasystem/index/')?>" selected>My RMA</option>
+    </select>
+</div>
+<div style="width: 94%; float: left" class="rma content ">
+    <div class="page-title">
+
+        <h1>My RMA</h1>
+    </div>
+<!--<div id="wk_rs_rma_history" class="pager">--><?php //echo Mage::helper("mprmasystem")->__("RMA History"); ?><!--</div>-->
+<?php echo $this->getPagerHtml(); 	?>
+<table style=" background-color: #eaeaeb; font-family: nimbus-sans-condensed; font-size: 18px; font-weight: bold" class="data-table rma_table">
+    <thead style="display: none">
+        <tr class="first last">
+            <th><?php echo Mage::helper("mprmasystem")->__("Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Order Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Product Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Price"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("RMA Status"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Date"); ?></th>
+            <th class="a-center"><?php echo Mage::helper("mprmasystem")->__("Action"); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+		<?php
+		$collection = $this->getCollection();
+		$totalcount = count($collection);
+		$count = 1;
+		if($totalcount >0 ){
+			foreach ($collection as $row) 	{
+				$order = Mage::getModel("sales/order")->load($row->getOrderid());		?>
+		    	<tr class="<?php if($count == 1)echo 'first ';if($count == $totalcount)echo 'last ';if($count % 2 == 0)echo 'even';else echo 'odd';?>">
+                    <!--<td><?php /*$date = date_create($row->getCreatedAt());echo 'DATE : '.date_format($date, "g:ia jS F Y"); */?></td>-->
+                    <td><?php echo 'DATE : '.Mage::helper('core')->formatDate($row->getCreatedAt(), 'medium', true); ?></td>
+		            <td style="display: none"><?php echo $row->getId(); ?></td>
+		            <td><?php echo 'ORDER NUMBER : '.$order->getIncrementId(); ?></td>
+		            <td style="display: none"><?php echo $row->getitemid(); ?></td>
+		            <td><?php echo 'PRICE : '.Mage::helper("core")->currency($order->getBaseGrandTotal(), true, false)?></td>
+		            <td>STATUS :
+	            		<?php 	$status_with_translation = Mage::helper("mprmasystem")->__($row->getStatus());
+	            				$status_without_translation = $row->getStatus();
+	            				if($status_without_translation == "Closed")
+	            					echo "<strong class='wk_rs_status_solve'>".Mage::helper("mprmasystem")->__("Closed")."</strong>";
+            					if($status_without_translation == "Cancelled")
+	            					echo "<strong class='wk_rs_status_cancel'>".$status_with_translation."</strong>";
+	            				if($status_without_translation == "Pending")
+	            					echo "<strong class='wk_rs_status_pending'>".$status_with_translation."</strong>";
+	            				if($status_without_translation == "Processing")
+	            					echo "<strong class='wk_rs_status_processing'>".$status_with_translation."</strong>";		?>
+		            </td>
+
+		            <td class="a-center last">
+		                <span class="nobr">
+		                	<a href="<?php echo $this->getUrl('mprmasystem/index/view/').'id/'.$row->getId()?>"><?php echo Mage::helper("mprmasystem")->__("View Details"); ?></a>
+		        		</span>
+						<?php   
+						if($status_without_translation != "Cancelled" && $status_without_translation != "Solved")	{	?>
+							<span class="separator">|</span>
+							<a onclick="return confirm('<?php echo Mage::helper("mprmasystem")->__("Are You sure"); ?> ?');" class="link-reorder" href="<?php echo $this->getUrl('mprmasystem/index/cancel/').'id/'.$row->getId()?>"><?php echo Mage::helper("mprmasystem")->__("Cancel"); ?></a>
+						<?php 
+						}?>
+		            </td>
+		        </tr>
+				<?php $count++;
+			}
+            ?>
+            <tr style="background-color: #fff">
+                <td colspan="7" style="border-bottom: 0">
+                    <a class="rma-button" href="<?php echo $this->getUrl('mprmasystem/index/new/order_id/0'); ?>">
+                        <?php echo Mage::helper("mprmasystem")->__("Request New RMA"); ?>
+                    </a>
+                </td>
+            </tr>
+        <?php
+		}else{?>
+			<tr class="first last ">
+	            <td colspan="7" class="a-center no-rma"><?php echo Mage::helper("mprmasystem")->__("No RMA field yet"); ?>.</td>
+		    </tr>
+		<?php	
+		}?>
+    </tbody>
+</table>
+
+
+
+</div>
+<div class="account-sidemenu">
+
+    <?php echo $this->getChildHtml('customer_account_navigation') ?>
+    <h3 style="font-size: 1em;">
+        MY ACCOUNT
+    </h3>
+    <ul>
+        <li>
+            <a  class="current" href="<?php echo $this->getUrl('customer/account/')?>">
+                My Profile
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('wishlist/')?>">
+                My Want List
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('checkout/cart/')?>">
+                My Cart
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('sales/order/history/')?>">
+                My Orders
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->getUrl('review/customer/')?>">
+                My Reviews
+            </a>
+        </li>
+        <li>
+            <a style="color: #999;" href="<?php echo $this->getUrl('mprmasystem/index/')?>">
+                My RMA
+            </a>
+        </li>
+        <li>
+            <a  href="<?php echo $this->getUrl('customer/account/logout/')?>">Logout</a>
+        </li>
+    </ul>
+
+</div>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <contactus_adminhtml_contactus_add>
+		<update handle="editor"/>
+    </contactus_adminhtml_contactus_add>
+    <contactus_adminhtml_contactus_index>
+		<update handle="editor"/>
+        <reference name="content">
+            <block type="contactus/adminhtml_contactus" name="contactus" />
+        </reference>
+    </contactus_adminhtml_contactus_index>
+</layout>

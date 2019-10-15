@@ -1,0 +1,41 @@
+<form method="get" id="filter-form">
+<div class="generic-box">
+<div class="content-header">
+<table>
+    <tr>
+        <td><h3 class="f-left">Add E-Mail</h3><td>
+        <td class="form-buttons"><button class="scalable back" name="back" type="submit" id="back" value="back"><span>back</span></button>
+        <button name="save" class="scalable" type="submit" id="save" value="save"><span><span><span>Save</span></span></span></button>
+        <td>
+    </tr>
+</table>
+</div>
+</div>
+
+<div>
+    <div class="hor-scroll">
+        <table cellspacing="10">
+            <tr>
+                <td width="200px"><span>Field</span></td><td style="text-align:left">
+                <select name="field">
+                <?php if(is_array($this->fieldselection) && count($this->fieldselection)>0): ?>
+                <?php foreach($this->fieldselection as $fv): ?>
+                    <option value="<?php echo $fv; ?>"><?php echo $fv; ?></option>
+                <?php endforeach; ?>
+                <?php else: ?>
+                    <option value="">--- NOT FOUND ---</option>
+                <?php endif; ?>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td><span>Match Value</span></td><td style="text-align:left"><input id="matchValue" name="matchValue" type="text" class="input-text" style="width:100%;" /></td>
+            </tr>
+            <tr>
+                <td><span>E-Mail</span></td><td style="text-align:left"><input id="email" name="email" type="text" class="input-text" style="width:100%;" /></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</form>
+

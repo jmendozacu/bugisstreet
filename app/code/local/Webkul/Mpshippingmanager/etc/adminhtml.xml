@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<config>
+	<menu>
+	  <marketplace>
+		<children>
+			<marketplace_ordermanage>
+					<title>Manage Order</title>
+					<action>adminhtml/mpshippingmanager_ordermanage</action>
+			</marketplace_ordermanage>
+		  <!--mpshippingmanagerbackend module="mpshippingmanager">
+			<title>Backend Page Title</title>
+			<sort_order>0</sort_order>
+			<action>mpshippingmanager/adminhtml_mpshippingmanagerbackend</action>
+		  </mpshippingmanagerbackend>
+		  <manage module="mpshippingmanager">
+		    <title>Manage Manage</title>
+			<sort_order>0</sort_order>
+			<action>mpshippingmanager/adminhtml_manage</action>
+		  </manage-->
+		</children>
+	  </marketplace>
+	</menu>
+	<acl>
+	  <resources>
+		<all>
+		  <title>Allow Everything</title>
+		</all>
+		<admin>
+		  <children>
+			<marketplace>
+			  <children>
+				  <marketplace_ordermanage>
+					<title>Manage Order</title>
+					<sort_order>20</sort_order>
+				  </marketplace_ordermanage>
+				  <!--mpshippingmanagerbackend translate="title">
+					<title>Backend Page Title</title>
+				  </mpshippingmanagerbackend>
+				  <manage translate="title">
+					<title>Manage Manage</title>
+					<sort_order>0</sort_order>
+				  </manage-->
+			  </children>
+			</marketplace>
+		  </children>
+		</admin>
+	  </resources>
+	</acl>
+	
+	
+	
+	
+	
+	
+	
+	
+    <!--menu>
+		<marketplace>            
+			<children>
+				<webkul_mpshipping>
+					<title>Mpshipping Manager</title>
+					<sort_order>5</sort_order>
+					<action>mpshipping/adminhtml_mpshipping</action>
+				</webkul_mpshipping>
+			</children>
+			<children>
+				<marketplace_ordermanage>
+					<title>Manage Order</title>
+					<action>mpshipping/adminhtml_ordermanage</action>
+				</marketplace_ordermanage>
+			</children>
+		</marketplace>
+	</menu>
+	<acl>
+        <resources>
+            <admin>
+                <children>                           
+					<marketplace>
+						<children>
+							<webkul_mpshipping>
+								<title>Mpshipping Module</title>
+								<action>mpshipping/adminhtml_mpshipping</action>
+							</webkul_mpshipping>
+						</children>
+						<children>
+							<marketplace_ordermanage>
+								<title>Manage Order</title>
+								<action>mpshipping/adminhtml_ordermanage</action>
+							</marketplace_ordermanage>
+						</children>							
+					</marketplace>	
+                </children>
+            </admin>
+        </resources>
+    </acl-->
+</config>

@@ -1,0 +1,39 @@
+<?php $magentoCurrentUrl = Mage::helper('core/url')->getCurrentUrl(); ?>
+<li  class="wk_rmalink <?php echo (strpos($magentoCurrentUrl,'seller/allrma'))? "current":"";?>">
+	<?php 
+	if(strpos($magentoCurrentUrl,'seller/allrma')){ ?>
+		<strong><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></strong>
+	<?php 
+	}else{ ?>
+		<a href="<?php echo $this->getUrl('mprmasystem/seller/allrma'); ?>"><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></a>
+	<?php 
+	} ?>
+</li>
+<div class="block block-account" id="wkrma_hide">
+	<div class="block-content">
+		<ul>
+			<li class="last"><a href="<?php echo $this->getUrl('mprmasystem/seller/allrma');?>"><?php echo Mage::helper('mprmasystem')->__('All RMA') ?></a></li>
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+	if (typeof jQuery == 'undefined')	{
+		 document.write(unescape("%3Cscript src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+	}
+</script>
+<script type="text/javascript">	
+$wk_jq=jQuery.noConflict();
+(function($wk_jq){
+	$wk_jq(function(){
+		var rmalink = $wk_jq('.wk_rmalink');		
+		rmalink.hover(
+			function (){ $wk_jq('#wkrma_hide').css('display','block');},
+			function(){ $wk_jq('#wkrma_hide').css('display','none'); }
+		);			
+		$wk_jq('#wkrma_hide').hover(
+			function(){ $wk_jq(this).show(); },
+			function(){ $wk_jq(this).hide(); }
+		);
+	});
+})($wk_jq);
+</script>

@@ -1,0 +1,80 @@
+/**
+ * @category    Mana
+ * @package     Mana_Filters
+ * @copyright   Copyright (c) http://www.manadev.com
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+/*.m-filter-item-list .m-selected-filter-item { color: red; }*/
+.m-filter-popup .m-selected-ln-item > a { font-weight: bold; text-decoration: none; }
+.block-layered-nav .btn-remove { margin-top: 3px; }
+.block-layered-nav .currently li { position: relative; padding: 6px 24px 6px 10px; }
+.block-layered-nav .currently .btn-remove { margin-top: 0; position: absolute; right: 4px; top: 9px; margin-left: 0; }
+.block-layered-nav dt { position: relative; zoom: 1; left: 0; top: 0; }
+.mb-top-layered-navigation{
+    /*display: none;*/
+}
+.filter_area{
+    display: block;
+    float: left;
+    height: auto;
+    min-height: 150px;
+    position: relative;
+    width: 23%;
+    padding: 0 8px;
+}
+.filter_area>dt{
+    border-bottom: 1px solid #ccc;
+    color: #333;
+    display: block;
+    /*font-size: 0.8em;*/
+    height: 30px;
+    text-transform: uppercase;
+    width: 100%;
+}
+.col-main .block-layered-nav dl {
+    float: left;
+    padding: 0 15px;
+    width: 100%;
+}
+.m-filter-item-list > li
+{
+    background: #d9d9d9 none repeat scroll 0 0;
+    color: #333;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size: 0.9em;
+    margin: 0 5px 5px 0;
+    min-width: 19px;
+    overflow: hidden;
+    padding: 8px 8px 8px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: middle;
+    width: auto;
+}
+.block-layered-nav dl dd ol > li > span, .block-layered-nav dl dd ol > li > a {
+    display: inline!important;
+    /*padding: 0px!important;*/
+    color: #333;
+}
+.filter_area .m-filter-item-list > li.m-selected-ln-item{
+    background: #000;
+    color: #fff;
+}
+.filter_area .m-filter-item-list > li:hover{
+    background: #000;
+    color: #fff;
+}
+.filter_area .m-filter-item-list > li:hover a{
+    background: #000;
+    color: #fff;
+}
+.filter_area .m-filter-item-list > li.m-selected-ln-item a{
+    color: #fff;
+}
+.filter_area .m-color{
+    border-radius: 50%!important;
+    border: 1px solid #bfbfbf;
+}

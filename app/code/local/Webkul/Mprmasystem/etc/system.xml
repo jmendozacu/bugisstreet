@@ -1,0 +1,52 @@
+<?xml version="1.0"?> 
+<config>
+    <tabs>
+        <webkul>
+            <label>Marketplace</label>
+            <sort_order>1</sort_order>
+        </webkul>
+    </tabs>
+    <sections>
+        <mprmasystem>
+            <label>RMA System</label>
+            <tab>webkul</tab>
+            <sort_order>130</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>              
+                <mprmasystem>
+                    <label>Parameters</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>                    
+                    <fields>
+                        <policy translate="label tooltip">
+                            <label>Enter Return Policy Description</label>
+                            <frontend_type>editor</frontend_type>
+                            <frontend_model>mprmasystem/adminhtml_system_config_editor</frontend_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <tooltip>Please Enter Return Policy in html format that is displayed in Front when someone is Requesting for return</tooltip>
+                        </policy>
+                    </fields>
+                    <fields>
+                        <notification translate="label tooltip">
+                            <label>Enable RMA Message Notification to Admin</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </notification>
+                    </fields>
+                </mprmasystem>
+            </groups>                        
+        </mprmasystem>
+    </sections>
+</config>

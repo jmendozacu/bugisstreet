@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<!--[if lt IE 7 ]>
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+
+<head>
+    <?php echo $this->getChildHtml('head') ?>
+</head>
+<body<?php echo $this->getBodyClass() ? ' class="' . $this->getBodyClass() . '"' : '' ?>>
+<?php echo $this->getChildHtml('after_body_start') ?>
+<div class="wrapper">
+    <?php echo $this->getChildHtml('global_notices') ?>
+    <div class="page">
+        <?php echo $this->getChildHtml('header') ?>
+        <div class="main-container col2-left-layout">
+            <div class="main">
+                <?php echo $this->getChildHtml('breadcrumbs') ?>
+                <?php // This left_first block will display above the main content on smaller viewports ?>
+                <?php if ($_leftContent = $this->getChildHtml('left_first')): ?>
+
+                <?php endif; ?>
+                <div class="col-left sidebar">
+
+                    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('page/left-content.phtml')->toHtml(); ?>
+                </div>
+                <div class="mobilenav">
+                    <div>
+                        <a class="nav-close"></a>
+                    </div>
+                    <div>
+                        <form id="search_mini_form"
+                              action="<?php echo $this->getUrl("catalogsearch/result", array('_secure' => true)) ?>"
+                              method="get">
+                            <input id="search" type="text" name="q" value="" class="input-text" maxlength="128"
+                                   placeholder="Search"/>
+
+                        </form>
+                    </div>
+                    <div>
+                        <a class="main-cat" href="<?php echo $this->getUrl('checkout/cart/') ?>">Your Shopping Cart</a>
+                    </div>
+                    <div>
+                        <a class="main-cat" href="<?php echo $this->getUrl('#') ?>">Home</a>
+                    </div>
+
+                    <?php echo $this->getLayout()->createBlock('page/html_topmenu')->setTemplate('page/html/topmenu.phtml')->toHtml(); ?>
+
+                    <div class="fine">
+                        <p><a href="<?php echo $this->getUrl('seller/') ?>"
+                              style="color:#ea202d;font-weight:bold;font-size:1.2em;">Sell with us online</a></p>
+
+                        <p><a href="<?php echo $this->getUrl('customer/account/create/') ?>"
+                              style="color:#ea202d;font-weight:bold;font-size:1.2em;">Sign up for latest updates</a></p>
+                    </div>
+                    <div class="fine">
+                        <ul>
+                            <li><a href="<?php echo $this->getUrl('aboutus/') ?>">About Us</a></li>
+                            <li><a href="<?php echo $this->getUrl('contacts/') ?>">Contact Us</a></li>
+                            <li><a href="<?php echo $this->getUrl('faq/') ?>">FAQ</a></li>
+                            <li><a href="<?php echo $this->getUrl('terms-of-use/') ?>">Terms of Use</a></li>
+                            <li><a href="<?php echo $this->getUrl('privacy-policy/') ?>">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="fine">
+                        <b>&copy;2014 - 2016 Bugis Street</b>
+                    </div>
+                </div>
+                <div id="header-currency" class="mobilecurrency topnav-drop currency-content">
+                    <h3>Change Currency</h3>
+                    <?php //echo $this->getChildHtml('currency_switcher') ?>
+                    <?php echo $this->getLayout()->createBlock('directory/currency')->setTemplate('directory/currency.phtml')->toHtml(); ?>
+                </div>
+                <!--19aug-->
+                <div class="col-main">
+                    <?php echo $this->getChildHtml('global_messages') ?>
+
+                    <?php if ($_sellerContent = $this->getChildHtml('seller_content')): ?>
+                        <div class="seller_content"><?php echo $_sellerContent; ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <?php echo $this->getChildHtml('content') ?>
+                </div>
+                <div class="col-left sidebar"><?php echo $this->getChildHtml('left') ?></div>
+            </div>
+        </div>
+        <?php echo $this->getChildHtml('footer_before') ?>
+        <?php echo $this->getChildHtml('footer') ?>
+        <?php echo $this->getChildHtml('global_cookie_notice') ?>
+        <?php echo $this->getChildHtml('before_body_end') ?>
+    </div>
+</div>
+<?php echo $this->getAbsoluteFooter() ?>
+</body>
+</html>

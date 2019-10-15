@@ -1,0 +1,509 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo $this->getSkinUrl('css/star-rating.min.css'); ?>" media="all" rel="stylesheet" type="text/css" />
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+<script src="<?php echo $this->getSkinUrl('js/star-rating.min.js'); ?>" type="text/javascript"></script>
+<link  href="<?php echo $this->getSkinUrl('css/jquery.fancybox.css'); ?>" media="all" rel="stylesheet" type="text/css" >
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/jquery.fancybox.pack.js'); ?>"></script>
+
+<div style="display: none" class="reponsive">
+    <h1 style="font-weight: bold; font-family: nimbus-sans-condensed, Helvetica, Arial, sans-serif; font-size: 25px !important;">MY ACCOUNT</h1>
+    <select style="width: 90%" onChange="window.location.href=this.value">
+        <option value="<?php echo $this->getUrl('customer/account/')?>" selected>My Profile</option>
+        <option value="<?php echo $this->getUrl('wishlist/')?>" >My Want List</option>
+        <option value="<?php echo $this->getUrl('checkout/cart/')?>">My Cart</option>
+        <option value="<?php echo $this->getUrl('sales/order/history/')?>">My Orders</option>
+        <option value="<?php echo $this->getUrl('review/customer/')?>" selected>My Reviews</option>
+        <option value="<?php echo $this->getUrl('mprmasystem/index/')?>" >My RMA</option>
+    </select>
+</div>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl("js/jquery.quick.pagination.js") ?>"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.review-pagination').quickPager({pageSize:"10",pagerLocation:"after"});
+    });
+
+</script>
+
+
+<div style="width: 80%; float: left" class="dashboard content dash_reponsive test_review">
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
+    <div class="page-title">
+        <h1 style="padding-bottom: 25px; font-family: nimbus-sans-condensed, Helvetica, Arial, sans-serif; font-size: 51px; font-weight: bold"><?php echo $this->__('My Reviews') ?></h1>
+        <p style="padding-top: 5px; border-top: 1px solid #CCC; font-size: 14px !important;"><?php echo $this->__("How was your shopping experience with us? Good or bad, we'd like to hear your thoughts.") ?></p>
+    </div>
+
+    <!-- Add custom review -->
+    <?php
+    $helper = Mage::helper('marketplace');
+
+    $orders = Mage::getResourceModel('sales/order_collection')
+        ->addFieldToSelect('*')
+        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+        /*->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))*/
+        ->addFieldToFilter('state', 'complete')
+        ->setOrder('created_at', 'desc')
+    ;
+
+    $this->setOrders($orders);
+    $_orders = $this->getOrders();
+    $i=0;
+    ?>
+    <ul class="review-pagination">
+    <?php
+    foreach ($_orders as $_order){
+
+        $_order->getAllVisibleItems();
+        $orderItems = $_order->getItemsCollection();
+
+        /* $_order = $this->getLayout()->createBlock('sales/order_items')->getOrder();*/
+        /*$_items = $_order->getItemsCollection();*/
+
+        foreach ($orderItems as $_item):
+            //if($_item->getProductType() == 'configurable') {
+                /*echo "Item Name: " . $_item->getProductId() . "<br/>";
+                echo "Item Name: " . $_item->getName() . "<br/>";*/
+                $users = Mage::getModel('marketplace/product')->getCollection()->addFieldToFilter('mageproductid', array('eq' => $_item->getProductId()));
+                foreach ($users as $value) {
+                    $products = Mage::getModel('catalog/product')->load($_item->getProductId());
+                   // echo $products->getId();
+                    //
+                    $reviews = Mage::getModel('review/review')->getResourceCollection()
+                        ->addStoreFilter(Mage::app()->getStore()->getId())
+                        ->addEntityFilter('product', $_item->getProductId())
+                        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                        ->addFieldToFilter('order_id',$_order->getEntityId() )
+                        //->addStatusFilter(Mage_Review_Model_Review::STATUS_APPROVED)
+                        ->setDateOrder()
+                        ->addRateVotes();
+               $sellers = Mage::getModel('marketplace/feedback')->getCollection()
+                   //->addStoreFilter(Mage::app()->getStore()->getId())
+                   ->addFieldToFilter('product_id', $products->getId())
+                   ->addFieldToFilter('order_id',$_order->getEntityId());
+
+//
+                    $count = count($sellers);
+                    $sellerid = $value->getUserid();
+
+                    $seller = Mage::getModel('customer/customer')->load($sellerid);
+                    $sellername = $seller->getName();
+
+                    $action = Mage::getUrl('review/product/post', array('_secure'=>true, 'id' => $_item->getProductId()));
+                    //$action = Mage::getUrl('review/product/post', array('id' => $_item->getProductId()));
+                    $customerSession = Mage::getSingleton('customer/session');
+
+                    $data = Mage::getSingleton('review/session')->getFormData(true);
+                    $data = new Varien_Object($data);
+
+                    // add logged in customer name as nickname
+                    if (!$data->getNickname()) {
+                        $customer = $customerSession->getCustomer();
+                        if ($customer && $customer->getId()) {
+                            $data->setNickname($customer->getFirstname());
+                        }
+                    }
+
+                    $this->setAllowWriteReviewFlag($customerSession->isLoggedIn() || Mage::helper('review')->getIsGuestAllowToWrite());
+                    if (!$this->getAllowWriteReviewFlag) {
+                        $this->setLoginLink(
+                            Mage::getUrl('customer/account/login/', array(
+                                    Mage_Customer_Helper_Data::REFERER_QUERY_PARAM_NAME => Mage::helper('core')->urlEncode(
+                                        Mage::getUrl('*/*/*', array('_current' => true)) .
+                                        '#review-form')
+                                )
+                            )
+                        );
+                    }
+
+                    /*if ($this->getAllowWriteReviewFlag()) {*/
+                    ?>
+                    <?php if($count==0): ?>
+                        <?php $i++; //echo $i.'<br>';echo $count; ?>
+                        <li class="feedbackWrap">
+                            <div class="reviewHeading">
+                                <b><?php echo $this->__('REVIEW YOUR ITEMS') ?></b>
+
+                            <span class="orderNo">
+                                <b><?php echo $this->__('Order Number') ?></b>
+                                <?php echo $_order->getRealOrderId() ?>
+                            </span>
+                            </div>
+
+
+                            <div class="fieldset wk_mp_fieldset">
+                                <div class="review-form">
+                                <form  method="post"
+                                       action="<?php echo $this->getUrl('marketplace/seller/newfeedback', array('_secure'=>true)) ?>"
+                                       enctype="multipart/form-data" id="review-form" >
+                                    <input type="hidden" name="form_key"
+                                           value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>"/>
+                                    <fieldset>
+                                        <?php
+                                        $loggeduserid = Mage::getSingleton('customer/session')->getCustomer()->getEntityid();
+                                        /*var_dump($loggeduserid);*/
+                                        $loggedcustomer = Mage::getModel('customer/customer')->load($loggeduserid);
+                                        /*var_dump($sellerid);*/
+                                        ?>
+
+                                        <input type="hidden" class="proownerid" name="proownerid" id="proownerid"
+                                               value="<?php echo $sellerid; ?>" title="proownerid"/>
+                                        <input type="hidden" name="profileurl" value="<?php echo $seller->getProfileurl(); ?>"/>
+
+                                        <!--<script type="text/javascript">decorateTable('product-review-table')</script>-->
+
+                                        <p class="new-buy"><?php echo $this->__('What do you think of your new buys?') ?></p>
+                                        <div>
+                                            <div class="feedbackImg">
+                                                <img src="<?php echo $this->helper('catalog/image')->init($products, 'small_image')->resize(480, 480); ?>" width="129"/>
+                                            </div>
+                                            <div class="item-form">
+                                                <ul class="form-list" >
+                                                    <li>
+                                                        <label for="review_field"><?php echo $this->__('Item') ?></label>
+                                                        <div class="input-box">
+                                                            <?php echo $_item->getName() ?>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <label><?php echo $helper->__('Your Seller') ?>
+                                                        </label>
+                                                        <div class="input-box">
+                                                            <?php echo $sellername; ?>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <label class="required"
+                                                               for="summary_field"><em>*</em><?php echo $helper->__('Review Title') ?>
+                                                        </label>
+
+                                                        <div class="input-box">
+                                                            <input type="text" value=""
+                                                                   class="input-text  widthinput summary_field required-entry"
+                                                                   id="summary_field2" name="feedsummary">
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <label class="required"
+                                                               for="review_field"><em>*</em><?php echo $helper->__('Your Review') ?></label>
+
+                                                        <div class="input-box">
+                                                        <textarea class=" widthinput review_field required-entry" rows="3" cols="5"
+                                                                  id="review_field2" name="feedreview"></textarea>
+                                                        </div>
+                                                    </li>
+                                                    <li class="inline-label" style="visibility: hidden">
+                                                        <div class="input-box">
+                                                            <input type="hidden" name="order_id" id="order_field"
+                                                                   class="input-text "
+                                                                   value="<?php echo $_order->getEntityId(); ?>"/>
+                                                        </div>
+                                                    </li>
+                                                    <li class="inline-label" style="visibility: hidden">
+                                                        <div class="input-box">
+                                                            <input type="hidden" name="product_id" id="order_field"
+                                                                   class="input-text"
+                                                                   value="<?php echo  $products->getId();; ?>"/>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="rateHeading">
+                                            <b><?php echo $this->__('RATE YOUR SELLER') ?></b>
+                                        </div>
+                                        <span id="input-message-box">Was <?php echo $sellername;?> an awesome seller? Rate them with stars!</span>
+
+                                        <table id="product-review-table" class="data-table">
+                                            <colgroup>
+                                                <col>
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                            </colgroup>
+
+                                            <tbody>
+                                            <tr>
+                                                <th><?php echo $helper->__('Price') ?></th>
+                                                <td class="price-review" style="width: 80%"><input type="text" id="rating-input" name="feedprice" class="rating form-control hide required-entry"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th><?php echo $helper->__('Value') ?></th>
+                                                <td class="value" style="width: 80%"><input type="text" id="rating-input2" name="feedvalue" class="rating form-control hide required-entry"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th><?php echo $helper->__('Quality') ?></th>
+                                                <td class="quality" style="width: 80%"><input type="text" id="rating-input3" name="feedquality" class="rating form-control hide required-entry"/></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+
+                                    </fieldset>
+                                    <div class="buttons-set">
+                                        <button class="button" title="<?php echo $helper->__('Submit Review') ?>" type="submit"><span><span><?php echo $helper->__('Submit Review') ?></span></span></button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </li>
+                    <?php else: ?>
+                        <?php //echo $i.'<br>';echo $count;?>
+                        <div class="feedbackWrap">
+                            <div class="reviewHeading">
+                                <b><?php echo $this->__('REVIEW YOUR ITEMS') ?></b>
+
+                            <span class="orderNo">
+                                <b><?php echo $this->__('Order Number') ?></b>
+                                <?php echo $_order->getRealOrderId() ?>
+                            </span>
+                            </div>
+                            <?php  foreach($sellers as $seller):?>
+                            <div class="review-form">
+                                    <p class="new-buy"><?php echo $this->__('What do you think of your new buys?') ?></p>
+                                    <div>
+                                        <div class="feedbackImg">
+                                            <img src="<?php echo $this->helper('catalog/image')->init($products, 'small_image')->resize(129, 129); ?>" />
+                                        </div>
+                                        <div class="item-form">
+                                            <ul class="form-list">
+                                                <li>
+                                                    <label for="review_field"><?php echo $this->__('Item') ?></label>
+                                                    <div class="input-box">
+                                                        <?php echo $_item->getName() ?>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <label><?php echo $helper->__('Your Seller') ?>
+                                                    </label>
+                                                    <div class="input-box">
+                                                        <?php echo $sellername; ?>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <label class="required"
+                                                           for="summary_field"><em>*</em><?php echo $helper->__('Review Title') ?>
+                                                    </label>
+
+                                                    <div class="input-box">
+                                                        <input type="text" value="<?php echo $seller->getFeedsummary() ?>"
+                                                               class="input-text  widthinput summary_field" disabled="true"
+                                                               id="summary_field2" name="feedsummary">
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <label class="required"
+                                                           for="review_field"><em>*</em><?php echo $helper->__('Your Review') ?></label>
+
+                                                    <div class="input-box">
+                                                    <textarea class=" widthinput review_field" rows="3" cols="5" disabled="true"
+                                                              id="review_field2" name="feedreview"><?php echo $seller->getFeedreview() ?></textarea>
+                                                    </div>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+
+                            </div>
+                            <?php //endforeach; ?>
+                            <div class="rateHeading">
+                                <b><?php echo $this->__('RATE YOUR SELLER') ?></b>
+                            </div>
+                            <?php   //foreach($sellers as $seller): ?>
+                            <div class="fieldset wk_mp_fieldset">
+                                    <fieldset>
+                                        <span id="input-message-box">Was <?php echo $sellername;?> an awesome seller? Rate them with stars!</span>
+                                        <table id="product-review-table" class="data-table">
+                                            <colgroup>
+                                                <col>
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                                <col width="1">
+                                            </colgroup>
+                                            <thead style="display: none">
+                                            <tr class="first last">
+                                                <th>&nbsp;</th>
+                                                <th><span class="star">1 <?php echo $helper->__('star') ?></span></th>
+                                                <th><span class="star">2 <?php echo $helper->__('stars') ?></span></th>
+                                                <th><span class="star">3 <?php echo $helper->__('stars') ?></span></th>
+                                                <th><span class="star">4 <?php echo $helper->__('stars') ?></span></th>
+                                                <th><span class="star">5 <?php echo $helper->__('stars') ?></span></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <th><?php echo $helper->__('Price') ?></th>
+                                                <td class="price" style="width: 80%"><input disabled="true" id="rating-input" type="number"  class="rating form-control hide" data-step="1" value="<?php  echo $seller['feedprice']; ?>"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><?php echo $helper->__('Value') ?></th>
+                                                <td class="value"><input disabled="true" id="rating-input2" type="number"  class="rating form-control hide" data-step="1" value="<?php  echo $seller['feedvalue']; ?>"></td>
+                                            </tr>
+                                            <tr>
+                                                <th><?php echo $helper->__('Quality') ?></th>
+                                                <td class="quality"><input disabled="true" id="rating-input3" type="number"  class="rating form-control hide" data-step="1" value="<?php  echo $seller['feedquality']; ?>"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </fieldset>
+
+
+                            </div>
+                            <?php endforeach; ?>
+
+                        </div>
+                    <?php endif; ?>
+                <?php
+                }
+            //}
+
+        endforeach;
+    }
+    ?>
+    </ul>
+    <?php if($i==0):?>
+        <p style="font-weight: bold; margin-top: 30px; border-bottom: 1px solid #CCC;">No Pending Reviews</p>
+    <?php endif;?>
+    <!-- end custom review -->
+
+
+
+
+</div>
+<div class="account-sidemenu" style="margin-top: -45px">
+
+    <?php echo $this->getChildHtml('customer_account_navigation') ?>
+    <h3 style="font-family: nimbus-sans-condensed, Helvetica, Arial, sans-serif; font-size: 1.4em; font-weight: bold">
+        MY ACCOUNT
+    </h3>
+    <ul>
+        <li>
+            <a  style="font-size: 14px" class="current" href="<?php echo $this->getUrl('customer/account/')?>">
+                My Profile
+            </a>
+        </li>
+        <li>
+            <a  style="font-size: 14px" href="<?php echo $this->getUrl('wishlist/')?>">
+                My Want List
+            </a>
+        </li>
+        <li>
+            <a style="font-size: 14px" href="<?php echo $this->getUrl('checkout/cart/')?>">
+                My Cart
+            </a>
+        </li>
+        <li>
+            <a  style="font-size: 14px" href="<?php echo $this->getUrl('sales/order/history/')?>">
+                My Orders
+            </a>
+        </li>
+        <li>
+            <a style="color: #999; font-size: 14px" href="<?php echo $this->getUrl('review/customer/')?>">
+                My Reviews
+            </a>
+        </li>
+        <li>
+            <a  style="font-size: 14px" href="<?php echo $this->getUrl('mprmasystem/index/')?>">
+                My RMA
+            </a>
+        </li>
+        <li>
+            <a  style="font-size: 14px"  href="<?php echo $this->getUrl('customer/account/logout/')?>">Logout</a>
+        </li>
+    </ul>
+
+</div>
+<!--<iframe src="http://project.local/newbso/index.php/review/product/post/id/31/" name="iframeName" width="320" height="480"></iframe>-->
+<!--<div class="buttons-set">-->
+<!--    <p class="back-link"><a href="--><?php //echo $this->escapeUrl($this->getBackUrl()) ?><!--"><small>&laquo; </small>--><?php //echo $this->__('Back') ?><!--</a></p>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery(".rating").val("");
+        jQuery(".price-review #rating-input").rating(
+            {
+                min: 0,
+                max: 5,
+                step: 1,
+                size: 'lg',
+                showClear: false
+            }
+        );
+        jQuery(".value #rating-input2").rating(
+            {
+                min: 0,
+                max: 5,
+                step: 1,
+                size: 'lg',
+                showClear: false
+            }
+        );
+        jQuery(".quality #rating-input3").rating(
+            {
+                min: 0,
+                max: 5,
+                step: 1,
+                size: 'lg',
+                showClear: false
+            }
+        );
+
+        jQuery('.price #rating-input').on('rating.change', function(event, value, caption) {
+            console.log(value);
+            console.log(caption);
+        });
+
+
+    });
+    function doPopup(source)
+    {
+        var a111 = source.name;
+        var a2 = "."+ a111;
+        jQuery(a2).submit();
+       // document.getElementById("review-form").submit();//it submit the first form
+        var popup = window.open('','popup',"directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=5,height=5, left=100000, top=100000");
+        //var popup = window.open("", "iframeName");
+        setTimeout(function(){
+            document.getElementById(a111).click();//it submit the 2nd form
+            popup.close();
+        }, 100);
+
+    }
+
+    var dataForm = new VarienForm("review-form");
+
+</script>

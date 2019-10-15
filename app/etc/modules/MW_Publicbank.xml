@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MW_Publicbank>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Payment/>
+            </depends>
+        </MW_Publicbank>
+    </modules>
+</config>

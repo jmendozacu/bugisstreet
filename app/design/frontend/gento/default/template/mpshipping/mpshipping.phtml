@@ -1,0 +1,84 @@
+<form action="<?php echo $this->getUrl('mpshipping/shipping') ?>" method="post" enctype="multipart/form-data" >
+	<div class="page-title">
+		<h1 style="float:left;"><?php echo Mage::helper('marketplace')->__('Shipping Manager') ?></h1>
+		<button class="button wk_mp_btn" title="<?php echo Mage::helper('marketplace')->__('Submit') ?>" type="submit" id="save_butn">
+			<span><span><?php echo Mage::helper('marketplace')->__('Upload') ?></span></span>
+		</button>
+	</div>
+	<div class="wk_mp_design">
+		<div class="block block-account">	
+			<div class="block-title">	
+				<strong><span><h4><?php echo Mage::helper('marketplace')->__('Upload Shipping Detail') ?></h4></span></strong>
+			</div>
+		</div>
+		<div class="fieldset wk_mp_fieldset">
+			<a class="file-link" style="float:right" href="<?php echo Mage::getBaseUrl('media'); ?>shippinginfo.csv"><?php echo $this->__('Download sample file');?></a>
+			<div class="wk_clear"></div>
+			<ul class="form-list" id="wk_bodymain">
+				<?php echo $this->getMessagesBlock()->getGroupedHtml();?>
+				<li>
+					<label><?php echo Mage::helper('marketplace')->__('CSV File') ?>:</label>
+					<div class="input-box">
+						<input type="file" name="shippingfile"/>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</form>
+<?php 
+	$partnerid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+	$shippingcollection=Mage::getModel('mpshipping/mpshipping')->getCollection()->addFieldToFilter('partner_id',array('eq'=>$partnerid));
+?>
+<?php if(count($shippingcollection)>0): ?>
+	<div class="wk_mp_design">
+		<div class="fieldset wk_mp_fieldset">
+			<div class="grid">
+				<div class="hor-scroll">
+					<table cellspacing="0" class="border wk_mp_list_table wk_mp_list_container_table"  >
+						<thead>
+							<tr class="wk_content">
+								<th class="wk_first_td">
+									<span class="label name"><?php echo Mage::helper('mpshipping')->__('Country Code');?></span>
+								</th>
+								<th>
+									<span class="label qty"><?php echo Mage::helper('mpshipping')->__('Region Code');?></span>
+								</th>    	
+								<th>
+									<span class="label"><?php echo Mage::helper('mpshipping')->__('Weight');?></span>
+								</th>	
+								<th>
+									<span class="label"><?php echo Mage::helper('mpshipping')->__('ZIP');?></span>
+								</th>
+								<th>
+									<span class="label"><?php echo Mage::helper('mpshipping')->__('Price');?></span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($shippingcollection as $shipping): ?>
+								<tr class="wk_row_view ">
+									<td>
+										<span class="label"><?php echo $shipping->getDestCountryId();?></span>	
+									</td>
+									<td>
+										<span class="label"><?php echo $shipping->getDestRegionId();?></span>	
+									</td>
+									<td>
+										<span class="label"><?php echo round($shipping->getWeightFrom(),2)." - ".round($shipping->getWeightTo(),2);?></span>	
+									</td>
+									<td>
+										<span class="label"><?php echo $shipping->getDestZip()." to ".$shipping->getDestZipTo();?></span>	
+									</td>
+									<td>
+										<span class="label"><?php echo Mage::app()->getStore()->formatPrice($shipping->getPrice());?></span>
+									</td>
+								</tr>
+							<?php endforeach ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endif; ?>

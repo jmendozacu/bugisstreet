@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * @category   Webkul
+ * @package    Webkul_Mpshipping
+ * @author     Webkul
+ */
+ -->
+<config>
+    <modules>
+        <Webkul_Mpshipping>
+            <active>true</active>
+            <codePool>local</codePool>
+			<depends> 
+				<Webkul_Marketplace/>
+				<Webkul_Mpshippingmanager/>
+			</depends>
+        </Webkul_Mpshipping>
+    </modules>
+</config> 

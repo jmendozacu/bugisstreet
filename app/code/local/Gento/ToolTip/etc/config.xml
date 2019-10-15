@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Gento_ToolTip before="Mage_Adminhtml">Gento_ToolTip_Adminhtml</Gento_ToolTip>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>

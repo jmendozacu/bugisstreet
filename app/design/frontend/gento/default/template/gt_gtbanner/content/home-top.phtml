@@ -1,0 +1,26 @@
+<div class="flexslider">
+  <ul class="slides">
+  <?php $collection = $this->_getCollection(); ?>
+    <?php if (count($collection) > 0) : ?>
+      <?php foreach ($collection as $item) : ?>
+        <?php $_imageList = $item->getImageList(); ?>
+        <?php if (is_array($_imageList) and sizeof($_imageList) > 0) : ?>
+        	<?php foreach ($_imageList as &$_item) : ?>
+            <li><a href="<?php echo $_item['label']; ?>">
+            <img src="<?php echo $this->helper('gtbanner/image')->init($_item['file'])->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(TRUE)->resize(563,551); ?>" width="563" height="551" /></a></li>
+          <?php endforeach ?>
+        <?php endif; ?>
+      <?php endforeach ?>
+    <?php endif; ?>
+  </ul>
+</div>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/jquery.flexslider.js')?>"></script>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery('.flexslider').flexslider({
+      animation: "fade",
+      controlNav: true,
+      slideshow: true   
+    });
+  });
+</script>

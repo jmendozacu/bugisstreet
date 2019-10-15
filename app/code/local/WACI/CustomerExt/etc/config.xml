@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <WACI_CustomerExt>
+            <version>0.1.0</version>
+        </WACI_CustomerExt>
+    </modules>
+    <global>
+        <models>
+            <WACI_CustomerExt>
+                <class>WACI_CustomerExt_Model</class>
+            </WACI_CustomerExt>
+        </models>
+        <template>
+            <email>
+                <!-- regisration success -->
+                <notify_new_customer>
+                    <label>Admin notification on registration success</label>
+                    <file>notify_new_customer.html</file>
+                    <type>html</type>
+                </notify_new_customer>
+            </email>
+        </template>
+    </global>
+    <frontend>
+        <events>
+            <!-- regisration success -->
+            <customer_register_success>
+                <observers>
+                    <WACI_CustomerExt>
+                        <type>model</type>
+                        <class>WACI_CustomerExt/Observer</class>
+                        <method>customer_register_success</method>
+                    </WACI_CustomerExt>
+                </observers>
+            </customer_register_success>
+        </events>
+    </frontend>
+</config>

@@ -1,0 +1,354 @@
+<style type="text/css">	
+	#wk_rs_order_loader {
+	    right: 60px;
+	    top: 47px;
+	}
+</style>
+<?php	$id = $this->getRequest()->getParam("id");
+		$this_rma = $this->getRmaDetails($id);
+		$order = Mage::getModel("sales/order")->load($this_rma->getOrderid());			?>
+	<div class="dashboard">
+        <div class="page-title">
+            <h1><?php echo Mage::helper("mprmasystem")->__("My Requested RMA Details"); ?></h1>
+        </div>
+		<div class="box-account box-info">
+	        <div class="box-head">
+	            <!--<h2><?php /*echo Mage::helper("mprmasystem")->__("My Requested RMA Details"); */?></h2>-->
+	            <!--<span><?php /*$date = date_create($this_rma->getCreatedAt());	echo date_format($date, "g:ia \o\\n l jS F Y"); */?></span>-->
+                <span><?php echo Mage::helper('core')->formatDate($this_rma->getCreatedAt(), 'long', true); ?></span>
+	        </div>
+			<div class="col2-set">
+			    <div class="col-1">
+			        <div class="box">
+			            <div class="box-title">
+			                <h3><?php echo Mage::helper("mprmasystem")->__("Order Id"); ?></h3>			                
+			            </div>
+			            <div class="box-content">
+			                <p><a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/myorderhistory/'); ?>">#<?php echo $order->getIncrementId();?></a></p>
+			            </div>
+			        </div>
+			    </div>
+		        <div class="col-2">
+			        <div class="box">
+			            <div class="box-title">
+			                <h3><?php echo Mage::helper("mprmasystem")->__("Status"); ?></h3>
+			            </div>
+			            <div class="box-content">
+			                <strong><?php echo Mage::helper("mprmasystem")->__("RMA Status"); ?> : </strong>
+			                <p style="display:inline;margin-left:10px;">
+			                	<?php 	$status_with_translation = Mage::helper("mprmasystem")->__($this_rma->getStatus());
+			            				$status_without_translation = $this_rma->getStatus();
+			            				if($status_without_translation == "Closed")
+			            					echo "<span class='wk_rs_status_solve'>".Mage::helper("mprmasystem")->__("Closed")."</span>";
+		            					if($status_without_translation == "Cancelled")
+			            					echo "<span class='wk_rs_status_cancel'>".$status_without_translation."</span>";
+			            				if($status_without_translation == "Pending")
+			            					echo "<span class='wk_rs_status_pending'>".$status_without_translation."</span>";
+			            				if($status_without_translation == "Processing")
+			            					echo "<span class='wk_rs_status_processing'>".$status_without_translation."</span>";		?>
+			                </p>
+			            </div>
+			            <div class="box-content">
+			                <strong><?php echo Mage::helper("mprmasystem")->__("My Status"); ?> : </strong>
+			                <p style="display:inline;margin-left:10px;">
+								<?php
+                                        /*if($this_rma->getSellerstatus() == 0)
+			                				echo Mage::helper("mprmasystem")->__("Not Received Package yet");
+			                			if($this_rma->getSellerstatus() == 1)
+			                				echo Mage::helper("mprmasystem")->__("Received Package");
+		                				if($this_rma->getSellerstatus() == 2)
+		                					echo Mage::helper("mprmasystem")->__("Dispatched Package");
+		                				if($this_rma->getSellerstatus() == 3)
+			                				echo Mage::helper("mprmasystem")->__("Declined/Returned");*/
+
+
+
+                                        if($this_rma->getSellerstatus() == 1)
+                                            echo Mage::helper("mprmasystem")->__("Item Dispatched (Exchanged)");
+                                        if($this_rma->getSellerstatus() == 2)
+                                            echo Mage::helper("mprmasystem")->__("Refunded");
+                                        if($this_rma->getSellerstatus() == 3)
+                                            echo Mage::helper("mprmasystem")->__("Declined");
+
+			                	?>
+			                </p>
+			            </div>
+			            <div class="box-content" style="position:relative;">
+			                <strong><?php echo Mage::helper("mprmasystem")->__("Status (CUSTOMER)"); ?> : </strong>
+			                <p id="wk_rs_status" style="display:inline;margin-left:10px;">
+			                	<?php 	if($this_rma->getCustomerstatus() == 0)
+			                				echo Mage::helper("mprmasystem")->__("Not Delivered Yet");
+			                			else
+			                				echo Mage::helper("mprmasystem")->__("Delivered");               	 ?>
+			                </p>
+			            </div>
+			            <div class="box-content">
+			                <strong><?php echo Mage::helper("mprmasystem")->__("Consignment Number"); ?> : </strong>
+			                <p id="wk_rs_consignment"><?php echo $this_rma->getConsignmentNo(); ?></p>
+			            </div>
+			        </div>
+	            </div>
+		    </div>
+		    <div class="col2-set">
+			    <div class="col-1">
+			        <div class="box">
+			            <div class="box-title">
+			                <h3><?php echo Mage::helper("mprmasystem")->__("Reason"); ?></h3>			                
+			            </div>
+			            <div class="box-content">
+			                <p><?php echo $this_rma->getReason(); ?></p>
+			            </div>
+			        </div>
+			    </div>
+		        <div class="col-2">
+			        <div class="box">
+			            <div class="box-title">
+			                <h3><?php echo Mage::helper("mprmasystem")->__("Additional Information"); ?></h3>
+			            </div>
+			            <div class="box-content">
+			                <p><?php echo $this_rma->getAdditionalinfo(); ?></p>
+			            </div>
+			        </div>
+	            </div>
+		    </div>
+		    <div class="col2-set">
+			    <div class="box">
+			        <div class="box-title">
+			            <h3><?php echo Mage::helper("mprmasystem")->__("Uploaded Product Image(s)"); ?></h3>
+			        </div>
+			        <div class="box-content">
+            			<div id="wk_rs_add_images_container">
+<?php 						$folderName = Mage::getBaseDir()."/media/mprmasystem/".$id."/";
+							$images = glob($folderName."*.{jpg,JPG,jpeg,JPEG,gif,GIF,png,PNG,bmp,BMP}",GLOB_BRACE);
+							foreach ($images as $filename) {
+								$getfilename = explode("/",$filename);
+								$justfname = Mage::getBaseUrl("media")."mprmasystem/".$id."/".end($getfilename);
+								echo "<img class='wk_rs_add_images' alt='image' src='".$justfname."'/>";
+							}			?>	
+						</div>
+        			</div>
+			    </div>
+			</div>
+            <?php if($status_without_translation != "Closed"){ ?>
+			<div class="col2-set">
+			    <div class="box">
+			        <div class="box-title">
+			            <h3><?php echo Mage::helper("mprmasystem")->__("Change Seller RMA Status"); ?></h3>			            		            
+			        </div>
+			        <div class="box-content">
+			        	<form method="post" action="<?php echo $this->getUrl('mprmasystem/seller/changestatus/')?>" id="wk_rs_solve_form">
+							<input type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" name="form_key"/>
+							<input type="hidden" value="<?php echo $id; ?>" name="rmaid"/>	            			
+	            			<select name="sellerstatus" class="select validate-select required-entry">
+                                <?php /*
+								<option value="0" <?php if($this_rma->getSellerstatus() == "0"){ ?>selected="selected"<?php } ?>>
+									<?php echo Mage::helper("mprmasystem")->__("Not Receive Package yet"); ?>
+								</option>
+								<option value="1" <?php if($this_rma->getSellerstatus() == "1"){ ?>selected="selected"<?php } ?>>
+									<?php echo Mage::helper("mprmasystem")->__("Received Package"); ?>
+								</option>
+								<option value="2" <?php if($this_rma->getSellerstatus() == "2"){ ?>selected="selected"<?php } ?>>
+									<?php echo Mage::helper("mprmasystem")->__("Refund"); ?>
+								</option>
+								<option value="3" <?php if($this_rma->getSellerstatus() == "3"){ ?>selected="selected"<?php } ?>>
+									<?php echo Mage::helper("mprmasystem")->__("Declined/Returned"); ?>
+								</option>
+                                */ ?>
+                                <option value=""><?php echo Mage::helper("mprmasystem")->__("Please Select") ?></option>
+                                <option value="1" <?php if($this_rma->getSellerstatus() == "1"){ ?>selected="selected"<?php } ?>>
+                                    <?php echo Mage::helper("mprmasystem")->__("Item Dispatched (Exchanged)"); ?>
+                                </option>
+                                <option value="2" <?php if($this_rma->getSellerstatus() == "2"){ ?>selected="selected"<?php } ?>>
+                                    <?php echo Mage::helper("mprmasystem")->__("Refunded"); ?>
+                                </option>
+                                <option value="3" <?php if($this_rma->getSellerstatus() == "3"){ ?>selected="selected"<?php } ?>>
+                                    <?php echo Mage::helper("mprmasystem")->__("Declined"); ?>
+                                </option>
+
+							</select>
+	            			<button id="wk_rs_agree_save" class="button" type="submit">
+	            				<span><?php echo Mage::helper("mprmasystem")->__("Save"); ?></span>
+	            			</button>
+	            		</form>
+        			</div>
+			    </div>
+			</div>
+            <?php } ?>
+	    </div>
+	    <h2 class="table-caption"><?php echo Mage::helper("mprmasystem")->__("Item(s) Requested for RMA"); ?></h2>
+	    <table class="data-table">
+		    <thead>
+		        <tr class="first last">
+		            <th><?php echo Mage::helper("mprmasystem")->__("Product Name"); ?></th>
+		            <th><?php echo Mage::helper("mprmasystem")->__("SKU"); ?></th>
+		            <th class="a-right"><?php echo Mage::helper("mprmasystem")->__("Price"); ?></th>
+		            <th class="a-center"><?php echo Mage::helper("mprmasystem")->__("Qty"); ?></th>
+		            <th class="a-right"><?php echo Mage::helper("mprmasystem")->__("Subtotal"); ?></th>
+		        </tr>
+		    </thead>
+<?php 	$orderItems = $order->getItemsCollection();
+		$total_item_count = count($orderItems);
+		$flag = 0;
+		foreach ($orderItems as $item)	{
+			if($item->getProductId()==$this_rma->getItemid())	{
+				$flag = 1;
+				$qtyorder = intval($item->getQtyOrdered());
+				$orderprice = Mage::helper("core")->currency($item->getRowTotal(), true, false);
+			}
+		}?>
+		<?php 
+			$item = Mage::getModel("catalog/product")->load($this_rma->getItemid());?>		    
+    		<tbody>
+	            <tr class="border <?php if($count_for_item == 1)echo 'first';if($count_for_item == $total_item_count) echo 'last'; ?>">
+				    <td><h3 class="product-name"><?php echo $item->getName(); ?></h3></td>
+				    <td><?php echo $item->getSku(); ?></td>
+				    <td class="a-right">
+	                    <span class="price-excl-tax">
+							<?php echo Mage::helper("core")->currency($item->getPrice(), true, false)?>
+                        </span>
+			    	</td>
+			    	<?php 
+			    	if($flag == 1){
+			    	?>
+					    <td class="a-right">
+					        <span class="nobr"><?php echo Mage::helper("mprmasystem")->__("Ordered"); ?>: 
+					        	<strong><?php echo $qtyorder?></strong>
+							</span>
+					    </td>
+					    <td class="a-right last">
+							<span class="price-excl-tax">
+								<?php echo $orderprice?>
+	                        </span>
+	                    </td>
+	                <?php 
+	                }else{?>
+	                	<td class="a-right">
+					        <span class="nobr"><?php echo Mage::helper("mprmasystem")->__("Ordered"); ?>: 
+					        	<strong><?php echo Mage::helper("mprmasystem")->__("Cancelled");?></strong>
+							</span>
+					    </td>
+					    <td class="a-right last">
+							<span class="price-excl-tax">
+								<?php echo Mage::helper("mprmasystem")->__("Cancelled");?>
+	                        </span>
+	                    </td>
+	                <?php 
+	                }?>
+				</tr>
+            </tbody>
+        </table>
+	</div>
+	<div id="wk_rs_conversation_container">
+<?php 	echo $this->getPagerHtml(); 	
+	 	$collection = $this->getCollection();
+        foreach ($collection as $eachconver) {		?>
+        	<div class="wk_rs_onereply">
+		        <span class="wk_rs_onereply_head <?php if($eachconver->getSendertype() == 0) echo "wk_rs_onereply_customer"; else if($eachconver->getSendertype() == 2) echo "wk_rs_onereply_admin"; ?>">
+		            <span class="wk_rs_onereply_head_left"><?php echo date("d/M/Y H:i:s",$eachconver->getCreatedAt()); ?></span>
+					<span class="wk_rs_onereply_head_right">
+						<?php 
+						if($eachconver->getSendertype() == 0) 
+							echo Mage::helper("mprmasystem")->__("Customer: ").$eachconver->getSender();
+						else if($eachconver->getSendertype() == 1) 
+							echo Mage::helper("mprmasystem")->__("Seller: ").$eachconver->getSender();
+						else echo Mage::helper("mprmasystem")->__("Administrator"); ?>
+					</span>
+			    </span>
+		        <p class="wk_rs_onereply_cntnt"><?php echo $eachconver->getMessage(); ?></p>
+		    </div>
+<?php   }
+		echo $this->getPagerHtml(); 	?>	
+		<form method="post" action="<?php echo $this->getUrl('mprmasystem/seller/saveconversation/')?>" id="wk_rs_con_form">
+    		<input type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" name="form_key"/>
+    		<input type="hidden" value="<?php echo $id; ?>" name="rmaid"/>
+    		<input type="hidden" value="1" name="sendertype"/>
+		    <div class="fieldset">
+		        <h2 class="legend"><?php echo Mage::helper("mprmasystem")->__("Send Message"); ?></h2>
+		        <ul class="form-list">
+		            <li class="wide">
+		                <label class="required"><em>*</em><?php echo Mage::helper("mprmasystem")->__("Enter Message"); ?></label>
+		                <div class="input-box">
+		                    <textarea class="required-entry" name="message" id="wk_rs_msg_content"></textarea>		                    
+		                </div>
+		            </li>
+<?php 			if($this_rma->getStatus() == "Cancelled")	{		?>
+		            <li class="wide">
+		            	<input type="checkbox" name="reopen"/>
+            			<label class="wk_rs_agree_label" style="float:none;">
+            				<?php echo Mage::helper("mprmasystem")->__("Please Check To Reopen This RMA If Cancelled"); ?>
+            			</label>
+            		</li>
+<?php 			}	?>            		
+		        </ul>
+		    </div>
+		    <a href="<?php echo $this->getUrl('mprmasystem/')?>">&laquo;<?php echo Mage::helper("mprmasystem")->__("back"); ?></a>
+		    <div class="buttons-set">
+		        <p class="required">* <?php echo Mage::helper("mprmasystem")->__("Required Fields"); ?></p>
+		        <button class="button" title="Submit Request" type="submit">
+		        	<span><?php echo Mage::helper("mprmasystem")->__("Send Message"); ?></span>
+		        </button>
+		    </div>
+		</form>		
+	</div>
+<script type="text/javascript">
+	jQuery.noConflict();
+	new VarienForm("wk_rs_con_form", true);
+	new VarienForm("wk_rs_solve_form", true);	
+	jQuery("#wk_rs_change_status").mouseenter(function(){
+		jQuery(this).find(".wk_rs_tooltip").css("visibility","visible");
+	});
+	jQuery("#wk_rs_change_status").mouseleave(function(){
+		jQuery(this).find(".wk_rs_tooltip").css("visibility","hidden");
+	});
+	jQuery("#wk_rs_change_status").click(function(){
+		if(jQuery("#wk_rs_csc").css("display") == "none")
+			jQuery("#wk_rs_csc").show();			
+	});
+	jQuery("#wk_rs_csc_close").click(function(){
+		jQuery("#wk_rs_csc").hide()
+	});
+	jQuery("#wk_rs_csc_id").focus(function(){
+		if(jQuery("#wk_rs_csc_id").val() == "<?php echo Mage::helper('mprmasystem')->__('Enter Consignment Number'); ?>")
+			jQuery("#wk_rs_csc_id").val("")
+	});
+	jQuery("#wk_rs_csc_id").focusout(function(){
+		if(jQuery("#wk_rs_csc_id").val() == "")
+			jQuery("#wk_rs_csc_id").val("<?php echo Mage::helper('mprmasystem')->__('Enter Consignment Number'); ?>")
+	});
+	jQuery("#wk_rs_csc_submit").click(function(){
+		jQuery("#wk_rs_csc_id").removeClass("wk_rs_input_warning");
+		jQuery("#wk_rs_csc_id").next(".wk_rs_warn_arrow").remove();
+		if(jQuery("#wk_rs_csc_id").val() == "" || jQuery("#wk_rs_csc_id").val() == "<?php echo Mage::helper('mprmasystem')->__('Enter Consignment Number'); ?>")	{
+			jQuery("#wk_rs_csc_id").after("<span class='wk_rs_warn_arrow'><?php echo Mage::helper('mprmasystem')->__('Please enter valid Consignment number'); ?></span>");
+			jQuery("#wk_rs_csc_id").addClass("wk_rs_input_warning");
+		}
+		else{
+			jQuery("#wk_rs_order_loader").show();
+			jQuery.ajax({
+				url: "<?php echo $this->getUrl('mprmasystem/index/updatecustomerstatus/'); ?>",
+				type: "POST",
+				data: {	con_num : jQuery("#wk_rs_csc_id").val(),id : "<?php echo $id; ?>"},
+				dataType: "html",
+				success: function(content) {
+					jQuery("#wk_rs_consignment").text(jQuery("#wk_rs_csc_id").val());
+					jQuery("#wk_rs_status").text("<?php echo Mage::helper('mprmasystem')->__('Delivered'); ?>");
+					jQuery("#wk_rs_csc_submit").after("<span class='wk_rs_success'><?php echo Mage::helper('mprmasystem')->__('Updated Successfully'); ?></span>");
+					jQuery("#wk_rs_csc_submit").next(".wk_rs_success").show().delay("2000").fadeOut("500",function(){
+						jQuery(this).remove();
+						jQuery("#wk_rs_csc").fadeOut("500");
+					});
+					jQuery("#wk_rs_order_loader").hide();
+				}
+			});
+		}
+	});
+	jQuery(document).ready(function(){
+        jQuery(".block-content ul li").each(function(){
+            this_this = jQuery(this);
+            a_a = this_this.find("a");
+            a_href = a_a.attr("href");
+            if(a_href.indexOf("mprmasystem/index") != -1)
+                this_this.addClass("current").html("<strong>"+a_a.text()+"</strong>");
+        });
+    });
+</script>

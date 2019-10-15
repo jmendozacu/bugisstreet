@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<layout version="1.0.0">
+    <customer_account>
+        <block name="marketplacenavigation">
+            <block type="core/template" name="rmaleftlink" template="mprmasystem/rma_leftlink.phtml"/>
+        </block>
+    </customer_account>
+    <customer_account>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="customer_account_navigation">  
+            <action method="addLink" translate="label" module="mprmasystem">
+                <name>RMA</name>
+                <path>mprmasystem/index</path>
+                <label>RMA</label>
+            </action>
+        </reference>
+    </customer_account>
+
+    <mprmasystem_account>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mprmasystem/mprmasystem" name="mprmasystem_mprmasystem" template="mprmasystem/rma_details.phtml"/>
+        </reference>
+    </mprmasystem_account>
+
+    <mprmasystem_new>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+            <block type="core/text" name="google.cdn.jquery">
+                <action method="setText">
+                    <text>
+                        <![CDATA[<script type="text/javascript">if (typeof jQuery == 'undefined'){document.write(unescape("%3Cscript src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));}</script><script type="text/javascript">jQuery.noConflict();</script>]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="mprmasystem/mprmasystem" name="rma_new" template="mprmasystem/rma_new.phtml"/>
+        </reference>
+    </mprmasystem_new>
+
+    <mprmasystem_view>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+            <block type="core/text" name="google.cdn.jquery">
+                <action method="setText">
+                    <text>
+                        <![CDATA[<script type="text/javascript">if (typeof jQuery == 'undefined'){document.write(unescape("%3Cscript src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));}</script><script type="text/javascript">jQuery.noConflict();</script>]]>
+                    </text>
+                </action>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="mprmasystem/conversation" name="rma_view" template="mprmasystem/rma_view.phtml"/>
+        </reference>
+    </mprmasystem_view>
+
+    <seller_allrma>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mprmasystem/mpsellerallrma" name="seller_allrma" template="mprmasystem/seller_allrma.phtml"/>
+        </reference>
+    </seller_allrma>
+
+    <seller_viewrma>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>marketplace/css/rma_front.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mprmasystem/conversation" name="seller_viewrma" template="mprmasystem/seller_viewrma.phtml"/>
+        </reference>
+    </seller_viewrma>
+</layout>

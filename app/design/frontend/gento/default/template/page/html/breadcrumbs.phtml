@@ -1,0 +1,226 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+
+$uri = $_SERVER['REQUEST_URI'];
+$segment = explode("/", $uri);
+
+function curPageURL() {
+    $pageURL = 'http';
+    if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+    $pageURL .= "://";
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+    } else {
+        $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+    }
+    return $pageURL;
+}
+?>
+<?php if($crumbs && is_array($crumbs)): ?>
+
+    <?php if (curPageURL()==$this->getUrl('faq/')): ?>
+        <div class="breadcrumbs">FAQ</div>
+    <?php elseif (curPageURL()==$this->getUrl('terms-of-use/')): ?>
+        <div class="breadcrumbs">Terms of Use</div>
+    <?php elseif (curPageURL()==$this->getUrl('privacy-policy/')): ?>
+        <div class="breadcrumbs">Privacy Policy</div>
+    <?php else : ?>
+
+        <div class="breadcrumbs">
+            <ul>
+                <?php foreach($crumbs as $_crumbName=>$_crumbInfo): ?>
+                    <?php
+                        //print_r($_crumbName);
+                    if($_crumbName == 'cms_page') {
+                        foreach ($segment as $params) {
+                            if ($params == 'new-arrivals-women') {
+                            ?>
+                            <li>
+                                <a href="<?php echo $this->getUrl('women.html') ?>">Women</a>
+                                <span>>> </span>
+                            </li>
+                            <li>
+                                <strong>New Arrivals</strong>
+                            </li>
+                        <?php
+                            }
+                            elseif ($params == 'popular-women') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('women.html') ?>">Women</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>Featured</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'new-arrivals-men') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('men.html') ?>">Men</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>New Arrivals</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'popular-men') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('men.html') ?>">Men</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>Featured</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'new-arrivals-home-living') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('home-living.html') ?>">Home & Living</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>New Arrivals</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'popular-home-living') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('home-living.html') ?>">Home & Living</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>Featured</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'new-arrivals-electronics') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('electronics.html') ?>">Electronics</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>New Arrivals</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'popular-electronics') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('electronics.html') ?>">Electronics</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>Featured</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'new-arrivals-gifts') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('gifts.html') ?>">Gifts</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>New Arrivals</strong>
+                                </li>
+                            <?php
+                            }
+                            elseif ($params == 'popular-gifts') {
+                                ?>
+                                <li>
+                                    <a href="<?php echo $this->getUrl('gifts.html') ?>">Gifts</a>
+                                    <span>>> </span>
+                                </li>
+                                <li>
+                                    <strong>Featured</strong>
+                                </li>
+                            <?php
+                            }
+                        }
+                    }
+                    // breadcrumbs for category
+                    else{
+                    ?>
+                        <li class="<?php echo $_crumbName ?>">
+                            <?php if($_crumbInfo['link']): ?>
+                                <a href="<?php echo $_crumbInfo['link'] ?>" title="<?php echo $this->escapeHtml($_crumbInfo['title']) ?>"><?php echo $this->escapeHtml($_crumbInfo['label']) ?></a>
+                            <?php elseif($_crumbInfo['last']): ?>
+                                <strong><?php
+                                    $crumb = $this->escapeHtml($_crumbInfo['label']);
+                                    echo Mage::helper('core/string')->truncate($crumb, '18');
+                                    ?></strong>
+                            <?php else: ?>
+                                <?php echo $this->escapeHtml($_crumbInfo['label']) ?>
+                            <?php endif; ?>
+                            <?php if(!$_crumbInfo['last']): ?>
+                                <span>>> </span>
+                            <?php endif; ?>
+                        </li>
+                    <?php } ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+<?php else : ?>
+    <?php if(curPageURL()==$this->getUrl('contacts/')) :?>
+        <div class="breadcrumbs">Contact Us</div>
+    <?php elseif (curPageURL()==$this->getUrl('faq/')): ?>
+        <div class="breadcrumbs">FAQ</div>
+    <?php elseif (curPageURL()==$this->getUrl('checkout/cart/')): ?>
+        <div class="breadcrumbs">My Cart</div>
+    <?php elseif (curPageURL()==$this->getUrl('customer/account/create/')): ?>
+        <div class="breadcrumbs">Sign Up</div>
+    <?php elseif (curPageURL()==$this->getUrl('customer/account/login/')): ?>
+        <div class="breadcrumbs">Log In</div>
+    <?php elseif (curPageURL()==$this->getUrl('customer/account/index/')): ?>
+        <div class="breadcrumbs">My Account</div>
+    <?php elseif (curPageURL()==$this->getUrl('checkout/onepage/')): ?>
+        <div class="breadcrumbs">Checkout</div>
+    <?php else : ?>
+        <div class="breadcrumbs">
+
+            <div id="ticker">
+                <div id="ticker-wrapper">
+
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('love-our-new-look')->toHtml(); ?>
+                </div>
+            </div>
+
+
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/prefixfree.min.js') ?>"></script>

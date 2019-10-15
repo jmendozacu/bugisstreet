@@ -1,0 +1,166 @@
+<style type="text/css">
+	.seller .name{
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.fieldset.mpshipping_description {
+    margin-top: 5px;
+    padding: 10px 9px;
+}
+.seller .mpmultishiplabel{
+	float:none;
+	margin-left: 5px;
+}
+.seller .name .products {
+    font-size: 12px;
+    font-weight: normal;
+    padding-left: 20px;
+}
+.seller .noshipping{
+		margin-left:15px;
+	}
+</style>
+
+<?php /** @var $this Mage_Checkout_Block_Onepage_Shipping_Method_Available */ ?>
+
+<?php
+$_SESSION['first_time'] = 1;
+
+//$arrMapShipping = array(
+//    'mpperproductshipping' => 'mp_shipping_charge',
+//    'mpperproductshipping2' => 'mp_shipping_charge2',
+//    'mpperproductshipping3' => 'mp_shipping_charge3',
+//    'mpperproductshipping4' => 'mp_shipping_charge4',
+//    'mpperproductshipping5' => 'mp_shipping_charge5',
+//    'mpperproductshipping6' => 'mp_shipping_charge6',
+//    'mpperproductshipping7' => 'mp_shipping_charge7',
+//    'mpperproductshipping8' => 'mp_shipping_charge8',
+//    'mpperproductshipping9' => 'mp_shipping_charge9',
+//    'mpperproductshipping10' => 'mp_shipping_charge10',
+//);
+//$cart = Mage::getModel('checkout/cart')->getQuote()->getAllVisibleItems();
+//$arrShipCharge = array();
+//$mpshippingcharge = 0;
+//foreach($cart as $it){
+//    $mpshippingcharge+=Mage::getModel('catalog/product')->load($it->getProductId())->getData($arrMapShipping[$it->getCustomShippingMethod()]);
+//}
+//
+//?>
+<?php $_shippingRateGroups = $this->getShippingRates();
+//Mage::log($_shippingRateGroups, null, '$_shippingRateGroups.log', true);
+?>
+<?php if (!$_shippingRateGroups): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+    <dl class="sp-methods">
+    <?php $shippingCodePrice = array(); ?>
+    <?php $_sole = count($_shippingRateGroups) == 1; foreach ($_shippingRateGroups as $code => $_rates): ?>
+        <dt><?php //echo $this->escapeHtml($this->getCarrierName($code)) ?></dt>
+        <dd>
+            <ul>
+            <?php $_sole = $_sole && count($_rates) == 1; foreach ($_rates as $_rate): ?>
+                <?php $shippingCodePrice[] = "'".$_rate->getCode()."':".(float)$_rate->getPrice(); ?>
+                <li>
+                   <?php if ($_rate->getErrorMessage()): ?>
+                    <ul class="messages"><li class="error-msg"><ul><li><?php echo $this->escapeHtml($_rate->getErrorMessage()) ?></li></ul></li></ul>
+                   <?php else: ?>
+                        <?php if ($_sole) : ?>
+                        <span class="no-display"><input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode(); ?>" <?php echo $_rate->getMethodDescription()==''?'checked="checked"':""; $shipvalueid="s_method_".$_rate->getCode(); ?> /></span>
+                        <?php elseif($_rate->getMethodDescription()!=""): ?>
+                         <span class="no-display"><input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode(); $shipvalueid="s_method_".$_rate->getCode(); ?>" <?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?> /></span>
+                        <?php else :?>
+                        <input name="shipping_method" style="display: none" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php /*if($_rate->getCode()===$this->getAddressShippingMethod())*/ echo ' checked="checked"' ?> class="radio"/>
+
+                        <?php if ($_rate->getCode() === $this->getAddressShippingMethod()): ?>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                                lastPrice = <?php echo (float)$_rate->getPrice(); ?>;
+                            //]]>
+                        </script>
+                        <?php endif; ?>
+
+                        <?php endif; ?>
+                        <label style="display: none" for="s_method_<?php echo $_rate->getCode() ?>" >
+                        <?php echo $this->escapeHtml($_rate->getMethodTitle()) ?>
+                         <?php if($_rate->getMethodDescription()==""){?>
+                        <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                        <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+                        <?php echo $_excl; ?>
+                        <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                            (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                        <?php endif; ?>
+                        <?php } else{?>
+							<span class="price" id="<?php echo $shipvalueid.'_value'?>"></span>
+							<input type="hidden" id="<?php echo $shipvalueid."_hidden";?>" value="" name="multicustomship" />
+							<?php } ?>
+                        </label>
+                   <?php endif ?>
+                   <?php if($_rate->getMethodDescription()!=""){?>
+                   <div class="fieldset mpshipping_description"><?php echo $_rate->getMethodDescription(); ?></div>
+                   <?php } ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+<script type="text/javascript">
+//<![CDATA[
+    <?php if (!empty($shippingCodePrice)): ?>
+        var shippingCodePrice = {<?php echo implode(',',$shippingCodePrice); ?>};
+    <?php endif; ?>
+    $$('input[type="radio"][name="shipping_method"]').each(function(el){
+        Event.observe(el, 'click', function(){
+            if (el.checked == true) {
+                var getShippingCode = el.getValue();
+                <?php if (!empty($shippingCodePrice)): ?>
+                    var newPrice = shippingCodePrice[getShippingCode];
+                    if (!lastPrice) {
+                        lastPrice = newPrice;
+                        quoteBaseGrandTotal += newPrice;
+                    }
+                    if (newPrice != lastPrice) {
+                        quoteBaseGrandTotal += (newPrice-lastPrice);
+                        lastPrice = newPrice;
+                    }
+                <?php endif; ?>
+                checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+                return false;
+            }
+       });
+    });
+    $$('.mpshipping_description .custom_ship').each(function(el){
+			Event.observe(el, 'click', function(){
+				var currencysymbol='<?php echo Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol()?>';
+				var shipamount=0;
+				$$('.mpshipping_description .custom_ship:checked').each(function(subel){
+					shipamount=shipamount+parseFloat(subel.value);
+				});
+
+				elm=document.getElementById('<?php echo $shipvalueid."_value" ?>');
+				elm.innerHTML=currencysymbol+shipamount.toFixed(2);
+				elm=document.getElementById('<?php echo $shipvalueid."_hidden" ?>');
+				elm.value=shipamount.toFixed(2);
+				elm=document.getElementById('<?php echo $shipvalueid ?>');
+				el.up('.seller').getElementsBySelector('.selectedshippingname').each(function(shipname){
+					shipname.value=el.next('.mpmultishiplabel').innerHTML.strip().stripTags().replace(/\n/g,' ').replace(/\s+/g,' ');
+				});
+				el.up('.seller').getElementsBySelector('.selectedshippingamount').each(function(shipname){
+					shipname.value=el.value;
+				});
+
+				if($$('.mpshipping_description .custom_ship:checked').length==$$('.mpshipping_description .seller').length){
+					elm.setAttribute('checked','checked');
+				}else{
+					elm.removeAttribute('checked');
+				}
+			});
+		});
+//]]>\
+        //jQuery('#waiting-price').show();
+        jQuery('.mpshipping_description .custom_ship:checked').trigger("click");
+        jQuery('#s_method_mp_multi_shipping_mp_multi_shipping_value').trigger("click");
+//        shippingMethod.save();
+</script>
+<?php endif; ?>

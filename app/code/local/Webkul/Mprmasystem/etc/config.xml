@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Webkul_Mprmasystem>
+            <version>1.0.0</version>
+        </Webkul_Mprmasystem>
+    </modules>
+    <frontend>
+        <layout>
+            <updates>
+                <mprmasystem>
+                    <file>mprmasystem.xml</file>
+                </mprmasystem>
+            </updates>
+        </layout>
+        <routers>
+            <mprmasystem>
+                <use>standard</use>
+                <args>
+                    <module>Webkul_Mprmasystem</module>
+                    <frontName>mprmasystem</frontName>
+                </args>
+            </mprmasystem>
+        </routers>
+    </frontend>
+    <admin>
+        <!--<routers>
+            <mprmasystem>
+                <use>admin</use>
+                <args>
+                    <module>Webkul_Mprmasystem</module>
+                    <frontName>mprmasystem</frontName>
+                </args>
+            </mprmasystem>
+        </routers>-->
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <webkul_mprmasystem after="Mage_Adminhtml">Webkul_Mprmasystem_Adminhtml</webkul_mprmasystem>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <mprmasystem>
+                    <file>mprmasystem.xml</file>
+                </mprmasystem>
+            </updates>
+        </layout>
+        <menu>
+        	<marketplace translate="title">
+        		<children>
+		            <mprmasystem translate="title">
+		                <title>RMA System</title>
+		                <sort_order>80</sort_order>
+		                <children>
+		                    <allrma translate="title">
+		                        <title>All RMA</title>
+		                        <action>adminhtml/mprmasystem_index</action>
+		                        <sort_order>1</sort_order>
+		                    </allrma>
+		                    <reason translate="title">
+		                        <title>Reasons</title>
+		                        <action>adminhtml/mprmasystem_index/reason</action>
+		                    </reason>
+		                    <config translate="title">
+		                        <title>Settings</title>
+		                        <sort_order>2</sort_order>
+		                        <action>adminhtml/system_config/edit/section/mprmasystem</action>
+		                    </config>
+		                </children>
+		            </mprmasystem>
+		        </children>
+	        </marketplace>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <mprmasystem>
+                                            <title>RMA System</title>
+                                        </mprmasystem>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                        <marketplace translate="title">
+        					<children>
+		                        <mprmasystem translate="title">
+		                            <title>RMA System</title>
+		                            <sort_order>100</sort_order>
+		                            <children>
+		                                <allrma translate="title">
+		                                    <title>All RMA</title>
+		                                    <action>adminhtml/mprmasystem_index</action>
+		                                    <sort_order>1</sort_order>
+		                                </allrma>
+		                                <reason translate="title">
+		                                    <title>Reasons</title>
+		                                    <action>adminhtml/mprmasystem_index/reason</action>
+		                                </reason>
+		                                <config translate="title">
+		                                    <title>Settings</title>
+		                                    <sort_order>1</sort_order>
+		                                    <action>adminhtml/system_config/edit/section/mprmasystem</action>
+		                                </config>
+		                            </children>
+		                        </mprmasystem>
+		                    </children>
+		                </marketplace>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <global>
+        <template>
+            <email>
+                <newrma_email>
+                    <label>Alert Admin For New RMA Request</label>
+                    <file>mprmasystem/newrma.html</file>
+                    <type>html</type>
+                </newrma_email>
+                <consignment_email>
+                    <label>Alert Admin When Consignment is shipped from Customer</label>
+                    <file>mprmasystem/consignment.html</file>
+                    <type>html</type>
+                </consignment_email>
+                <reopennmsgtoadmin_email>
+                    <label>Alert Admin When Customer Reopens a RMA closed by Admin</label>
+                    <file>mprmasystem/reopennmsgtoadmin.html</file>
+                    <type>html</type>
+                </reopennmsgtoadmin_email>
+                <newmsgtoadmin_email>
+                    <label>Alert Admin When Customer sends a message</label>
+                    <file>mprmasystem/newmsgtoadmin.html</file>
+                    <type>html</type>
+                </newmsgtoadmin_email>
+                <rmacanceled_email>
+                    <label>Alert Admin When RMA is canceled by Customer</label>
+                    <file>mprmasystem/rmacanceled.html</file>
+                    <type>html</type>
+                </rmacanceled_email>
+                <rmasolvednclosed_email>
+                    <label>Alert Admin When Customer Mark RMA as Solved</label>
+                    <file>mprmasystem/rmasolvednclosed.html</file>
+                    <type>html</type>
+                </rmasolvednclosed_email>
+                <newmsgtocustomer_email>
+                    <label>Alert Customer When new message is send by Admin</label>
+                    <file>mprmasystem/newmsgtocustomer.html</file>
+                    <type>html</type>
+                </newmsgtocustomer_email>
+                <packagestatusatadmin_email>
+                    <label>Alert Customer When Admin Status changes</label>
+                    <file>mprmasystem/packagestatusatadmin.html</file>
+                    <type>html</type>
+                </packagestatusatadmin_email>
+            </email>
+        </template>
+        <blocks>
+            <mprmasystem>
+                <class>Webkul_Mprmasystem_Block</class>
+            </mprmasystem>
+        </blocks>
+        <helpers>
+            <mprmasystem>
+                <class>Webkul_Mprmasystem_Helper</class>
+            </mprmasystem>
+        </helpers>
+        <models>  
+            <mprmasystem>  
+                <class>Webkul_Mprmasystem_Model</class>  
+                <resourceModel>mprmasystem_mysql4</resourceModel>  
+            </mprmasystem>  
+            <mprmasystem_mysql4>  
+                <class>Webkul_Mprmasystem_Model_Mysql4</class>  
+                <entities>  
+                    <rmarequest>
+                        <table>wk_mprma_new</table>  
+                    </rmarequest>
+                    <conversation>
+                        <table>wk_mprma_conversation</table>  
+                    </conversation>
+                    <rmareason>
+                        <table>wk_mprma_reason</table>  
+                    </rmareason>
+                </entities>  
+            </mprmasystem_mysql4>  
+        </models>  
+        <resources>
+            <mprmasystem_setup>  
+                <setup>  
+                    <module>Webkul_Mprmasystem</module>  
+                </setup>  
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </mprmasystem_setup>
+            <mprmasystem_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </mprmasystem_write>
+            <mprmasystem_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </mprmasystem_read>
+        </resources>
+    </global>
+
+    <crontab>
+        <jobs>
+            <mprmasystem_solved>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>mprmasystem/observer::auto_solvedrma</model>
+                </run>
+            </mprmasystem_solved>
+        </jobs>
+    </crontab>
+
+</config>

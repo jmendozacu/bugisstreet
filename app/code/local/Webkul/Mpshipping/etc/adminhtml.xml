@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+		<marketplace>            
+			<children>
+				<webkul_mpshipping>
+					<title>Mpshipping Manager</title>
+					<sort_order>5</sort_order>
+					<action>adminhtml/mpshipping_mpshipping</action>
+				</webkul_mpshipping>
+			</children>
+		</marketplace>
+	</menu>
+	<acl>
+        <resources>
+            <admin>
+                <children>                           
+					<marketplace>
+						<children>
+							<webkul_mpshipping>
+								<title>Mpshipping Module</title>
+								<action>adminhtml/mpshipping_mpshipping</action>
+							</webkul_mpshipping>
+						</children>						
+					</marketplace>	
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

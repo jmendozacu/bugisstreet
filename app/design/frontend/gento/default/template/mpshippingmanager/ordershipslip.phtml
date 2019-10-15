@@ -1,0 +1,182 @@
+<button class="button" type="button" style="float:right; margin-top: 15px;margin-right: 6px;" id="shiplightboxopen">
+	<span>
+		<span>
+			<?php echo Mage::helper('mpshippingmanager')->__('Download All Shipping Slip');?>
+		</span>
+	</span>
+</button>
+<button class="button" type="button" style="float:right; margin-top: 15px;margin-right: 6px;" id="invoice_lightboxopen">
+	<span>
+		<span>
+			<?php echo Mage::helper('mpshippingmanager')->__('Download All Invoice Slip');?>
+		</span>
+	</span>
+</button>
+<div id="wk_ship_light" class="wk_ship_light">
+	<div class="prdouctbackground" style="padding: 7px 36px 36px;">
+		<h4 class="textcolor" style="margin-left:0;"><?php echo Mage::helper('mpshippingmanager')->__('Select Date') ?></h4>
+		<label class="wk_ship_post-meta wk_ship_tags">
+			<span class="wk_shipbox_close" title="Close">
+				<span class="wk_ship_delete"></span>
+			</span>
+		</label>
+		<div class="wk_ship">	
+			<form action="<?php echo $this->getUrl("mpshippingmanager/shipping/printall");?>" enctype="multipart/form-data" method="post" id="form-ship-print">					
+				<div class="wk_ship_row">
+					<div class="wk_ship_rowlabel">
+						<span class="wk_ship_Label">
+						<label for="#make" class="required"><em>*</em><?php echo Mage::helper('mpshippingmanager')->__('Date From') ?></label>
+						</span>
+					</div>
+					<div class="wk_ship_rowfield">
+						<input type="text" id="editfromdatepicker" name="special_from_date" class="required-entry wk_ship_rowinput editdeal_fromdate" value=""/>
+					</div>
+				</div>
+				<div class="wk_ship_row">
+					<div class="wk_ship_rowlabel">
+						<span class="wk_ship_Label">
+						<label for="#make" class="required"><em>*</em><?php echo Mage::helper('mpshippingmanager')->__('Date Untill') ?></label>
+						</span>
+					</div>
+					<div class="wk_rowfield">
+						<input type="text" id="edittodatepicker" name="special_to_date" class="required-entry wk_ship_rowinput" value=""/>
+					</div>
+				</div>
+				<div class="wk_ship_row">
+					<center>
+						<button class="button wk_shipslip" type="submit">
+							<span><span><?php echo Mage::helper('mpshippingmanager')->__('Download') ?></span></span>
+						</button>
+						<button class="button" type="reset">
+							<span><span><?php echo Mage::helper('mpshippingmanager')->__('Reset') ?></span></span>
+						</button>
+					</center>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div id="wk_ship_fade" class="wk_shipbox_close wk_ship_fade"></div>
+
+<div id="wk_invoice_light" class="wk_ship_light">
+	<div class="prdouctbackground" style="padding: 7px 36px 36px;">
+		<h4 class="textcolor" style="margin-left:0;"><?php echo Mage::helper('mpshippingmanager')->__('Select Date') ?></h4>
+		<label class="wk_ship_post-meta wk_ship_tags">
+			<span class="wk_invoice_box_close" title="Close">
+				<span class="wk_ship_delete"></span>
+			</span>
+		</label>
+		<div class="wk_ship">	
+			<form action="<?php echo $this->getUrl("mpshippingmanager/shipping/printallinvoice");?>" enctype="multipart/form-data" method="post" id="form-invoice-print">					
+				<div class="wk_ship_row">
+					<div class="wk_ship_rowlabel">
+						<span class="wk_ship_Label">
+						<label for="#make" class="required"><em>*</em><?php echo Mage::helper('mpshippingmanager')->__('Date From') ?></label>
+						</span>
+						<span class="required starimp">    </span>
+					</div>
+					<div class="wk_ship_rowfield">
+						<input type="text" id="invoice_editfromdatepicker" name="special_from_date" class="required-entry wk_ship_rowinput editdeal_fromdate" value=""/>
+					</div>
+				</div>
+				<div class="wk_ship_row">
+					<div class="wk_ship_rowlabel">
+						<span class="wk_ship_Label">
+						<label for="#make" class="required"><em>*</em><?php echo Mage::helper('mpshippingmanager')->__('Date Untill') ?></label>
+						</span>
+						<span class="required starimp">    </span>
+					</div>
+					<div class="wk_rowfield">
+						<input type="text" id="invoice_edittodatepicker" name="special_to_date" class="required-entry wk_ship_rowinput" value=""/>
+					</div>
+				</div>
+				<div class="wk_ship_row">
+					<center>
+						<button class="button wk_invoice_slip" type="submit">
+							<span><span><?php echo Mage::helper('mpshippingmanager')->__('Download') ?></span></span>
+						</button>
+						<button class="button" type="reset">
+							<span><span><?php echo Mage::helper('mpshippingmanager')->__('Reset') ?></span></span>
+						</button>
+					</center>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div id="wk_invoice_fade" class="wk_invoice_box_close wk_ship_fade"></div>
+<script type="text/javascript">
+	if (typeof jQuery == 'undefined')	{
+		 document.write(unescape("%3Cscript src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+	}	
+</script>
+<script src="<?php echo $this->getSkinUrl('marketplace/mpshippingmanager/js/datepicker/jquery-ui.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+
+	var newCustomerProductForm_ship = new VarienForm('form-ship-print', true);
+
+	var newCustomerProductForm_invoice = new VarienForm('form-invoice-print', true);
+
+	jQuery('#editfromdatepicker').datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		onClose: function( selectedDate ) {
+			jQuery( "#edittodatepicker" ).datepicker( "option", "minDate", selectedDate );
+		}
+    });	
+	
+	jQuery('#edittodatepicker').datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		onClose: function( selectedDate ) {
+			jQuery( "#editfromdatepicker" ).datepicker( "option", "maxDate", selectedDate );
+		}
+    });	
+	
+	jQuery('.wk_shipslip').click(function(){
+		if(newCustomerProductForm_ship.validator.validate()!=false){	
+			document.getElementById('wk_ship_light').style.display='none';
+			document.getElementById('wk_ship_fade').style.display='none';
+		}
+	});	
+	jQuery('#shiplightboxopen').click(function(){
+		jQuery('#wk_ship_light').css('display','block');
+		jQuery('#wk_ship_fade').css('display','block'); 
+	});
+	jQuery('.wk_shipbox_close').click(function(){
+		jQuery('#wk_ship_light').css('display','none');
+		jQuery('#wk_ship_fade').css('display','none');
+	});	
+
+	jQuery('#invoice_editfromdatepicker').datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		onClose: function( selectedDate ) {
+			jQuery( "#invoice_edittodatepicker" ).datepicker( "option", "minDate", selectedDate );
+		}
+    });	
+	
+	jQuery('#invoice_edittodatepicker').datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		onClose: function( selectedDate ) {
+			jQuery( "#invoice_editfromdatepicker" ).datepicker( "option", "maxDate", selectedDate );
+		}
+    });	
+	
+	jQuery('.wk_invoice_slip').click(function(){
+		if(newCustomerProductForm_invoice.validator.validate()!=false){	
+			document.getElementById('wk_invoice_light').style.display='none';
+			document.getElementById('wk_invoice_fade').style.display='none';
+		}
+	});	
+	jQuery('#invoice_lightboxopen').click(function(){
+		jQuery('#wk_invoice_light').css('display','block');
+		jQuery('#wk_invoice_fade').css('display','block'); 
+	});
+	jQuery('.wk_invoice_box_close').click(function(){
+		jQuery('#wk_invoice_light').css('display','none');
+		jQuery('#wk_invoice_fade').css('display','none');
+	});	
+</script>

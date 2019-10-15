@@ -1,0 +1,263 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Create account form template
+ *
+ * @see app/design/frontend/base/default/template/customer/form/register.phtml
+ */
+/** @var $this Mage_Customer_Block_Form_Register */
+?>
+<div class="account-create content">
+    <div class="page-title">
+        <h1><?php echo $this->__('Create an Account') ?></h1>
+    </div>
+    <?php echo $this->getChildHtml('form_fields_before')?>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
+    <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="form-validate" class="scaffold-form" enctype="multipart/form-data">
+        <div class="fieldset">
+            <input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
+            <input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
+            <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+            <div id="register-detail">
+                <p class="form-instructions"><?php echo $this->__('Why waste time typing when you can shop? Create an account in one click by signing up with Facebook below.') ?></p>
+                <center><a href="#" title="Login with Facebook" onclick="login();return false;"><img src="<?php echo $this->getSkinUrl('images/registerwithfacebook.jpg') ?>" width="281" height="42" alt="loginwithfacebook" id="loginwithfacebook"></a></center>
+                <script src="https://connect.facebook.net/en_US/all.js"></script>
+                <script type="text/javascript">
+                    var newwindow;
+                    var intId;
+                    function login(){
+                        var  screenX    = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+                        var	 screenY    = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+                        var	 outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth;
+                        var	 outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22);
+                        var	 width    = 500;
+                        var	 height   = 270;
+                        var	 left     = parseInt(screenX + ((outerWidth - width) / 2), 10);
+                        var	 top      = parseInt(screenY + ((outerHeight - height) / 2.5), 10);
+                        var	 features = (
+                        'width=' + width +
+                        ',height=' + height +
+                        ',left=' + left +
+                        ',top=' + top
+                        );
+
+                        newwindow=window.open('<?php echo $this->getLayout()->createBlock('fblogin/fblogin')->getFbLoginButtonUrl(); ?>','Login_by_facebook',features);
+
+                        if (window.focus) {
+                            newwindow.focus()
+                        }
+                        return false;
+                    }
+                </script>
+                <div class="option-or">
+                    <span class="or">OR</span>
+                </div>
+                <div id="register-form">
+                    <h3>Do it the old-fashioned way.</h3>
+                    <ul class="form-list">
+                        <li class="field" >
+                            <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getFormData())->setForceUseCustomerAttributes(true)->toHtml() ?>
+                        </li>
+                        <li>
+                            <label for="email_address" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+                            <div class="input-box">
+                                <input type="email" autocapitalize="off" autocorrect="off" spellcheck="false" name="email" id="email_address" value="<?php echo $this->escapeHtml($this->getFormData()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="input-text validate-email required-entry" />
+                            </div>
+                        </li>
+
+                        <li class="fields pass-test" >
+                            <div class="field">
+                                <label for="password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+                                <div class="input-box">
+                                    <input type="password" name="password" id="password" title="<?php echo $this->__('Password') ?>" class="input-text required-entry validate-password" />
+                                    <p class="require_password" style="">Minimum 6 alphanumeric characters</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="pass-test" >
+                            <div class="field">
+                                <label for="confirmation" class="required"><em>*</em><?php echo $this->__('Confirm Password') ?></label>
+                                <div class="input-box">
+                                    <input type="password" name="confirmation" title="<?php echo $this->__('Confirm Password') ?>" id="confirmation" class="input-text required-entry validate-cpassword" />
+                                </div>
+                            </div>
+                        </li>
+                        <input type="hidden" name="countryphone" id="countryphone" value="" class="input-text" />
+
+                        <input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
+
+                        <?php echo $this->getChildHtml('form.additional.info'); ?>
+                        <div class="bracket-half profile-pic">
+                            <dl><dt>Profile Picture<div class="notes">optional</div></dt>
+                                <dd><input value="" class="validate[custom[url]] text-input register" style="padding: 5px 10px;" type="text" name="img_url" id="img_url" placeholder="Paste image URL"></dd>
+                            </dl>
+                            <div class="option-upload"><h4>OR</h4>
+                                <div id="file_browse_wrapper">
+                                    <input type="file" id="file_browse" name="uploaded_file">
+                                </div>
+                                <p class="notes">Recommended dimensions: 80x80px<br>Supported formats: JPG, PNG (max 150kb)</p>
+                            </div>
+                        </div>
+                        <?php if ($this->isNewsletterEnabled()): ?>
+                            <li class="subscription" style="margin-bottom:15px;">
+
+                                <label for="is_subscribed" class="cs-label">Yes, I would like to receive updates on the latest trends, new arrivals, and crazy bargains!</label>
+                                <div class="input-box"  style="">
+                                    <input type="checkbox" style="display:inline; width: 13px" name="is_subscribed" title="Yes, I would like some fashion goodness in my inbox!" value="1" id="is_subscribed" class="checkbox-styled cs-input" >
+                                </div>
+                            </li>
+                        <?php endif ?>
+                        <?php echo $this->getChildHtml('persistent.remember.me'); ?>
+                        <li style="display: none; width: 10%; "  class="main account-test" >
+                            <div class="field" >
+                                <label style="margin-top: 22px"><?php echo $this->__('Contact No') ?><em>*</em></label>
+                            </div>
+                        </li>
+                        <li style="display: none; " class="country account-test" >
+                            <label ><?php echo $this->__('Country') ?></label>
+                            <select name="country" id="country">
+                                <?php foreach(Mage::getModel('directory/country')->getResourceCollection()->loadByStore()->toOptionArray(true) as $country) {
+                                    $name = $this->getRequest()->getParam('name');
+                                    $collections = Mage::getModel('directory/country')->getCollection()->addFieldToFilter('country_id', $country['value']);
+                                    foreach ($collections as $row) {
+                                        ?>
+                                        <option <?php echo ($country['value']=='SG'?"selected='selected'":""); ?>
+                                            value="<?php echo $country['value']; ?>"><?php echo $country['label'] . ' (+' . $row['phone_country'] . ')';?></option>
+                                    <?php }
+                                }?>
+                            </select>
+                        </li>
+                        <li style="display: none; "  class="area account-test" >
+                            <div class="field">
+                                <label ><?php echo $this->__('Area#') ?></label>
+                                <div class="input-box">
+                                    <input type="text" name="areacode"  id="areacode" class="input-text" />
+                                </div>
+                            </div>
+                        </li>
+                        <li style=" display: none; " class="account-test phone-test">
+                            <div class="field">
+                                <label ><?php echo $this->__('Phone number') ?></label>
+                                <div class="input-box">
+                                    <input style="width: 350px" type="text" name="contactno" title="<?php echo $this->__('Contact No') ?>" id="contactno" class="input-text " />
+                                </div>
+                            </div>
+
+                        </li>
+                        <li style=" display: none; " class="account-test">
+                            <div class="validation-advice contact-validate" style="display: none">Phone number is must be number</div>
+                            <!--<div class="validation-advice area-validate" style="display: none">Area is a required field and must be number</div>-->
+                        </li>
+
+                        <li  style="display: none" class="account-test name-test">
+                            <div class="field">
+                                <label ><?php echo $this->__('Shop Name') ?><em>*</em></label>
+                                <div class="input-box">
+                                    <input style="width: 350px" type="text" name="shopname" title="<?php echo $this->__('Shop Name') ?>" id="shopname" class="input-text " />
+                                </div>
+                            </div>
+                        </li>
+                        <li style="display: none" class="account-test">
+                            <div class="field">
+                                <label ><?php echo $this->__('Shop Description') ?><em>*</em></label>
+                                <div class="input-box">
+                                    <textarea name="shopdescription"  id="shopdescription"></textarea>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li   class="account-test agree" style="margin-bottom:15px; display: none">
+                            <div class="input-box"  style="float: left; padding-right: 10px;">
+                                <input type="checkbox" style="display:inline; width: 13px" title="Yes, I would like some fashion goodness in my inbox!" value="1" id="agree-seller" name="agree-seller" class="cs-input">
+                            </div>
+                            <label for="agree-seller" style="width: 500px" class="cs-label">I have read and agree to <a href="<?php echo $this->getUrl('seller_agreement/')?>" target="_blank">Seller Terms and Conditions</a> </label>
+                        </li>
+                    </ul>
+                    <?php echo $this->getChildHtml('persistent.remember.me.tooltip'); ?>
+                </div>
+                <div class="buttons-set test-but" style="margin-top: 70px;">
+                    <!--            <p class="back-link"><a href="--><?php //echo $this->escapeUrl($this->getBackUrl()) ?><!--" class="back-link"><small>&laquo; </small>--><?php //echo $this->__('Back') ?><!--</a></p>-->
+                    <button type="button" title="<?php echo $this->__('Sign Up') ?>" class="button" onclick="signup();"><span><span><?php echo $this->__('Sign Up') ?></span></span></button>
+                </div>
+<!--                <a href="#"  class="button">Sign up</a>-->
+                <?php if (Mage::helper('checkout')->isContextCheckout()): ?>
+                    <input name="context" type="hidden" value="checkout" />
+                <?php endif; ?>
+    </form>
+    <script type="text/javascript">
+        //<![CDATA[
+        var dataForm = new VarienForm('form-validate', true);
+        <?php if($this->getShowAddressFields()): ?>
+        new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+        <?php endif; ?>
+        //]]>
+        jQuery(document).ready(function () {
+
+        });
+
+
+
+    </script>
+</div>
+</div>
+</div>
+<script>
+    function signup(){
+        //var a = jQuery('#country').value();
+        if(jQuery('.account-test').hasClass('test-view')){
+            var b = jQuery('#country :selected').val();
+            jQuery('#countryphone').val(b);
+        }
+        if(dataForm.validator.validate()){
+            if(jQuery('.account-test').hasClass('test-view')){
+                        //var area = jQuery('#areacode').val();
+                        var contact = jQuery('#contactno').val();
+                        //if(area!="" && jQuery.isNumeric(area)){
+                            //jQuery('.area-validate').removeClass('test-view');
+                            if(jQuery.isNumeric(contact)){
+                                jQuery('.contact-validate').removeClass('test-view');
+                                jQuery('#form-validate').submit();
+                            }
+                            else{
+                                jQuery('.contact-validate').addClass('test-view');
+                            }
+
+                        //}
+                        /*else{
+                            if(jQuery.isNumeric(contact)){
+                                jQuery('.contact-validate').removeClass('test-view');
+                            }
+                            jQuery('.area-validate').addClass('test-view');
+                        }*/
+            }else{
+                jQuery('#form-validate').submit();
+            }
+
+        }
+    }
+</script>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+   <default>
+		<reference name="head">
+			<action method="addCss"><stylesheet>marketplace/css/CS_Front.css</stylesheet></action>
+			<action method="addCss"><stylesheet>marketplace/css/CS_Admin.css</stylesheet></action>
+		</reference>
+        <label>All Pages</label>
+        <block type="chatsystem/chatsystem" name="chatsystem" output="toHtml" template="ChatSystemFront/ChatSystemFront.phtml"/>
+		<block type="chatsystem/chatsystemsidebar" name="chatsystemtemp" output="toHtml" template="ChatSystemFront/chatsystemsidebar.phtml"/>
+    </default>
+	<catalog_product_view>
+		<block name="wk-block" >
+			<block type="core/template" name="chatsystemlink" template="ChatSystemFront/chatsystemlink.phtml"/>
+		</block>
+    </catalog_product_view>
+</layout>

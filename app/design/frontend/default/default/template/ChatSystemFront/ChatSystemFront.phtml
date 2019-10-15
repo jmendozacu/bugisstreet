@@ -1,0 +1,516 @@
+<?php $partner = Mage::getModel('marketplace/userprofile')->getPartnerProfileById(Mage::getSingleton('customer/session')->getCustomerId()); ?>
+<script type="text/javascript">
+	if (typeof jQuery == 'undefined'){
+	    document.write(unescape("%3Cscript src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+	}
+</script>
+<div id="user_cs_div_container"></div>
+<audio id="wk_cs_chat_notify">
+    <source src="<?php echo Mage::getBaseUrl('js').'ChatSystem/notify.ogg'; ?>" type="audio/ogg">
+</audio>
+<script> 
+	jQuery.noConflict();
+	var limit_count = 10,title_blink,current_title = jQuery("title").text(),open_first_time = true;
+	var right = 25,window_width = jQuery(window).width(),chat_window_more_than_window_width = false;
+	
+	function SoundAlert(){
+		jQuery("#wk_cs_chat_notify")[0].play();
+	}	
+
+	jQuery( "body" ).delegate( ".wk_cs_chat_close", "click", function() {
+		var divcount = jQuery('.wk_cs_chatwindow').length;
+		var currid = jQuery(this).parents('.wk_cs_chatwindow').attr('id');
+		var lastdivid = jQuery('.wk_cs_chatwindow').eq(divcount-1).attr('id');
+		var flag = 0;
+		for(var i=1; i < divcount; i++){
+			var posdivid = jQuery('.wk_cs_chatwindow').eq(i-1).attr('id');
+			if(currid==posdivid){
+				flag = 1;
+			}
+			if(flag == 1){	
+				var rightnew = jQuery('.wk_cs_chatwindow').eq(i).css('right');
+				var right1 = parseInt(rightnew.split("px")[0])-260;
+				right = right1+260;
+				jQuery('.wk_cs_chatwindow').eq(i).attr('style','right:'+right1+'px;');				
+			}
+		}
+		if(currid==lastdivid){
+			var rightnew = jQuery('.wk_cs_chatwindow').eq(divcount-1).css('right');
+			var right1 = parseInt(rightnew.split("px")[0]);
+			right = right1;
+		}
+		jQuery(this).parents('.wk_cs_chatwindow').remove();
+	});
+	
+	jQuery(document).ready(function(){Check_User_Status();});	
+	
+	jQuery( "body" ).delegate( ".wk_cs_chat_buddies", "click", function() {
+		var id = jQuery(this).attr("id").split("-")[1];		
+		var signalclass = jQuery(this).find("#wk_cs_admin_signal").attr('class');
+		var name = jQuery(this).find(".wk_cs_buddy_name").text();
+		if(id!=0){
+			if(typeof jQuery("body").find("#"+id).attr("id") == "undefined"){	
+				var $obj1=jQuery('<div/>').addClass('wk_cs_chatwindow').attr('id',id).attr('style','right:'+right+'px').attr('onclick','changemycolor(this);')
+					.append(jQuery('<span/>').addClass('wk_cs_fetch_content_limit').attr('id','false').text('10'))
+					.append(
+						jQuery('<div/>').addClass('wk_cs_chat_top').attr('style','background:#FFB712;')
+						.append(jQuery('<span/>').attr('id','wk_cs_admin_signal').addClass(signalclass))
+						.append(jQuery('<span/>').addClass('wk_cs_user_showname').text(name.substring(0,20)))
+						.append(jQuery('<span/>').addClass('wk_cs_user_name').attr('style','display:none;').text(name))
+						.append(
+							jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_chat_close')
+							.append(jQuery('<span/>').addClass('wk_cs_chat_close_btn'))
+						)
+						.append(
+							jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_fs').attr('onclick','fullscreen(this);')
+							.append(jQuery('<span/>').addClass('wk_cs_fullscreen'))
+						)
+						.append(
+							jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_sh').attr('onclick','showhide(this);')
+							.append(jQuery('<span/>').addClass('wk_cs_show'))
+						)
+					)
+					.append(
+						jQuery('<div/>').addClass('wk_cs_chat_container')
+						.append(
+							jQuery('<div/>').addClass('wk_cs_chat_list_small')
+							.append(
+								jQuery('<div/>').addClass('wk_cs_loader_container')
+								.append(jQuery('<span/>').addClass('wk_cs_loader').attr('style','display:block;'))
+							)
+							.append(jQuery('<div/>').addClass('wk_cs_chat_moveable_list'))
+							.append(
+								jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_fs').attr('onclick','fullscreen(this);')
+								.append(jQuery('<span/>').addClass('wk_cs_fullscreen'))
+							)
+						)
+						.append(
+							jQuery('<div/>').addClass('wk_cs_enter_text_container_small')
+							.append(jQuery('<textarea/>').addClass('wk_cs_enter_text_small').attr('id',name+'_'+id).attr('onkeypress','Msg_Entered(this,event);'))
+							.append(
+								jQuery('<div/>').addClass('wk_cs_emoticons_container')
+								.append(jQuery('<span/>').addClass('wk_cs_laugh wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Laugh'))
+								.append(jQuery('<span/>').addClass('wk_cs_smoking wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smoking Angry'))
+								.append(jQuery('<span/>').addClass('wk_cs_smirking wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smirking'))
+								.append(jQuery('<span/>').addClass('wk_cs_derp wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Derp'))
+								.append(jQuery('<span/>').addClass('wk_cs_love wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Love'))
+								.append(jQuery('<span/>').addClass('wk_cs_cool wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Cool'))
+								.append(jQuery('<span/>').addClass('wk_cs_lol wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Lol'))
+								.append(jQuery('<span/>').addClass('wk_cs_worship wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Worship'))
+								.append(jQuery('<span/>').addClass('wk_cs_angry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Angry'))
+								.append(jQuery('<span/>').addClass('wk_cs_sad wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sad'))
+								.append(jQuery('<span/>').addClass('wk_cs_cry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Crying'))
+								.append(jQuery('<span/>').addClass('wk_cs_dont_talk wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Don\'t Talk'))
+								.append(jQuery('<span/>').addClass('wk_cs_hungry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Hungry'))
+								.append(jQuery('<span/>').addClass('wk_cs_devil wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Devil'))
+								.append(jQuery('<span/>').addClass('wk_cs_sleepy wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sleepy'))
+								.append(jQuery('<span/>').addClass('wk_cs_smile wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smile'))
+								.append(jQuery('<span/>').addClass('wk_cs_look wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Stare'))
+								.append(jQuery('<span/>').addClass('wk_cs_whistle wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Whistle'))
+								.append(jQuery('<span/>').addClass('wk_cs_sweat wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sweat'))
+								.append(jQuery('<span/>').addClass('wk_cs_injured wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Injured'))
+								.append(jQuery('<span/>').addClass('wk_cs_sick wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sick'))
+								.append(jQuery('<span/>').addClass('wk_cs_arrow').attr('onclick','Emoticons_Click(this)').attr('title','Sick'))
+								
+							)
+							.append(jQuery('<span/>').addClass('wk_cs_icon_emoteicon').attr('onclick','Open_Icons(this)'))
+						)
+					);     				
+				jQuery("body").append($obj1);	
+				if(chat_window_more_than_window_width == true)
+					jQuery("#wk_cs_alluser").find(".wk_cs_chatwindow").eq(0).remove();
+				right+=260;
+				if(right > window_width-500){
+					chat_window_more_than_window_width = true;
+					right = 285;
+				}
+			}
+		}
+	});
+	
+	
+	function Msg_Entered(thisthis,e) {
+		var strid = jQuery(thisthis).attr('id');
+		if("<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName(); ?>".length > 1)	{
+			if(e.keyCode == 13 && !e.shiftKey){
+				//if(!jQuery.browser.msie)
+					e.preventDefault();
+				var content;
+				if(jQuery(thisthis).val().trim() != ""){
+					var val = jQuery(thisthis).val().replace(/\</g,'&lt;').replace(/\>/g,'&gt;').replace(/\n/g,'</br>');					
+					var href_test_http = val.split("http://");
+					var href_test_https = val.split("https://");
+					var href_test_www = val.split("www");
+					if((href_test_http[0] == "" && href_test_http[1].length > 0) || (href_test_https[0] == "" && href_test_https[1].length > 0) || (href_test_www[0] == "" && href_test_www[1].length > 0))	{
+						if(href_test_www[0] == "" && href_test_www[1].length > 0)	{
+							var $obj3=jQuery('<div/>').addClass('wk_cs_chat')
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title','<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>')
+									.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text('<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?> :  '))
+								)
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_content')
+									.append(jQuery('<a/>').attr('href','http://'+val).attr('target','_blank').text(val))
+								);
+						}
+						else{
+							var $obj3=jQuery('<div/>').addClass('wk_cs_chat')
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title','<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>')
+									.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text('<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?> :  '))
+								)
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_content')
+									.append(jQuery('<a/>').attr('href',val).attr('target','_blank').text(val))
+								);
+						}
+					}
+					else 
+					if(/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(val)){
+						var $obj3=jQuery('<div/>').addClass('wk_cs_chat')
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title','<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>')
+									.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text('<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?> :  '))
+								)
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_content')
+									.append(jQuery('<a/>').attr('href','mailto:'+val).attr('target','_blank').text(val))
+								);
+						
+					}
+					else	{
+						var $obj3=jQuery('<div/>').addClass('wk_cs_chat')
+								.append(
+									jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title','<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>')
+									.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text('<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?> :  '))
+								)
+								.append(jQuery('<span/>').addClass('wk_cs_chat_content').text(val));
+					}
+					jQuery('#'+strid.split("_")[1]).find(".wk_cs_chat_moveable_list").append($obj3);
+					jQuery('#'+strid.split("_")[1]).find(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scrollTop(jQuery(".wk_cs_chat_moveable_list").height());					
+					jQuery(thisthis).val("");
+					jQuery.ajax({
+						url: "<?php echo $this->getUrl('chatsystem/index/saveconversation')?>",
+						type: "POST",
+						dataType: 'html',
+						data:{	fromname : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?>",
+								forid	 : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>",
+								toid     :	strid.split("_")[1],
+								toname   :	strid.split("_")[0],
+								message	 : val	}
+					});
+				}
+			}
+			if(e.keyCode == 13 && e.shiftKey){
+				jQuery(this).val(jQuery(this).val());
+			}
+		}
+		else
+			jQuery(".wk_cs_alert_bg").css({"height":jQuery(window).height()}).fadeIn(500,function(){
+				jQuery(".wk_cs_alert_message").animate({"top":"300px"},500);
+			});
+		jQuery('#'+strid.split("_")[1]).find(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scrollTop(jQuery('#'+strid.split("_")[1]).find(".wk_cs_chat_moveable_list").height());
+	}
+	
+	function Check_User_Status()	{
+		//for user notify
+		jQuery.ajax({
+			url: "<?php echo $this->getUrl('chatsystem/index/checkifnewusermessagethere')?>",
+			type: "GET",
+			dataType: 'html',
+			success:function(data){
+				if(data){
+					var users_array = data.replace(/(,$)/g,"").split(",");
+					for(var i = 0;i < users_array.length; i++){
+						var dataarrayofonecustomer = users_array[i].split("-");
+						var name = dataarrayofonecustomer[0];
+						var id = dataarrayofonecustomer[1];
+						if(id!=0){
+							if(typeof jQuery("body").find("#"+id).attr("id") == "undefined"){
+								var $obj1=jQuery('<div/>').addClass('wk_cs_chatwindow').attr('id',id).attr('style','right:'+right+'px').attr('onclick','changemycolor(this);')
+									.append(jQuery('<span/>').addClass('wk_cs_fetch_content_limit').attr('id','false').text('10'))
+									.append(
+										jQuery('<div/>').addClass('wk_cs_chat_top').attr('style','background:#FFB712;')
+										.append(jQuery('<span/>').attr('id','wk_cs_admin_signal').addClass('wk_cs_signal_on'))
+										.append(jQuery('<span/>').addClass('wk_cs_user_name').text(name))
+										.append(
+											jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_chat_close')
+											.append(jQuery('<span/>').addClass('wk_cs_chat_close_btn'))
+										)
+										.append(
+											jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_fs').attr('onclick','fullscreen(this);')
+											.append(jQuery('<span/>').addClass('wk_cs_fullscreen'))
+										)
+										.append(
+											jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_sh').attr('onclick','showhide(this);')
+											.append(jQuery('<span/>').addClass('wk_cs_show'))
+										)
+									)
+									.append(
+										jQuery('<div/>').addClass('wk_cs_chat_container')
+										.append(
+											jQuery('<div/>').addClass('wk_cs_chat_list_small')
+											.append(
+												jQuery('<div/>').addClass('wk_cs_loader_container')
+												.append(jQuery('<span/>').addClass('wk_cs_loader').attr('style','display:block;'))
+											)
+											.append(jQuery('<div/>').addClass('wk_cs_chat_moveable_list'))
+											.append(
+												jQuery('<span/>').addClass('wk_cs_chat_btn wk_cs_fs').attr('onclick','fullscreen(this);')
+												.append(jQuery('<span/>').addClass('wk_cs_fullscreen'))
+											)
+										)
+										.append(
+											jQuery('<div/>').addClass('wk_cs_enter_text_container_small')
+											.append(jQuery('<textarea/>').addClass('wk_cs_enter_text_small').attr('id',name+'_'+id).attr('onkeypress','Msg_Entered(this,event);'))
+											.append(
+												jQuery('<div/>').addClass('wk_cs_emoticons_container')
+												.append(jQuery('<span/>').addClass('wk_cs_laugh wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Laugh'))
+												.append(jQuery('<span/>').addClass('wk_cs_smoking wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smoking Angry'))
+												.append(jQuery('<span/>').addClass('wk_cs_smirking wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smirking'))
+												.append(jQuery('<span/>').addClass('wk_cs_derp wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Derp'))
+												.append(jQuery('<span/>').addClass('wk_cs_love wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Love'))
+												.append(jQuery('<span/>').addClass('wk_cs_cool wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Cool'))
+												.append(jQuery('<span/>').addClass('wk_cs_lol wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Lol'))
+												.append(jQuery('<span/>').addClass('wk_cs_worship wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Worship'))
+												.append(jQuery('<span/>').addClass('wk_cs_angry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Angry'))
+												.append(jQuery('<span/>').addClass('wk_cs_sad wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sad'))
+												.append(jQuery('<span/>').addClass('wk_cs_cry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Crying'))
+												.append(jQuery('<span/>').addClass('wk_cs_dont_talk wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Don\'t Talk'))
+												.append(jQuery('<span/>').addClass('wk_cs_hungry wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Hungry'))
+												.append(jQuery('<span/>').addClass('wk_cs_devil wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Devil'))
+												.append(jQuery('<span/>').addClass('wk_cs_sleepy wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sleepy'))
+												.append(jQuery('<span/>').addClass('wk_cs_smile wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Smile'))
+												.append(jQuery('<span/>').addClass('wk_cs_look wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Stare'))
+												.append(jQuery('<span/>').addClass('wk_cs_whistle wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Whistle'))
+												.append(jQuery('<span/>').addClass('wk_cs_sweat wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sweat'))
+												.append(jQuery('<span/>').addClass('wk_cs_injured wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Injured'))
+												.append(jQuery('<span/>').addClass('wk_cs_sick wk_cs_emoticons').attr('onclick','Emoticons_Click(this)').attr('title','Sick'))
+												.append(jQuery('<span/>').addClass('wk_cs_arrow').attr('onclick','Emoticons_Click(this)').attr('title','Sick'))
+												
+											)
+											.append(jQuery('<span/>').addClass('wk_cs_icon_emoteicon').attr('onclick','Open_Icons(this)'))
+										)
+									);     				
+								jQuery("body").append($obj1);
+								Fetch_Msg_From_Admin_For_Users(id,false);
+								jQuery("#"+id).find(".wk_cs_chat_top").css({"background":"#FFB712"});
+								jQuery.ajax({
+									url: "<?php echo $this->getUrl('chatsystem/index/notifyusermsgisreadnow')?>",
+									type: "POST",
+									data:{
+										userid : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId()?>",
+										toid : id
+									}
+								});
+								if(chat_window_more_than_window_width == true)
+									jQuery("#wk_cs_alluser").find(".wk_cs_chatwindow").eq(0).remove();
+								right+=260;
+								if(right > window_width-500){
+									chat_window_more_than_window_width = true;
+									right = 285;
+								}
+							}
+							else{
+								jQuery("body").find("#"+users_array[i]).find(".wk_cs_chat_top").css({"background":"#FFB712"});
+								Fetch_Msg_From_Admin_For_Users(id,false);
+								jQuery.ajax({
+									url	: "<?php echo $this->getUrl('chatsystem/index/notifyusermsgisreadnow')?>",
+									type: "POST",
+									data:{
+										userid : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId()?>",
+										toid : id
+									}
+								});
+							}
+						}
+					}
+				}
+			}
+		});
+	}
+
+	<?php	
+	if(Mage::getSingleton('customer/session')->getCustomer()->getName() != " ") { 	?>
+		function Fetch_Msg_From_Admin_For_Users(toid,scrollhalf)	{
+			jQuery('#'+toid).find("#wk_cs_loader").css({"display":"block"});
+			frmname = jQuery('#'+toid).find('.wk_cs_user_name').text();
+			var prev_scroll_height = jQuery(".wk_cs_chat_moveable_list").height();
+			jQuery.ajax({
+				url: "<?php echo $this->getUrl('chatsystem/index/fetchmsgforadminfromusers')?>",
+				type: "POST",
+				dataType: "json",
+				data:{
+					id:"<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>",
+					limit:limit_count,
+					toid:toid,
+				},
+				success:function(content)	{
+					jQuery('#'+toid).find(".wk_cs_chat_top").css({"background":"#FFB712"});
+					content = content.reverse();
+					var fullconversation = jQuery('<span/>'),msg;
+					for(var i=0 ; i<content.length ; i++)	{
+						if(content[i].message.indexOf("wk_cs_emoticons") > -1 && content[i].message.indexOf("|-|") > -1){
+							var icon_n_title = content[i].message.split("|-|");
+							msg = jQuery('<span/>').addClass(icon_n_title[0]).attr('title',icon_n_title[1]);
+						}
+						else{
+							var href_test_http = content[i].message.split("http://");
+							var href_test_https = content[i].message.split("https://");
+							var href_test_www = content[i].message.split("www");
+							if((href_test_http[0] == "" && href_test_http[1].length > 0) || (href_test_https[0] == "" && href_test_https[1].length > 0) || (href_test_www[0] == "" && href_test_www[1].length > 0)){
+								if(href_test_www[0] == "" && href_test_www[1].length > 0)
+									msg = jQuery('<a/>').attr('href','http://'+content[i].message).attr('target','_blank').text(content[i].message);
+								else
+									msg = jQuery('<a/>').attr('href',content[i].message).attr('target','_blank').text(content[i].message);
+							}
+							else
+							if(/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(content[i].message))
+								msg = jQuery('<a/>').attr('href','mailto:'+content[i].message).attr('target','_blank').text(content[i].message);
+							else
+								msg = content[i].message;
+						}
+						if(content[i].from == "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>") 	{
+							fullconversation.append(jQuery('<div/>').addClass('wk_cs_chat')
+							.append(
+								jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title',content[i].from)
+								.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text(content[i].from+' :  '))
+							)
+							.append(jQuery('<span/>').addClass('wk_cs_chat_content').append(msg)));
+						}
+						else 	{
+							fullconversation.append(jQuery('<div/>').addClass('wk_cs_chat')
+							.append(
+								jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title',content[i].from)
+								.append(jQuery('<span/>').addClass('wk_cs_chat_name').text(content[i].from+' :  '))
+							)
+							.append(jQuery('<span/>').addClass('wk_cs_chat_content').append(msg)));
+						}
+					}
+					if(jQuery('#'+toid).find(".wk_cs_chat_moveable_list").find('span').html() != fullconversation.html())	{
+						Blink_Title(frmname);
+						//if(!jQuery.browser.msie)
+							SoundAlert();
+						jQuery('#'+toid).find(".wk_cs_chat_moveable_list").html('');
+						jQuery('#'+toid).find(".wk_cs_chat_moveable_list").append(fullconversation);
+						if(scrollhalf == true)
+							jQuery('#'+toid).find(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scrollTop(jQuery('#'+toid).find(".wk_cs_chat_moveable_list").height()-prev_scroll_height);
+						else
+							jQuery('#'+toid).find(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scrollTop(jQuery('#'+toid).find(".wk_cs_chat_moveable_list").height());
+					}
+					jQuery('#'+toid).find(".wk_cs_loader").css({"display":"none"});
+				}					
+			});
+		}
+		
+		function Blink_Title(frmname){
+			clearInterval(title_blink);
+			var tmp1 = current_title;
+			if(frmname){
+				var new_title = "Message from "+frmname;
+			}else{
+				var new_title = "Message from Admin";
+			}
+			title_blink = setInterval(function(){					
+				jQuery("title").text(new_title);
+				var tmp = new_title;
+				new_title = tmp1;
+				tmp1 = tmp;
+			},1000);
+		}
+		
+		jQuery(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scroll(function() {
+			if(jQuery(".wk_cs_chat_list_small,.wk_cs_chat_list_big").scrollTop() == 0){
+				limit_count += 10;
+				var scrollhalf = true;
+				var thisid = jQuery(this).parents('.wk_cs_chatwindow').attr('id');
+				Fetch_Msg_From_Admin_For_Users(thisid,scrollhalf);
+			}				
+		});
+		setInterval(function(){Check_User_Status();},5000);
+<?php	
+	}	?>	
+
+	function Emoticons_Click(thisthis){
+		jQuery(thisthis).parent().hide();
+		var strid = jQuery(thisthis).parents('.wk_cs_chatwindow').find('.wk_cs_enter_text_small').attr('id');
+		var image = jQuery('<span/>').addClass(jQuery(thisthis).attr("class")).attr('title',jQuery(thisthis).attr("title"));
+		var $obj2=jQuery('<div/>').addClass('wk_cs_chat')
+				.append(
+					jQuery('<span/>').addClass('wk_cs_chat_ref').attr('title','<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName()?>')
+					.append(jQuery('<span/>').addClass('wk_cs_chat_myname').text('<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?> :  '))
+				)
+				.append(
+					jQuery('<span/>').addClass('wk_cs_chat_content')
+					.append(image)
+				);					 
+		jQuery(thisthis).parent().parent().prev().find(".wk_cs_chat_moveable_list").append($obj2);
+		jQuery.ajax({
+			url: "<?php echo $this->getUrl('chatsystem/index/saveconversation')?>",
+			type: "GET",
+			dataType: 'html',
+			data:{	
+				fromname : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName();?>",
+				forid	 : "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getId();?>",
+				toid     :	strid.split("_")[1],
+				toname   :	strid.split("_")[0],
+				message	 : jQuery(thisthis).attr("class")+"|-|"+jQuery(thisthis).attr("title")	}
+		});
+		jQuery(thisthis).parent().parent().prev().scrollTop(jQuery(thisthis).parent().parent().prev().find(".wk_cs_chat_moveable_list").height());
+	}
+	function Open_Icons(thisthis){
+		if(jQuery(thisthis).prev().css("display") == "block")
+			jQuery(thisthis).prev().hide();
+		else
+			jQuery(thisthis).prev().show();
+	}
+	function changemycolor(thisthis){
+		clearInterval(title_blink);
+		jQuery(thisthis).find(".wk_cs_chat_top").css({"background":"#000"});
+		jQuery("title").text(current_title);
+		jQuery("body").find(".wk_cs_chatwindow").each(function(){jQuery(this).css({"z-index":"0"});});
+		jQuery(thisthis).css({"z-index":"999"});
+	}
+	function showhide(thisthis){
+		var thisid = jQuery(thisthis).parents('.wk_cs_chatwindow').attr('id');
+		jQuery('#'+thisid).find(".wk_cs_chat_top").css({"background":"#000"});
+		if(jQuery(thisthis).find("span").attr("class") == "wk_cs_hide"){
+			jQuery(thisthis).parent().next().hide();
+			jQuery(thisthis).find("span").attr("class","wk_cs_show");
+			jQuery(thisthis).parent().parent().css({"width":"250px"});
+			jQuery(thisthis).prev().find("span").attr("class","wk_cs_fullscreen");
+		}
+		else{			
+			Fetch_Msg_From_Admin_For_Users(thisid,false);
+			jQuery(thisthis).parent().next().find(".wk_cs_chat_list_big").attr("class","wk_cs_chat_list_small");
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_container_big").attr("class","wk_cs_enter_text_container_small");			
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_big").attr("class","wk_cs_enter_text_small");
+			jQuery(thisthis).parent().parent().css({"width":"250px"});
+			jQuery(thisthis).parent().next().css({"height":"250px"}).show();
+			jQuery(thisthis).find("span").attr("class","wk_cs_hide");
+			jQuery(thisthis).parent().next().find(".wk_cs_chat_list_small").scrollTop(jQuery(thisthis).parent().next().find(".wk_cs_chat_moveable_list").height());
+		}
+	}
+	function fullscreen(thisthis){
+		var thisid = jQuery(thisthis).parents('.wk_cs_chatwindow').attr('id');
+		Fetch_Msg_From_Admin_For_Users(thisid,false);
+		if(jQuery(thisthis).find("span").attr("class") == "wk_cs_fullscreen"){
+			jQuery(thisthis).parent().next().find(".wk_cs_chat_list_small").attr("class","wk_cs_chat_list_big");
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_container_small").attr("class","wk_cs_enter_text_container_big");
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_small").attr("class","wk_cs_enter_text_big");
+			jQuery(thisthis).parent().parent().css({"width":"500px"});
+			jQuery(thisthis).parent().next().css({"height":"500px"}).show();
+			jQuery(thisthis).find("span").attr("class","wk_cs_smallscreen");
+			jQuery(thisthis).next().find("span").attr("class","wk_cs_hide")
+		}
+		else{			
+			jQuery(thisthis).parent().next().find(".wk_cs_chat_list_big").attr("class","wk_cs_chat_list_small");
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_container_big").attr("class","wk_cs_enter_text_container_small");
+			jQuery(thisthis).parent().next().find(".wk_cs_enter_text_big").attr("class","wk_cs_enter_text_small");
+			jQuery(thisthis).parent().parent().css({"width":"250px"});
+			jQuery(thisthis).parent().next().css({"height":"250px"});
+			jQuery(thisthis).find("span").attr("class","wk_cs_fullscreen");
+			jQuery(thisthis).next().find("span").attr("class","wk_cs_hide");
+		}
+	}
+</script>

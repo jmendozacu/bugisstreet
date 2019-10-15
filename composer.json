@@ -1,0 +1,17 @@
+{
+    "name": "aoepeople/aoe_profiler",
+    "license": "GPLv3",
+    "type": "magento-module",
+    "description": "Magento Profiler",
+    "homepage": "http://www.fabrizio-branca.de/magento-profiler.html",
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    },
+    "authors":[
+        {
+            "name":"Fabrizio Branca",
+            "email":"fabrizio.branca@aoe.com"
+        }
+    ]
+}
+

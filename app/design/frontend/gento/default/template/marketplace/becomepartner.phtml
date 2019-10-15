@@ -1,0 +1,160 @@
+<script type="text/javascript">
+    if (typeof jQuery == 'undefined'){
+        document.write(unescape("%3Cscript src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+    }
+</script>
+<?php $partnerId=Mage::getSingleton('customer/session')->getCustomerId();
+$helper=Mage::helper('marketplace');
+$collection=Mage::getModel('marketplace/userprofile')->getCollection();
+$collection->addFieldToFilter('mageuserid',array('eq'=>$partnerId)); ?>
+<div class="content">
+    <div class="test"></div>
+    <?php if(count($collection)){ ?>
+        <div class="fieldset" style="">
+            <h4 class="legend"><?php echo  $helper->__('Seller Request') ?></h4>
+            <div class="wk_emptymsg"><?php echo  $helper->__('Awaiting approval from admin, please allow 1-3 business days') ?></div>
+        </div>
+    <?php }
+    else { ?>
+        <form action="<?php echo $this->getUrl('marketplace/marketplaceaccount/becomepartner') ?>" enctype="multipart/form-data" method="post" id="form-customer-product-partner">
+            <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+            <div class="page-title">
+                <h1 style="float:left;"><?php echo  $helper->__('Seller Request') ?></h1>
+                <!--                <a id="save_butn">Add Associate Product</a>-->
+            </div>
+            <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+            <div class="wk_mp_design">
+                <div class="fieldset wk_mp_fieldset">
+                    <ul class="">
+                        <li  class="li-account">
+                            <div class="">
+                                <label class="label-account"><?php echo $this->__('Contact No') ?><em>*</em></label>
+                            </div>
+                        </li>
+                        <li class="li-account become-country" >
+                            <label ><?php echo $this->__('Country') ?></label>
+                            <select name="countryphone" id="countryphone" style="width: 100%">
+                                <?php foreach(Mage::getModel('directory/country')->getResourceCollection()->loadByStore()->toOptionArray(true) as $country){
+                                    $name=$this->getRequest()->getParam('name');
+                                    $collections=Mage::getModel('directory/country')->getCollection()->addFieldToFilter('country_id',$country['value']);
+                                    foreach ($collections as $row){?>
+                                        <option <?php echo ($country['value']=='SG'?"selected='selected'":""); ?> value="<?php echo $country['value']; ?>"><?php echo $country['label'].' (+'.$row['phone_country'].')';?></option>
+                                    <?php }
+                                } ?>
+                            </select>
+                        </li>
+                        <li  class="li-account become-area">
+                            <div class="">
+                                <label class="label-account"><?php echo $this->__('Area') ?></label>
+                                <div class="input-box">
+                                    <input style="width: 350px" type="text" name="areacode" title="<?php echo $this->__('Contact No') ?>" id="areacode" class="input-text required-entry validate-number" />
+                                </div>
+                            </div>
+                        </li>
+
+                        <li  class="li-account become-phone">
+                            <div class="">
+                                <label style="width: 100%" class="label-account"><?php echo $this->__('Phone Number') ?></label>
+                                <div class="input-box">
+                                    <input style="width: 350px" type="text" name="contactno" title="<?php echo $this->__('Contact No') ?>" id="contactno" class="input-text required-entry validate-number" />
+                                </div>
+                            </div>
+                        </li>
+                        <li   class="li-account" style="clear: both; padding-top: 20px">
+                            <div class="">
+                                <label class="label-account"><?php echo $this->__('Shop Name') ?><em>*</em></label>
+                                <div class="input-box">
+                                    <input style="width: 350px" type="text" name="shopname" title="<?php echo $this->__('Shop Name') ?>" id="shopname" class="input-text required-entry" />
+                                </div>
+                            </div>
+                        </li>
+                        <li  class="li-account" >
+                            <div class="">
+                                <label class="label-account"><?php echo $this->__('Shop Description') ?><em>*</em></label>
+                                <div class="input-box">
+                                    <textarea style="width: 350px" name="shopdescription"  id="shopdescription required-entry"></textarea>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="li-account">
+                            <label class="label-account"><?php echo  $helper->__('Shop URL') ?></label>
+                            <?php
+                            if(Mage::getStoreConfig('marketplace/marketplace_profile/profile_hint_status') && Mage::getStoreConfig('marketplace/marketplace_profile/shopurl_seller')){?>
+                                <img src="<?php echo $this->getSkinUrl('marketplace/images/quest.png'); ?>" class='questimg' title="<?php echo Mage::getStoreConfig('marketplace/marketplace_profile/shopurl_seller') ?>"/>
+                            <?php
+                            } ?>
+                            <div class="input-box shop">
+                              <input  disabled="disabled" type="text" class="wk_input_width" name="profileurl1" id="profileurl1" placeholder="Please enter shop URL"/>
+                                <input  type="hidden" class="required-entry wk_input_width" name="profileurl" id="profileurl" placeholder="Please enter shop URL"/>
+                                <div id="wk_load">
+                                    <img src="<?php echo $this->getSkinUrl('marketplace/images/ajax-loader-tr.gif'); ?>" height="16px" width="16px"/>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="control li-account">
+                            <input type="checkbox" class="required-entry" name="partnertype" id="partnertype" value="0"/>
+                            <label>I have read and agree to <a href="<?php echo $this->getUrl('seller_agreement/')?>" target="_blank">Seller Terms and Conditions</a> </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <button style="float: left; margin-left: 100px !important;" type="reset" class="button wk_mp_btn">
+                <span><span><?php echo $helper->__('Clear') ?></span></span>
+            </button>
+            <button style="float: left; margin-top: -51px;" type="submit" title="Save" class="button pay wk_mp_btn">
+                    <span>
+                    <span><?php echo  $helper->__('Sign Up') ?></span>
+                    </span>
+            </button>
+        </form>
+    <?php } ?>
+</div>
+<script>
+    var $wk_jq= jQuery.noConflict();
+    var newCustomerProductForm = new VarienForm('form-customer-product-partner', true);
+    (function($wk_jq){
+        $wk_jq(function(){
+            $wk_jq('#profileurl').keyup(function(){
+                $wk_jq(this).val($wk_jq(this).val().replace(/[^a-z^A-Z^0-9\.\-]/g,''));
+            });
+            $wk_jq('#shopname').change(function(){
+                $wk_jq('.unavailable,.available').remove();
+                var profile = $wk_jq('#shopname').val();
+                profile = profile.toLowerCase();
+                $wk_jq('#profileurl').val(profile);
+                $wk_jq('#profileurl').val($wk_jq('#profileurl').val().replace(/[^a-z^A-Z^0-9\.\-]/g,''));
+                var profileurl = $wk_jq('#profileurl').val();
+                $wk_jq('#profileurl1').val(profileurl);
+                if(profileurl!=''){
+                    $wk_jq('#wk_load').show();
+                    $wk_jq.ajax({
+                        url:'<?php echo $this->getUrl('marketplace/seller/usernameverify',array('_secure'=>true))?>',
+                        type:'POST',
+                        data:{profileurl:profileurl},
+                        dataType:'JSON',
+                        success:function(data){
+                            $wk_jq('#wk_load').hide();
+                            if(data==0){
+                                $wk_jq(".button").removeAttr("disabled");
+                                $wk_jq('.shop').append($wk_jq('<div/>').addClass('available success-msg').text('available'));
+                            }else{
+                                $wk_jq(".button").attr("disabled","disabled");
+                                $wk_jq('.shop').append($wk_jq('<div/>').addClass('unavailable error-msg').text('unavailable'));
+                            }
+                        }
+                    });
+                }
+            });
+//        $wk_jq('#save_butn').click(function(e){
+//            alert("test");
+//            <?php //$session = Mage::getSingleton('customer/session');
+//            $customer_id = $session->getId();
+//            $customer_data = Mage::getModel('customer/customer')->load($customer_id);
+//            $customer_data->setShopName('1234567');
+//            $customer_data->save();
+//            ?>
+//        });
+        });
+    })($wk_jq);
+</script>

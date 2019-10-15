@@ -1,0 +1,51 @@
+<style type="text/css">
+.mprma_damage_image{
+	width:150px;
+}
+</style>
+<?php 
+$id = $this->getRequest()->getParam("id");
+$path = Mage::getBaseDir().'/media/mprmasystem/'.$id;
+$flag = 0;
+if (is_dir($path)) {
+	$objects = scandir($path);
+	if(count($objects)){
+	?>
+	<table id="mprma_damage_image_div">
+		<tbody id="mprma_damage_image_tbody">
+			<tr id="mprma_damage_image">
+				<td class="label">
+					<label for="convmessage">Damaged Images</label>
+				</td>
+				<td style=" padding-right: 5px;width: 100%;">
+					<?php
+					foreach ($objects as $object) {
+						if ($object != "." && $object != "..") {
+							$flag = 1;
+							?>
+							<a href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB).'media/mprmasystem/'.$id.'/'.$object?>" target="blank"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB).'media/mprmasystem/'.$id.'/'.$object?>" class="mprma_damage_image"></a>
+							<?php
+						}
+					}
+					if($flag == 0){
+						echo "No Image Uploaded.";
+					}?>
+				</td>
+			</tr>
+		</tbody>
+	</table>	<?php
+	}
+}
+?>
+<script type="text/javascript">
+	if (typeof jQuery == 'undefined'){
+		document.write(unescape("%3Cscript src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+	}
+</script>
+<script type="text/javascript">
+jQuery.noConflict();
+jQuery(document).ready(function(){
+	jQuery('#mprma_form table tr:last').after(jQuery('#mprma_damage_image_tbody').html());
+	jQuery('#mprma_damage_image_div').remove();
+});
+</script>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	<mpshippingmanager_shipping_index>
+        <reference name="content">
+			 <block type="mpshipping/mpshipping" name="mpshipping" as="mpshipping" template="mpshipping/mpshipping.phtml" />
+        </reference>
+    </mpshippingmanager_shipping_index>
+</layout> 

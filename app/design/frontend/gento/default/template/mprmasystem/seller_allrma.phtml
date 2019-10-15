@@ -1,0 +1,94 @@
+<style type="text/css">.data-table thead th {white-space: normal!important;}</style>
+<div class="page-title">
+    <h1><?php echo Mage::helper("mprmasystem")->__("My Requested RMA"); ?></h1>
+</div>
+<?php echo $this->getPagerHtml();?>
+<div class="table-responsive clear">
+    <table class="data-table">
+    <thead>
+        <tr class="first last">
+            <th><?php echo Mage::helper("mprmasystem")->__("Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Customer Name"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Order Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Product Name"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Reason"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Date"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("RMA Status"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("My Status"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Customer Status"); ?></th>
+            <th class="a-center"><?php echo Mage::helper("mprmasystem")->__("Action"); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+		<?php
+		$collection = $this->getCollection();	
+		$totalcount = count($collection);
+		$count = 1;
+		if($totalcount >0 ){
+			foreach ($collection as $row) 	{	
+				$order = Mage::getModel("sales/order")->load($row->getOrderid()); ?>
+		    	<tr class="<?php if($count == 1)echo 'first ';if($count == $totalcount)echo 'last ';if($count % 2 == 0)echo 'even';else echo 'odd';?>">
+		            <td><?php echo $row->getId(); ?></td>
+		            <td>
+		            	<?php 
+		            	$customerid = $row->getCustomerid();
+		            	$customer = Mage::getModel('customer/customer')->load($customerid);
+						echo $customer->getFirstname()." ".$customer->getLastname();
+		            	?>
+		            </td>
+		            <td><?php echo $order->getIncrementId(); ?></td>
+		            <td><?php echo Mage::getModel('catalog/product')->load($row->getitemid())->getName(); ?></td>
+		            <td><?php echo Mage::getModel("mprmasystem/rmareason")->load($row->getReason())->getReason(); ?></td>
+		            <!--<td><?php /*$date = date_create($row->getCreatedAt());echo date_format($date, "g:ia jS F Y"); */?></td>-->
+                    <td><?php echo Mage::helper('core')->formatDate($row->getCreatedAt(), 'medium', true); ?></td>
+		            <td>
+	            		<?php 	
+	            		$status_with_translation = Mage::helper("mprmasystem")->__($row->getStatus());
+	    				$status_without_translation = $row->getStatus();
+	    				if($status_without_translation == "Closed")
+	    					echo "<strong class='wk_rs_status_solve'>".Mage::helper("mprmasystem")->__("Closed")."</strong>";
+						if($status_without_translation == "Cancelled")
+	    					echo "<strong class='wk_rs_status_cancel'>".$status_with_translation."</strong>";
+	    				if($status_without_translation == "Pending")
+	    					echo "<strong class='wk_rs_status_pending'>".$status_with_translation."</strong>";
+	    				if($status_without_translation == "Processing")
+	    					echo "<strong class='wk_rs_status_processing'>".$status_with_translation."</strong>";
+	    				?>
+		            </td>
+		            <td>
+	            	<?php 	
+	            		/*if($row->getSellerstatus() == 0)
+	    					echo Mage::helper("mprmasystem")->__("Not Received Package yet");
+	        			if($row->getSellerstatus() == 1)
+	        				echo Mage::helper("mprmasystem")->__("Received Package");*/
+	    				if($row->getSellerstatus() == 2)
+	    					echo Mage::helper("mprmasystem")->__("Dispatched Package");
+	    				if($row->getSellerstatus() == 3)
+	            			echo Mage::helper("mprmasystem")->__("Declined/Returned"); 		
+	            	?>
+		            <td>
+		            <?php 	
+	            		if($row->getCustomerstatus() == 0)
+	    					echo Mage::helper("mprmasystem")->__("Not Delivered Yet");
+	        			else
+	            			echo Mage::helper("mprmasystem")->__("Delivered");
+	            	?>
+		            </td>
+		            <td class="a-center last">
+		                <span class="nobr">
+		                	<a href="<?php echo $this->getUrl('mprmasystem/seller/viewrma/').'id/'.$row->getId()?>"><?php echo Mage::helper("mprmasystem")->__("View"); ?></a>
+		        		</span>
+		            </td>
+		        </tr>
+			<?php $count++;
+			}
+		}else {	?>
+			<tr class="first last">
+	            <td colspan="12" class="a-center"><?php echo Mage::helper("mprmasystem")->__("No RMA Filed yet"); ?>.</td>
+		    </tr>
+		<?php
+		}?>
+    </tbody>
+</table>
+</div>
+<?php echo $this->getPagerHtml(); ?>

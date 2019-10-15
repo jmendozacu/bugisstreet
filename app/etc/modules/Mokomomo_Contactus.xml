@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Mokomomo_Contactus>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Mokomomo_Contactus>
+    </modules>
+</config>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ocean_CustomerAttributes>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Adminhtml />
+                <Mage_Customer />
+            </depends>
+        </Ocean_CustomerAttributes>
+    </modules>
+</config>

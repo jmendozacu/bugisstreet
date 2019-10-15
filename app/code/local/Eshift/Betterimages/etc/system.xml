@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<config>
+	 <tabs>
+		<eshift translate="label" module="betterimages">
+            <label>eShift</label>
+            <sort_order>810</sort_order>
+        </eshift>
+	  </tabs>
+
+	  <sections>
+		<es_betterimages  translate="label" module="betterimages">
+		<label>Better Product Images</label>
+		<tab>eshift</tab>
+		<frontend_type>text</frontend_type>
+		<sort_order>100</sort_order>
+		<show_in_default>1</show_in_default>
+		<show_in_website>1</show_in_website>
+		<show_in_store>1</show_in_store>
+					<groups>
+                        <image translate="label">
+                            <label>Big Image</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This image is usually showed as a big image on product page.]]></comment>
+                            <fields>
+                                <quality translate="label">
+                                    <label>Quality</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>Default Magento quality is 90. You could setup this to 99 or even 100.</comment>
+                                </quality>
+                                <enable_sharpen>
+                                    <label>Enable Sharpen</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>You may disable sharpen totally with this setting.</comment>
+                                </enable_sharpen>
+                                <sharpen_value translate="label">
+                                    <label>Sharpen Value</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>15</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[This value affect the image sharpen or bluring.<br />0-3: blur<br />4-20: sharpen. (Best is 8-15).<br />more 20: seems no visual effect.<br />By default is set to 8.]]></comment>
+                                </sharpen_value>
+                            </fields>
+                        </image>
+                        <small_image translate="label">
+                            <label>Small Image</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This image is usually showed in product grid on category pages.]]></comment>
+                            <fields>
+                                <quality translate="label">
+                                    <label>Quality</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>Default Magento quality is 90. You could setup this to 99 or even 100.</comment>
+                                </quality>
+                                <enable_sharpen>
+                                    <label>Enable Sharpen</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>You may disable sharpen totally with this setting.</comment>
+                                </enable_sharpen>
+                                <sharpen_value translate="label">
+                                    <label>Sharpen Value</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>15</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[This value affect the image sharpen or bluring.<br />0-3: blur<br />4-20: sharpen. (Best is 8-15).<br />more 20: seems no visual effect.<br />By default is set to 8.]]></comment>
+                                </sharpen_value>
+                            </fields>
+                        </small_image>
+                        <thumbnail translate="label">
+                            <label>Thumbnail</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This image is usually showed below big image on product page.]]></comment>
+                            <fields>
+                                <quality translate="label">
+                                    <label>Quality</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>Default Magento quality is 90. You could setup this to 99 or even 100.</comment>
+                                </quality>
+                                <enable_sharpen>
+                                    <label>Enable Sharpen</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>You may disable sharpen totally with this setting.</comment>
+                                </enable_sharpen>
+                                <sharpen_value translate="label">
+                                    <label>Sharpen Value</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>15</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[This value affect the image sharpen or bluring.<br />0-3: blur<br />4-20: sharpen. (Best is 8-15).<br />more 20: seems no visual effect.<br />By default is set to 8.]]></comment>
+                                </sharpen_value>
+                            </fields>
+                        </thumbnail>
+                        <other translate="label">
+                            <label>Other Images</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This type of images used when you create additional Media Image attribute and show them in your template.]]></comment>
+                            <fields>
+                                <quality translate="label">
+                                    <label>Quality</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>Default Magento quality is 90. You could setup this to 99 or even 100.</comment>
+                                </quality>
+                                <enable_sharpen>
+                                    <label>Enable Sharpen</label>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>adminhtml/system_config_source_yesno</source_model>
+                                    <sort_order>5</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment>You may disable sharpen totally with this setting.</comment>
+                                </enable_sharpen>
+                                <sharpen_value translate="label">
+                                    <label>Sharpen Value</label>
+                                    <frontend_type>text</frontend_type>
+                                    <validate>validate-digits</validate>
+                                    <sort_order>15</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <comment><![CDATA[This value affect the image sharpen or bluring.<br />0-3: blur<br />4-20: sharpen. (Best is 8-15).<br />more 20: seems no visual effect.<br />By default is set to 8.]]></comment>
+                                </sharpen_value>
+                            </fields>
+                        </other>
+                    </groups>
+		    </es_betterimages>
+	  </sections>
+</config>

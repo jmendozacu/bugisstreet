@@ -1,0 +1,992 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css"    
+ 	href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/default/default/marketplace/css/mpreport.css'?> "
+    media="all">
+<style>
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<div>
+
+<div class= "mainhead">
+<h1><?php 
+$model = Mage::getModel('catalog/product');
+echo Mage::helper('mpreportsystem')->__('MarketPlace Advance DashBoard Manager')
+?></h1>
+</div>
+<div class='mainfrm'>
+<form action="<?php echo $this->getUrl('mpreportsystem/mpreportsystem/showmap') ?>" method="post" enctype="multipart/form-data" >
+<input type="hidden" value="" id="detect"/>
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Set Category:')?> </label>&nbsp &nbsp
+
+<?php 
+$userid = Mage::getSingleton('customer/session')->getId();
+$categ = Mage::getModel('marketplace/product')->getCollection()->addFieldToFilter('userid',$userid);
+$tmp=array();
+foreach($categ as $ac)
+{
+$collect = Mage::getResourceModel('catalog/product_collection')->addFieldToFilter('entity_id',array( 'in' =>$ac['mageproductid'])); 
+  foreach($collect as $prod)
+  {
+    $catids = array_unique($prod->getCategoryIds());
+    foreach($catids as $row)
+	{
+	  if (!in_array($row,$tmp)) array_push($tmp,$row); 
+	}
+  }
+}
+
+
+ ?>
+<?php $categories = Mage::getModel('catalog/category')->getCollection()->addAttributeToSelect('*')->addIsActiveFilter();?>
+<div class="formval">
+<select multiple name='catagor[]' id='catagor' class='selectval'>
+<?php foreach ($tmp as $c) 
+      {
+	   $catname = Mage::getModel('catalog/category')->load($c);
+	    if($c != '2') { ?>
+        <option  id="<?php echo $c?>" value="<?php echo $c?>"><?php echo $catname->getName()?></option>	   
+<?php } } ?>
+    </select >
+</div>	
+</div>
+<div class='forborder'></div>
+
+
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Set Order Status:')?> </label>&nbsp &nbsp
+<?php $orderstatus =Mage::getModel('sales/order_status')->getResourceCollection()->getData() ;?>
+ <div class="formval">
+<select multiple name='status[]' id='status' class='selectval'>
+<?php
+ foreach($orderstatus as $key)
+ { ?>
+  
+  <option  id="<?php echo $key['status'] ?>" value="<?php echo $key['status']?>"><?php echo $key['status'] ?></option>	  
+<?php }?>
+ </select>
+ </div>
+</div>
+<div class='forborder'></div>
+
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Set Interval:')?> </label>&nbsp &nbsp
+<div class="formval">
+<input type="radio" class='radgap' name="group1" value="Monthly" checked><?php echo Mage::helper('mpreportsystem')->__('Monthly')?>&nbsp &nbsp
+<input type="radio" class='radgap' name="group1" value=" Weekly"><?php echo Mage::helper('mpreportsystem')->__('Weekly')?>&nbsp &nbsp
+<input type="radio" class='radgap' name="group1" value=" Daily"><?php echo Mage::helper('mpreportsystem')->__(' Daily')?>&nbsp &nbsp &nbsp &nbsp
+<b><?php echo Mage::helper('mpreportsystem')->__('* Not applicable for top selling product')?></b>
+</div>
+</div>
+<div class='forborder'></div>
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Start On:')?> </label>&nbsp &nbsp
+<div class="formval">
+<input type="text" name="date_fro" id="date_from" value="" /> 
+<img title="Select date" id="cal_date_to" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>"  class="v-middle"/>
+</div>
+</div>
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('End On:')?> </label>&nbsp &nbsp
+<div class="formval">
+<input type="text" name="date_t" id="date_to" value="" />
+<img title="Select date" id="cal_date_from" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>"  class="v-middle"/>
+</div>
+</div>
+<div class='forborder'></div>
+
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Set Number of top Selling Product Result:')?> </label>&nbsp &nbsp
+<div class="formval">
+<input type="text" name="set" id='set'/>
+</div>
+</div>
+
+<div class='forborder'></div>
+<div class='previewdiv'>
+<label  class='priewlabel'><?php 
+echo Mage::helper('mpreportsystem')->__('Quick View:')?> </label>&nbsp &nbsp
+<div class="formval">
+<button type="button" class='showdata button' value="thism" data-datef="<?php echo date('01-m-Y',strtotime(date('M'))) ?>" data-datet="<?php echo date('d-m-Y' , strtotime(' +1 day')) ?>"><span><span><?php echo Mage::helper('mpreportsystem')->__('This Month')?></span></span></button>&nbsp &nbsp
+<button type="button" class='showdata button' value="lastm" data-datet="<?php echo date('d-m-Y', strtotime(' +1 day')) ?>" data-datef="<?php echo date("d-m-Y", mktime(0, 0, 0, date("m")-1, 1, date("Y"))) ?>"><span><span><?php echo Mage::helper('mpreportsystem')->__('Last Month')?></span></span></button>&nbsp &nbsp
+<button type="button" class='showdata button' value="lastsixty" data-datet="<?php echo date('d-m-Y', strtotime(' +1 day')) ?>" data-datef="<?php echo date("d-m-Y", mktime(0, 0, 0, date("m")-2, 1, date("Y"))) ?>"><span><span><?php echo Mage::helper('mpreportsystem')->__('Last 60 days')?></span></span></button>&nbsp &nbsp 
+<button type="button" class='showdata button' value="lastninty" data-datet="<?php echo date('d-m-Y', strtotime(' +1 day')) ?>" data-datef="<?php echo date("d-m-Y", mktime(0, 0, 0, date("m")-3, 1, date("Y"))) ?> "><span><span><?php echo Mage::helper('mpreportsystem')->__('Last 90 days')?></span></span></button>
+</div>
+</div>
+<div class='forborder'></div>
+
+
+<div class='previewdiv'>
+<button type="button" id="allmap" class='button'><span><span>Show Advance Dashboard</span></span></button>
+<button type="button" id="buttn" class='button'><span><span>Show Advance Report</span></span></button>
+<button type="button" id="topsell" class='button'><span><span>Top Selling Product</span></span></button>
+</div>
+<div class='forborder'></div>
+</form>
+</div>
+<div class="imagecls"></div>
+
+
+
+
+
+<div id="light">
+		<div class="page-title">
+		<a title="Close" onclick="lightbox_close();"><span class="delet">X</span></a>
+    	</div>
+        
+<div id="slider-wrapper">
+<div id="slider">
+	<div class="sp">
+	<div id='viewmp1'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp2'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp3'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp4'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp5'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp6'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp8'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp9'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp10'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp11'></div>
+	</div>
+	<div class="sp">
+	<div id='viewmp7'></div>
+	</div>
+</div>
+</div>
+
+<div id="button-previous" class='changbut'></div> 
+          <div id="button-next" class='changbut'></div>    
+        
+    
+</div>
+<div id="fade" onClick="lightbox_close();"></div> 
+
+
+<div id='viewmp'></div>
+
+<div id='table_div'>
+<div class= "mainhead">
+<?php $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode();
+$currency_symbol = Mage::app()->getLocale()->currency( $currency_code )->getSymbol();
+?>	
+<h2>
+<?php echo Mage::helper('mpreportsystem')->__('The Original Data Table Generated by Selected Date Range')?>
+</h2>
+</div>
+  <div  id='table_div1'>
+	<div class='coulmdiv1'>
+		<label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Date')?></label>
+    </div>
+
+    <div class='coulmdiv1'>
+      <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('No of Orders')?></label>
+    </div>
+
+     <div  class='coulmdiv1'>
+       <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Total Items sold')?></label>
+     </div>
+     
+      <div class='coulmdiv1'>
+        <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Revenue').'('.$currency_symbol.')' ?></label>
+      </div>
+      
+      <div  class='coulmdiv1'>
+       <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Actual Revenue').'('.$currency_symbol.')' ?></label>
+     </div>
+     
+     <div  class='coulmdiv41'>
+       <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Commission').'('.$currency_symbol.')' ?></label>
+     </div>
+
+  </div>
+  
+</div>
+
+
+<div id='topproduct'>
+<div class= "mainhead">
+<h2>
+<?php echo Mage::helper('mpreportsystem')->__('The Original Data Table Generated by Top Selling Product')?>
+</h2>
+</div>
+  <div  id='table_div1'>
+	<div class='coulmdiv'>
+		<label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Product_name')?></label>
+    </div>
+
+    <div class='coulmdiv'>
+      <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Total Items sold')?></label>
+    </div>
+    <div class='coulmdiv'>
+        <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Revenue').'('.$currency_symbol.')' ?></label>
+     </div>
+    <div class='coulmdiv'>
+        <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Actual Revenue').'('.$currency_symbol.')' ?></label>
+     </div> 
+
+     <div class='coulmdiv4'>
+        <label class='tabllabel'><?php echo Mage::helper('mpreportsystem')->__('Commission').'('.$currency_symbol.')' ?></label>
+     </div>
+
+  </div> 
+</div>
+</div>
+<script type="text/javascript">// <![CDATA[
+Calendar.setup({
+    inputField : 'date_to',
+    ifFormat : '%m/%e/%y',
+    button : 'cal_date_from',
+    align : 'Bl',
+    singleClick : true
+});
+Calendar.setup({
+    inputField : 'date_to',
+    ifFormat : '%m/%e/%y',
+   // button : 'cal_date_from',
+    align : 'Bl',
+    singleClick : true
+});
+
+Calendar.setup({
+    inputField : 'date_from',
+    ifFormat : '%m/%e/%y',
+    button : 'cal_date_to',
+    align : 'Bl',
+    singleClick : true
+});
+
+Calendar.setup({
+     inputField : 'date_from',
+    ifFormat : '%m/%e/%y',
+  //  button : 'cal_date_to',
+    align : 'Bl',
+    singleClick : true
+});
+// ]]></script>
+
+<?php //echo $this->getChildHtml('html_calendar') ?>
+</html>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script type="text/javascript">		
+ jQuery.noConflict();
+ (function (jQuery) {
+    
+	jQuery('#buttn').on('click',function() {
+		var status =[];
+		var catagor = [];
+		jQuery('#catagor :selected').each(function(j, selected){ 
+          catagor[j] = jQuery(selected).val(); 
+		 
+         });
+		 
+		jQuery('#status :selected').each(function(i, selected){ 
+          status[i] = jQuery(selected).val();
+         });
+		 jQuery('#detect').val('report');
+		var detect= jQuery('#detect').val();
+		var radio= jQuery('input[type="radio"]:checked').val();
+		var datef = jQuery('#date_from').val();
+		var datet = jQuery('#date_to').val();
+		var set = jQuery('#set').val();
+		jQuery('#loading-mask').show();
+		jQuery.ajax({
+				url  	:   "<?php echo $this->getUrl('mpreportsystem/mpreportsystem/showtablevalues');?>",
+				type 	:   "GET",
+				data 	:   {cat:catagor,st:status,rad:radio,df:datef,dt:datet,set:set,detect:detect},
+				dataType:   "html",
+				success :   function(content){
+				var newdata=  jQuery.parseJSON(content);
+				var order = newdata.order;
+				var len=(order.length)/5;
+				jQuery.each(order, function(key, value){
+                 //console.log(key, value);
+                });	
+				var count = [];
+				jQuery('.nwtables').remove();
+				for(i=0;i<len;i++)
+				{
+				 for(j=0;j<5;j++)
+				  {
+				   count[j]=j+i*5;   
+				  }
+				  var actualcost= order[count[3]]-order[count[4]];
+				  jQuery('#table_div').append('<div class="nwtables" style="border-bottom-style:solid;border-bottom-color: #ccc;border-width:1px;"><div class="columval1"><label>'+order[count[0]]+'</label></div><div class="columval1"><label>'+order[count[1]]+'</label></div><div class="columval1"><label>'+order[count[2]]+'</label></div><div class="columval1"><label>'+parseFloat(order[count[3]]).toFixed(2)+'</label></div><div class="columval1"><label>'+parseFloat(actualcost).toFixed(2)+'</label></div><div class="columval1"><label>'+parseFloat(order[count[4]]).toFixed(2)+'</label></div></div>');
+				}
+				jQuery('#table_div').show();
+				jQuery('#loading-mask').hide();
+				jQuery('.wrapper').css({'opacity':1});
+				jQuery(document).scrollTop(jQuery('#table_div').offset().top);
+				}
+				});	
+	 
+	});
+})(jQuery);
+</script >
+<script type="text/javascript">		
+ jQuery.noConflict();
+ (function (jQuery) {
+    
+	jQuery('#topsell').on('click',function() {
+		var status =[];
+		var catagor = [];
+		jQuery('#catagor :selected').each(function(j, selected){ 
+          catagor[j] = jQuery(selected).val(); 
+		 
+         });
+		 
+		jQuery('#status :selected').each(function(i, selected){ 
+          status[i] = jQuery(selected).val();
+         });
+		 jQuery('#detect').val('topselling');
+		var detect= jQuery('#detect').val();
+		var radio= jQuery('input[type="radio"]:checked').val();
+		var datef = jQuery('#date_from').val();
+		var datet = jQuery('#date_to').val();
+		var set = jQuery('#set').val();
+		jQuery('#loading-mask').show();
+		jQuery.ajax({
+				url  	:   "<?php echo $this->getUrl('mpreportsystem/mpreportsystem/showtablevalues');?>",
+				type 	:   "GET",
+				data 	:   {cat:catagor,st:status,rad:radio,df:datef,dt:datet,set:set,detect:detect},
+				dataType:   "html",
+				success :   function(content){
+				var newdata=  jQuery.parseJSON(content);	
+				var order = newdata.order;
+				var len=(order.length)/4;
+				jQuery.each(order, function(key, value){
+                 console.log(key, value);
+                });	
+				var count = [];
+				jQuery('.topprod').remove();
+			     for(i=0;i<len;i++)
+				{
+				  for(j=0;j<4;j++)
+				  {
+				   count[j]=j+i*4;   
+				  }
+				  var actualc =order[count[2]]-order[count[3]];
+				  jQuery('#topproduct').append('<div class="topprod" style="border-bottom-style:solid;border-bottom-color: #ccc;border-width:1px;"><div class="columval"><label>'+order[count[0]]+'</label></div><div class="columval"><label>'+order[count[1]]+'</label></div><div class="columval"><label>'+parseFloat(order[count[2]]).toFixed(2)+'</label></div><div class="columval"><label>'+parseFloat(actualc).toFixed(2)+'</label></div><div class="columval"><label>'+parseFloat(order[count[3]]).toFixed(2)+'</label></div></div>');
+				}
+				jQuery('#topproduct').show(); 
+				jQuery('#loading-mask').hide();
+				jQuery('.wrapper').css({'opacity':1});
+				jQuery(document).scrollTop(jQuery('#topproduct').offset().top);
+				}
+				});	
+	 
+	});
+})(jQuery);
+</script >
+
+<script type="text/javascript">		
+ jQuery.noConflict();
+ (function (jQuery) {
+    
+	jQuery('.showdata').on('click',function() {
+		var status =[];
+		var catagor = [];
+		jQuery('#catagor :selected').each(function(j, selected){ 
+          catagor[j] = jQuery(selected).val(); 
+		 
+         });
+		 
+		jQuery('#status :selected').each(function(i, selected){ 
+          status[i] = jQuery(selected).val();
+         });
+		 jQuery('#detect').val('report');
+		var detect= jQuery('#detect').val();
+		var radio= jQuery('input[type="radio"]:checked').val();
+		var datef = jQuery(this).data("datef");
+		var datet =  jQuery(this).data("datet");
+		var set = jQuery('#set').val();
+		//jQuery('.wrapper').css({'opacity':.5});
+		jQuery('#loading-mask').show();
+		jQuery.ajax({
+				url  	:   "<?php echo $this->getUrl('mpreportsystem/mpreportsystem/showtablevalues');?>",
+				type 	:   "GET",
+				data 	:   {cat:catagor,st:status,rad:radio,df:datef,dt:datet,detect:detect,show:"show",set:set},
+				dataType:   "html",
+				success :   function(content){
+				var newdata=  jQuery.parseJSON(content);
+				var order = newdata.order;
+				var len=(order.length)/5;
+				jQuery.each(order, function(key, value){
+                });	
+				var count = [];
+				jQuery('.nwtables').remove();
+				for(i=0;i<len;i++)
+				{
+				 
+				 for(j=0;j<5;j++) 
+				  {
+				   count[j]=j+i*5;   
+				  }
+				  var actul = order[count[3]]-order[count[4]];
+				  jQuery('#table_div').append('<div class="nwtables" style="border-bottom-style:solid;border-bottom-color: #ccc;border-width:1px;"><div class="columval"><label>'+order[count[0]]+'</label></div><div class="columval1"><label>'+order[count[1]]+'</label></div><div class="columval1"><label>'+order[count[2]]+'</label></div><div class="columval1"><label>'+parseFloat(order[count[3]]).toFixed(2)+'</label></div><div class="columval1"><label>'+parseFloat(actul).toFixed(2)+'</label></div><div class="columval1"><label>'+parseFloat(order[count[4]]).toFixed(2)+'</label></div></div>');
+				}
+				jQuery('#table_div').show();
+				jQuery('#loading-mask').hide();
+				jQuery('.wrapper').css({'opacity':1});
+				jQuery(window).scrollTop(jQuery('#table_div').offset().top);
+				
+				}
+				
+				});	
+	 
+	});
+})(jQuery);
+</script >
+
+<script type="text/javascript">		
+ 
+</script >
+
+ <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+function drawChart11(kord,vord) {	
+var len=kord.length;
+	var data = new google.visualization.DataTable();
+     data.addColumn('string', 'name');
+        data.addColumn('number', 'revenue');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kord[j]);
+		 data.setValue(j,1,vord[j]);
+        }	
+  var columns = [0];
+  for (var i = 0; i < len; i++) {
+    columns.push({
+        type: 'number',
+        label: kord[i],
+         calc: (function (x) {
+            return function (dt, row) {
+              return (dt.getValue(row, 0) == kord[x]) ? dt.getValue(row, 1) : null;
+            }
+        })(i) 
+    });
+  }
+    var chart = new google.visualization.ChartWrapper({
+        chartType: 'ColumnChart',
+        containerId: 'viewmp11',
+        dataTable: data,
+	
+        options: {
+            title: 'Top product order by date',
+			'isStacked': true,
+            width: 500,
+            height: 400,
+			
+        },
+	     view: {
+          columns: columns
+        }
+    });
+    chart.draw();
+}
+
+function drawChart10(krev1,vrev1) {	
+var len=krev1.length;
+	var data = new google.visualization.DataTable();
+     data.addColumn('string', 'name');
+        data.addColumn('number', 'revenue');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,krev1[j]);
+		 data.setValue(j,1,vrev1[j]);
+        }	
+  var columns = [0];
+  for (var i = 0; i < len; i++) {
+    columns.push({
+        type: 'number',
+        label: krev1[i],
+         calc: (function (x) {
+            return function (dt, row) {
+              return (dt.getValue(row, 0) == krev1[x]) ? dt.getValue(row, 1) : null;
+            }
+        })(i) 
+    });
+  }
+    var chart = new google.visualization.ChartWrapper({
+        chartType: 'ColumnChart',
+        containerId: 'viewmp10',
+        dataTable: data,
+	
+        options: {
+            title: 'Top product revenue by date',
+			'isStacked': true,
+            width: 500,
+            height: 400,
+			
+        },
+	     view: {
+          columns: columns
+        }
+    });
+    chart.draw();
+}
+
+
+function drawChart9(kpro1,vpro1) {	
+var len=kpro1.length;
+	var data = new google.visualization.DataTable();
+     data.addColumn('string', 'name');
+        data.addColumn('number', 'revenue');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kpro1[j]);
+		 data.setValue(j,1,vpro1[j]);
+        }	
+  var columns = [0];
+  for (var i = 0; i < len; i++) {
+    columns.push({
+        type: 'number',
+        label: kpro1[i],
+         calc: (function (x) {
+            return function (dt, row) {
+              return (dt.getValue(row, 0) == kpro1[x]) ? dt.getValue(row, 1) : null;
+            }
+        })(i) 
+    });
+  }
+    var chart = new google.visualization.ChartWrapper({
+        chartType: 'ColumnChart',
+        containerId: 'viewmp9',
+        dataTable: data,
+	
+        options: {
+            title: 'Top product quantity by date',
+			'isStacked': true,
+            width: 500,
+            height: 400,
+			
+        },
+	     view: {
+          columns: columns
+        }
+    });
+    chart.draw();
+}
+
+function drawChart8(krev,vrev) {	
+var len=krev.length;
+	var data = new google.visualization.DataTable();
+     data.addColumn('string', 'name');
+        data.addColumn('number', 'revenue');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,krev[j]);
+		 data.setValue(j,1,vrev[j]);
+        }	
+  var columns = [0];
+  for (var i = 0; i < len; i++) {
+    columns.push({
+        type: 'number',
+        label: krev[i],
+         calc: (function (x) {
+            return function (dt, row) {
+              return (dt.getValue(row, 0) == krev[x]) ? dt.getValue(row, 1) : null;
+            }
+        })(i) 
+    });
+  }
+    var chart = new google.visualization.ChartWrapper({
+        chartType: 'ColumnChart',
+        containerId: 'viewmp8',
+        dataTable: data,
+	
+        options: {
+            title: 'Top revenue by product',
+			'isStacked': true,
+            width: 500,
+            height: 400,
+			
+        },
+	     view: {
+          columns: columns
+        }
+    });
+    chart.draw();
+}
+
+function drawChart6(kpro,vpro) {	
+var len=kpro.length;
+	var data = new google.visualization.DataTable();
+     data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kpro[j]);
+		 data.setValue(j,1,vpro[j]);
+        }	
+  var columns = [0];
+  for (var i = 0; i < len; i++) {
+    columns.push({
+        type: 'number',
+        label: kpro[i],
+         calc: (function (x) {
+            return function (dt, row) {
+              return (dt.getValue(row, 0) == kpro[x]) ? dt.getValue(row, 1) : null;
+            }
+        })(i) 
+    });
+  }
+    var chart = new google.visualization.ChartWrapper({
+        chartType: 'ColumnChart',
+        containerId: 'viewmp6',
+        dataTable: data,
+	
+        options: {
+            title: 'Top product quantity by product',
+			'isStacked': true,
+            width: 500,
+            height: 400,
+			
+        },
+	     view: {
+          columns: columns
+        }
+    });
+    chart.draw();
+}
+		
+function drawChart7(kcon,vcon) {
+var len =kcon.length;
+     var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kcon[j]);
+		 data.setValue(j,1,vcon[j]);
+        }
+		
+        var options = {'title':'Top product order by country','width':400,'height':400
+                      };
+
+        var chart1 = new google.visualization.GeoMap(document.getElementById('viewmp7'));
+        chart1.draw(data, options);
+		
+}
+
+function drawChart5(kord,vord) {
+var len =kord.length;
+     var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kord[j]);
+		 data.setValue(j,1,vord[j]);
+        }
+		
+        var options = {'title':'Top product order by date','width':500,'height':400
+                      };
+
+        var chart = new google.visualization.PieChart(document.getElementById('viewmp5'));
+        chart.draw(data, options);
+		
+}
+
+function drawChart4(krev1,vrev1) {
+var len =krev1.length;
+     var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,krev1[j]);
+		 data.setValue(j,1,vrev1[j]);
+        }
+		
+        var options = {'title':'Top product revenue by date','width':500,'height':400
+                       };
+
+        var chart = new google.visualization.PieChart(document.getElementById('viewmp4'));
+        chart.draw(data, options);
+		
+}
+
+function drawChart3(kpro1,vpro1) {
+var len =kpro1.length;
+     var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kpro1[j]);
+		 data.setValue(j,1,vpro1[j]);
+        }
+		
+        var options = {'title':'Top product quantity by date','width':500,'height':400
+                       };
+
+        var chart = new google.visualization.PieChart(document.getElementById('viewmp3'));
+        chart.draw(data, options);
+		
+}
+
+function drawChart2(krev,vrev) {
+var len =krev.length;
+     var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+        for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,krev[j]);
+		 data.setValue(j,1,vrev[j]);
+        }
+		
+        var options = {'title':'Top product by revenue','width':500,'height':400
+                       };
+
+        var chart = new google.visualization.PieChart(document.getElementById('viewmp2'));
+        chart.draw(data, options);
+		
+}
+
+function drawChart1(kpro,vpro) {
+var len =kpro.length;
+	var data = new google.visualization.DataTable();
+        data.addColumn('string', 'name');
+        data.addColumn('number', 'quantity');
+        data.addRows(len);
+		for(var j=0;j<len;j++)
+		{
+		 data.setValue(j,0,kpro[j]);
+		 data.setValue(j,1,vpro[j]);
+        }
+
+        var options = {'title':'Top product by quantity','width':500,'height':400
+                      }
+					  
+        var chart = new google.visualization.PieChart(document.getElementById('viewmp1'));
+        chart.draw(data, options);		
+}
+
+function initialize () {
+    jQuery('#allmap').click(function() {
+	    var status =[];
+		var catagor = [];
+		jQuery('#catagor :selected').each(function(j, selected){ 
+          catagor[j] = jQuery(selected).val(); 
+         });
+		 
+		jQuery('#status :selected').each(function(i, selected){ 
+          status[i] = jQuery(selected).val();
+         });
+		 jQuery('#detect').val('report');
+		var detect= jQuery('#detect').val();
+		var radio= jQuery('input[type="radio"]:checked').val();
+		var datef = jQuery('#date_from').val();
+		var datet = jQuery('#date_to').val();
+		var kpro = []; var vpro = []; var krev =[]; var vrev =[]; var kcon =[]; var vcon =[]; var kpro1 =[]; var vpro1 =[]; var krev1 =[]; var vrev1 =[]; var kord =[]; var vord =[];
+		var set = jQuery('#set').val();
+		jQuery.ajax({
+				url  	:   "<?php echo $this->getUrl('mpreportsystem/mpreportsystem/showmap');?>",
+				type 	:   "GET",
+				data 	:   {cat:catagor,st:status,rad:radio,df:datef,dt:datet,set:set},
+				dataType:   "html",
+				success :   function(content){
+				var newdata=  jQuery.parseJSON(content);
+				  var vprod = newdata.vpro ;
+				  var kprod =newdata.kpro;
+			   
+			  if(newdata.prcount!=0)
+			   {
+				 jQuery.each(vprod, function( key, value ){
+				 
+		           vpro[key]=value;				   
+		         })  
+				 
+				 jQuery.each(kprod, function( key, value ){
+		           kpro[key]=value;				   
+		         })
+				drawChart1(kpro,vpro);
+				drawChart6(kpro,vpro);
+			   }
+              else
+               {
+				 jQuery('#viewmp1').html('no data avilable');
+				 jQuery('#viewmp6').html('no data avilable');
+               }
+                
+               if(newdata.rvcount!=0)				
+				{
+				  jQuery.each(newdata.krev, function( key, value ){
+		           krev[key]=value;				   
+		         }) 
+				 jQuery.each(newdata.vrev, function( key, value ){
+		           vrev[key]=value;				   
+		         })
+				 drawChart2(krev,vrev);
+				 drawChart8(krev,vrev);
+				}
+               else
+                {
+				 jQuery('#viewmp2').html('no data avilable');
+				 jQuery('#viewmp8').html('no data avilable');
+				}				
+				
+                if(newdata.pr1count!=0)				
+				{				
+                 jQuery.each(newdata.kpro1, function( key, value ){
+		           kpro1[key]=value;				   
+		         }) 
+				 jQuery.each(newdata.vpro1, function( key, value ){
+		           vpro1[key]=value;				   
+		         })
+				 drawChart3(kpro1,vpro1);
+				 drawChart9(kpro1,vpro1);
+				}
+			    else
+                {
+				 jQuery('#viewmp3').html('no data avilable');
+				 jQuery('#viewmp9').html('no data avilable');
+                }
+
+                if(newdata.rv1count!=0)				
+				{								
+                 jQuery.each(newdata.krev1, function( key, value ){
+		           krev1[key]=value;				   
+		         })
+				 jQuery.each(newdata.vrev1, function( key, value ){
+		           vrev1[key]=value;				   
+		         })
+				 drawChart4(krev1,vrev1);
+				 drawChart10(krev1,vrev1);
+				}
+               else
+                {
+				 jQuery('#viewmp4').html('no data avilable');
+				 jQuery('#viewmp10').html('no data avilable');
+                }				 
+
+			   if(newdata.ordcount!=0)				
+			    {	
+                 jQuery.each(newdata.kord, function( key, value ){
+		           kord[key]=value;				   
+		         })
+				 jQuery.each(newdata.vord, function( key, value ){
+		           vord[key]=value;				   
+		         }) 
+				 drawChart5(kord,vord);
+				 drawChart11(kord,vord);
+				}
+               else
+			   {
+			     jQuery('#viewmp5').html('no data avilable');
+				 jQuery('#viewmp11').html('no data avilable');
+			   }
+                				
+                if(newdata.concount!=0)				
+			    {	
+                  jQuery.each(newdata.kcon, function( key, value ){
+		           kcon[key]=value;				   
+		         })
+				 jQuery.each(newdata.vcon, function( key, value ){
+		           vcon[key]=value;				   
+		         })
+				  drawChart7(kcon,vcon);
+                }				 
+			    else
+				{
+				 jQuery('#viewmp7').html('no data avilable');
+                }
+				
+                   document.getElementById('light').style.display='block';
+				   document.getElementById('fade').style.display='block';
+				}
+				});	
+				
+		 
+    });
+}
+google.setOnLoadCallback(initialize);
+google.load("visualization", "1", {'packages': ['corechart','geomap']});
+//google.setOnLoadCallback(initialize);
+//google.load("visualization", "1.1", {packages:["geomap"]});
+</script>
+
+<script>
+ jQuery.noConflict();
+ (function(jQuery){
+ jQuery('.sp').first().addClass('active');
+ jQuery('.sp').hide();
+ jQuery('.active').show();
+  jQuery('#button-next').click(function(){
+    jQuery('.active').removeClass('active').addClass('oldActive');    
+                   if ( jQuery('.oldActive').is(':last-child')) {
+				     jQuery('.sp').first().addClass('active'); 
+				   }		  
+                  else
+				  {
+				    jQuery('.oldActive').next().addClass('active');
+				  }
+				  jQuery('.oldActive').removeClass('oldActive')
+				  jQuery('.sp').fadeOut("slow");
+                  jQuery('.active').fadeIn("slow");				  
+	});
+	
+	jQuery('#button-previous').click(function(){
+    jQuery('.active').removeClass('active').addClass('oldActive');    
+           if ( jQuery('.oldActive').is(':first-child')) {
+        jQuery('.sp').last().addClass('active');
+        }
+           else{
+    jQuery('.oldActive').prev().addClass('active');
+           }
+    jQuery('.oldActive').removeClass('oldActive');
+    jQuery('.sp').fadeOut();
+    jQuery('.active').fadeIn();
+    });
+
+ })(jQuery);
+ 
+ function lightbox_close(){
+	document.getElementById('light').style.display='none';
+	document.getElementById('fade').style.display='none';
+}		
+</script>	
+
+ <div style="" id="loading-mask">
+    <p id="loading_mask_loader" class="loader"><img alt="Loading..." src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN)?>adminhtml/default/default/images/ajax-loader-tr.gif"><br>Please wait...</p>
+ </div>

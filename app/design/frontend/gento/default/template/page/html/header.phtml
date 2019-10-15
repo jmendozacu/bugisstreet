@@ -1,0 +1,617 @@
+
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/**
+ * @var Mage_Page_Block_Html_Header $this
+ */
+
+?>
+
+
+<div class="header-language-background">
+    <div class="header-language-container">
+        <div class="store-language-container">
+            <?php echo $this->getChildHtml('store_language') ?>
+        </div>
+
+        <?php echo $this->getChildHtml('currency_switcher') ?>
+
+        <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?> <?php echo $this->getAdditionalHtml() ?></p>
+    </div>
+</div>
+
+<header id="header" class="page-header">
+    <div class="page-header-container">
+        <!--
+        <a class="logo" href="<?php echo $this->getUrl('') ?>">
+            <img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" class="large" />
+            <img src="<?php echo $this->getLogoSrcSmall() ?>" alt="<?php echo $this->getLogoAlt() ?>" class="small" />
+        </a>
+
+
+        <?php // In order for the language switcher to display next to logo on smaller viewports, it will be moved here.
+              // See app.js for details ?>
+        <div class="store-language-container"></div>
+
+
+        <div class="skip-links">
+            <a href="#header-nav" class="skip-link skip-nav">
+                <span class="icon"></span>
+                <span class="label"><?php echo $this->__('Menu'); ?></span>
+            </a>
+
+            <a href="#header-search" class="skip-link skip-search">
+                <span class="icon"></span>
+                <span class="label"><?php echo $this->__('Search'); ?></span>
+            </a>
+
+            <div class="account-cart-wrapper">
+                <a href="<?php echo $this->helper('customer')->getAccountUrl(); ?>" data-target-element="#header-account" class="skip-link skip-account">
+                    <span class="icon"></span>
+                    <span class="label"><?php echo $this->__('Account'); ?></span>
+                </a>
+
+                <!-- Cart -->
+        <!--
+                <div class="header-minicart">
+                    <?php //echo $this->getChildHtml('minicart_head'); ?>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Navigation -->
+        <div style="display: none" class="check-header"></div>
+
+        <div id="header-nav" class="skip-content">
+            <?php //echo $this->getChildHtml('topMenu') ?>
+            <div id="topnav-left">
+                <?php echo $this->getChildHtml('breadcrumbs') ?>
+            </div>
+            <div id="topnav-right">
+                <?php if (Mage::getSingleton('customer/session')->isLoggedIn()!=0): ?>
+                    <?php echo $this->getChildHtml('marketplacenavigation') ?>
+                <?php //echo $this->getLayout()->createBlock("core/template")->setTemplate("marketplace/navigation.phtml")->toHtml() ?>
+                <?php endif; ?>
+                <ul>
+                    <li>
+                        <a class="search" href="#"></a>
+                    </li>
+                    <li>
+                        <a href="#" data-target-element="#header-account" class="skip-account">
+                            <span class="icon"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <!-- -->
+                        <a class="wantlist-top" href="#">
+                        <?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+
+                            <div id="wantlist_counter_div" class="counter">
+                            <?php
+                            $customer = Mage::getSingleton('customer/session')->getCustomer();
+                            $wishlist = Mage::getModel('wishlist/wishlist')->loadByCustomer($customer, true);
+                            echo $wishlist->getItemsCount();
+                            ?>
+                            </div>
+                            <?php else: ?>
+                            <div id="wantlist_counter_div" class="counter">0</div>
+
+                        <?php endif; ?>
+                        </a>
+
+                        <!-- -->
+
+                    </li>
+                    <li>
+                        <div class="header-minicart">
+                            <?php echo $this->getChildHtml('minicart_head'); ?>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="social" href="#"></a>
+                    </li>
+                    <li>
+                        <a class="currency" href="#"><?php echo Mage::app()->getStore()->getCurrentCurrencyCode();?></a>
+                    </li>
+
+
+                </ul>
+            </div>
+
+            <!--wishlist-->
+            <div class="wantlist-drop topnav-drop" id="wantlist_dropdown_div">
+                <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+                <ul>
+
+                    <p style="height: auto;text-align:left; margin-bottom: 10px;">You'll need an account with us to view your want list.
+                    </p>
+                    <a href="<?php echo $this->getUrl('customer/account/login/') ?>" onclick="jQuery('.login').trigger('click');" class="defaultbutton plain" style="margin-top: 20px;">LOG IN</a>&nbsp;&nbsp;
+                    <a href="<?php echo $this->getUrl('customer/account/create/') ?>" class="defaultbutton plain" style="margin-top: 20px;">SIGN UP</a>
+
+                </ul>
+                <div class="dropsubtotal">
+                </div>
+                <?php else: ?>
+
+
+                    <?php
+                        $customer = Mage::getSingleton("customer/session")->getCustomer();  //Get Current user
+                         if($customer->getId())
+                         {
+                             //$wishlist = Mage::getModel("wishlist/wishlist")->loadByCustomer($customer, true);  // Load Current user wishlist product collections
+                             //$wishListItemCollection = $wishlist->getItemCollection();
+
+                             $wishListItemCollection = Mage::helper('wishlist')->getWishlistItemCollection()->addWishListSortOrder();
+
+                             $count = 0;
+                             if($wishListItemCollection->count() > 0): {
+                                 foreach ($wishListItemCollection as $item)
+                                 {
+                                     $count ++;
+                                     if ($count > 2){ break; }
+                                     ?>
+                                     <div id="wishlistmini">
+                                         <?php
+                                         // $thumbnail_url = Mage::getBaseUrl('media').'catalog/product/'. $item->getImage();
+                                         $_product = Mage::getModel('catalog/product')->load($item->getProduct()->getId());
+                                         $thumbnail_url = Mage::helper('catalog/image')->init($_product, 'small_image')->resize(100,100);
+                                         if($thumbnail_url==''):?>
+                                             <a href="<?php echo $item->getProductUrl() ?>">
+                                             <img style="width: 100px; height: 100px" src="<?php echo $this->getSkinUrl('images/logo.gif') ?>">
+                                             </a>
+                                         <?php else : ?>
+                                         <a href="<?php echo $item->getProductUrl() ?>">
+                                             <img  style="width: 100px; height: 100px;" src="<?php echo $thumbnail_url; ?>">
+                                         </a>
+                                         <?php endif;?>
+                                         <a href="<?php echo $item->getProductUrl() ?>">
+                                         <p><?php echo $_product->getName();?></p>
+                                         </a>
+                                     </div>
+                                 <?php }?>
+                                 <div  id="wishbut">
+                                     <a  href="<?php echo $this->getUrl('wishlist/') ?>" class="defaultbutton plain" >GO TO WANT LIST</a>
+                                 </div>
+                             <?php } ?>
+                             <?php else : ?>
+                                 <p style="font-size: 18px;">Your want list is empty.<br>To add items, just click on the heart button.</p>
+
+
+                             <?php endif;?>
+                                     <?php } ?>
+                <?php endif; ?>
+            </div>
+
+            <div class="social-drop topnav-drop">
+
+                <div style="clear:left;"></div>
+                <h3>
+
+                    Follow Us On
+
+                </h3>
+                <ul>
+                    <li>
+                        <a class="facebook" target="_blank" href="https://www.facebook.com/bugis.st">
+
+                            Facebook
+
+                        </a>
+                    </li>
+                    <li>
+                        <a class="twitter" target="_blank" href="https://twitter.com/bugisst">
+
+                            Twitter
+
+                        </a>
+                    </li>
+                    <!--
+
+                     <li>
+                                                            <a c…
+
+                    -->
+                    <li>
+                        <a class="instagram" target="_blank" href="https://instagram.com/bugisst">
+
+                            Instagram
+
+                        </a>
+                    </li>
+                </ul>
+
+        </div>
+
+        <!-- Search -->
+            <div id="header-currency" class="topnav-drop currency-content">
+                <?php echo $this->getChildHtml('currency_switcher') ?>
+            </div>
+
+            <div id="header-search" class="skip-content search-nav">
+            <?php echo $this->getChildHtml('topSearch') ?>
+            <div style="padding-top: 60px" class="advsearchnew-fix">
+                <div class="advsearchnew clearfix">
+                    <h4 >Select Category : </h4>
+                    <span><a class="searchtoggle prodsearch active" onclick="jQuery('#search_mini_form').attr('action', '<?php echo $this->helper('catalogsearch')->getResultUrl(); ?>');">Product</a></span>
+                    <span><a class="searchtoggle retailersearch" onclick="jQuery('#search_mini_form').attr('action', '<?php echo Mage::getUrl('vendorsearch'); ?>');">Shop</a></span>
+                    <!--<h4>Select Category: </h4>
+                    <ul class="search-filters">
+                        <li class="searchtoggle prodsearch active" onclick="jQuery('#search_mini_form').attr('action', '<?php /*echo $this->helper('catalogsearch')->getResultUrl(); */?>');"><span class="label"><a>Products</a></span></li>
+                        <li class="searchtoggle retailersearch" onclick="jQuery('#search_mini_form').attr('action', '<?php /*echo Mage::getUrl('vendorsearch'); */?>');"><span class="label"><a>Shops</a></span></li>
+                    </ul>-->
+                </div>
+            </div>
+        </div>
+
+        <!-- Account -->
+
+            <div id="header-account" class="skip-content account-nav">
+            <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+                <!-- -->
+                <div class="content">
+                    <div class="account-login<?php if (!$this->helper('customer')->isRegistrationAllowed()) echo ' login-only' ?>">
+                        <div class="page-title">
+                            <h1 style="display: none"><?php if ($this->helper('customer')->isRegistrationAllowed()): ?>
+                                    <?php echo $this->__('LOGIN') ?>
+                                <?php else: ?>
+                                    <?php echo $this->__('Login'); ?>
+                                <?php endif; ?></h1>
+                        </div>
+                        <div style="margin-right: 15px; margin-left: 15px; margin-bottom: 20px" id="register-detail">
+                            <p style="display: none">Why waste time typing when you can shop? Login with just one click with Facebook below.</p>
+                            <center><a href="#" title="Login with Facebook" onclick="login();return false;"><img src="<?php echo $this->getSkinUrl('images/loginwithfacebook.jpg') ?>" width="281" height="42" alt="loginwithfacebook" id="loginwithfacebook"></a></center>
+                            <script src="https://connect.facebook.net/en_US/all.js"></script>
+                            <script type="text/javascript">
+                                var newwindow;
+                                var intId;
+                                function login(){
+                                    var  screenX    = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+                                    var	 screenY    = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+                                    var	 outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth;
+                                    var	 outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22);
+                                    var	 width    = 500;
+                                    var	 height   = 270;
+                                    var	 left     = parseInt(screenX + ((outerWidth - width) / 2), 10);
+                                    var	 top      = parseInt(screenY + ((outerHeight - height) / 2.5), 10);
+                                    var	 features = (
+                                    'width=' + width +
+                                    ',height=' + height +
+                                    ',left=' + left +
+                                    ',top=' + top
+                                    );
+
+                                    newwindow=window.open('<?php echo $this->getLayout()->createBlock('fblogin/fblogin')->getFbLoginButtonUrl(); ?>','Login_by_facebook',features);
+
+                                    if (window.focus) {
+                                        newwindow.focus()
+                                    }
+                                    return false;
+                                }
+                            </script>
+                            <div class="option-or">
+                                <span class="or">OR</span>
+                            </div>
+                            <div id="register-form">
+                                <form action="<?php echo $this->getUrl('customer/account/loginPost'); ?>" method="post" id="login-form" class="scaffold-form">
+                                    <?php echo $this->getBlockHtml('formkey'); ?>
+                                    <h3 style="display: none">Registered Customers</h3>
+                                    <p style="display: none">If you have an account with us, please log in.</p><br><br>
+                                    <ul class="form-list">
+                                        <li style="width: 100%">
+                                            <label for="email" class="required">Email</label>
+                                            <div class="input-box">
+                                                <input type="text" name="login[username]" value="" id="email" class="input-text required-entry validate-email" title="Email Address" style=" width:220px">
+                                            </div>
+                                        </li>
+                                        <li style="width: 100%">
+                                            <label for="pass" class="required">Password</label>
+                                            <div class="input-box">
+                                                <input type="password" name="login[password]" class="input-text required-entry validate-password" id="pass" title="Password" style=" width:220px">
+                                            </div>
+                                        </li>
+                                    </ul>
+
+
+                                    <script type="text/javascript">
+                                        //<![CDATA[
+                                        function toggleRememberMepopup(event){
+                                            if($('remember-me-popup')){
+                                                var viewportHeight = document.viewport.getHeight(),
+                                                    docHeight      = $$('body')[0].getHeight(),
+                                                    height         = docHeight > viewportHeight ? docHeight : viewportHeight;
+                                                $('remember-me-popup').toggle();
+                                                $('window-overlay').setStyle({ height: height + 'px' }).toggle();
+                                            }
+                                            Event.stop(event);
+                                        }
+
+                                        document.observe("dom:loaded", function() {
+                                            new Insertion.Bottom($$('body')[0], $('window-overlay'));
+                                            new Insertion.Bottom($$('body')[0], $('remember-me-popup'));
+
+                                            $$('.remember-me-popup-close').each(function(element){
+                                                Event.observe(element, 'click', toggleRememberMepopup);
+                                            })
+                                            $$('#remember-me-box a').each(function(element) {
+                                                Event.observe(element, 'click', toggleRememberMepopup);
+                                            });
+                                        });
+                                        //]]>
+                                    </script>
+                                    <div style="padding-right: 10px; border-bottom: 1px solid #CCC; padding-bottom: 10px; padding-top: 10px !important;" class="buttons-set">
+                                        <button style="float: right " type="submit" class="button" title="Login" name="send" id="send2"><span><span>Login</span></span></button>
+                                        <a style="float: left; color: #F60; font-size: 13px;" href="<?php echo $this->getUrl('customer/account/forgotpassword/') ?>" class="f-left">Forgot Password?</a>
+                                    </div>
+                                </form>
+
+                                <p style="padding-top: 20px">New here?</p>
+                                <dl style="text-align: right; padding-right: 10px;  padding-top: 20px"><dt><a style="padding-top: 5px !important; padding-bottom: 5px !important;" href="<?php echo $this->getUrl('customer/account/create/') ?>" class="defaultbutton plain" title="Sign Up" type="submit"><span><span>Sign Up</span></span></a></dt></dl>
+                            </div>
+
+                        </div>
+                        <?php //echo $this->getMessagesBlock()->toHtml() ?>
+
+                        <script type="text/javascript">
+                            //<![CDATA[
+                            var dataForm = new VarienForm('login-form', true);
+                            //]]>
+                        </script>
+                    </div>
+                </div>
+
+
+
+                <!-- -->
+            <?php else: ?>
+
+                <?php echo $this->getChildHtml('topLinks') ?>
+            <?php endif; ?>
+
+        </div>
+        </div>
+
+    </div>
+</header>
+<?php echo $this->getChildHtml('topContainer'); ?>
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".advsearchnew a.searchtoggle").click(function () {
+            jQuery(".advsearchnew a.searchtoggle").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+    });
+    function closeMNav() {
+        bso.removeClass('lToggled');
+        bso.removeClass('rToggled');
+        jQuery('.mobilenav').removeClass('toggled');
+        jQuery('.mobilefilter').removeClass('toggled');
+        jQuery('body').css({
+            'position': 'relative'
+        });
+        overlay.remove();
+    }
+
+    function closeMenus() {
+        //jQuery('.filter-over').removeClass('toggled');
+        jQuery('.filter-cat').removeClass('toggled');
+        jQuery('.sort-over').removeClass('toggled');
+        jQuery('.mobilecurrency').hide();
+        jQuery('.search-nav').removeClass('active');
+        jQuery('.account-nav').removeClass('skip-active');
+        jQuery('li a.search').removeClass('active');
+        jQuery('li a.login').removeClass('active');
+        jQuery('.wantlist-drop').removeClass('active');
+        jQuery('li a.wantlist-top').removeClass('active');
+        jQuery('.skip-active').removeClass('active');
+        jQuery(' li a.skip-account').removeClass('skip-active');
+        jQuery('li a.skip-cart').removeClass('skip-active');
+        jQuery('.social-drop').removeClass('active');
+        jQuery('li a.social').removeClass('active');
+        jQuery('.currency-content').removeClass('active');
+        jQuery('li a.currency').removeClass('active');
+        jQuery('.content_cart').removeClass('skip-active');
+        jQuery('.mb-top-layered-navigation').removeClass('test_mana');
+        //jQuery('.mb-mana-catalogsearch-leftnav').removeClass('test_mana');
+        //jQuery('.mb-mana-catalogsearch-leftnav').removeClass('test-search-mana');
+        jQuery('.wk_cont_ul').removeClass('test-view');
+    }
+
+    function mlnavToggle() {
+        closeMenus();
+        jQuery('body').css({
+            'position': 'fixed'
+        });
+        jQuery('.mobilenav').addClass('toggled');
+        bso.addClass('lToggled');
+        overlay.on({
+            'click': function() {
+                bso.removeClass('lToggled');
+                jQuery('.mobilenav').removeClass('toggled');
+                jQuery('body').css({
+                    'position': 'relative'
+                });
+                jQuery(this).remove();
+            }
+        });
+        bso.prepend(overlay);
+        jQuery('.nav-close').click(function() {
+            closeMNav();
+        });
+    }
+
+    function mrnavToggle() {
+        closeMenus();
+        jQuery('body').css({
+            'overflow': 'hidden'
+        });
+        jQuery('.mobilefilter').addClass('toggled');
+        bso.addClass('rToggled');
+        overlay.on({
+            'click': function() {
+                bso.removeClass('rToggled');
+                jQuery('.mobilefilter').removeClass('toggled');
+                jQuery('body').css({
+                    'position': 'relative'
+                });
+                jQuery(this).remove();
+            }
+        });
+        bso.prepend(overlay);
+        jQuery('.nav-close').click(function() {
+            closeMNav();
+        });
+    }
+
+    function wantlistCNavToggle() {
+        closeMenus();
+        jQuery('.mywantlist-mobilecat').addClass('toggled');
+        bso.addClass('rToggled');
+        overlay.on({
+            'click': function() {
+                bso.removeClass('lToggled');
+                jQuery('.mobilefilter').removeClass('toggled');
+                jQuery('body').css({
+                    'position': 'relative'
+                });
+                jQuery(this).remove();
+            }
+        });
+        bso.prepend(overlay);
+        jQuery('.nav-close').click(function() {
+            closeMNav();
+        });
+    }
+
+    function wantlistFNavToggle() {
+        closeMenus();
+        jQuery('.mywantlist-mobilefilter').addClass('toggled');
+        bso.addClass('rToggled');
+        overlay.on({
+            'click': function() {
+                bso.removeClass('lToggled');
+                jQuery('.mobilefilter').removeClass('toggled');
+                jQuery('body').css({
+                    'position': 'relative'
+                });
+                jQuery(this).remove();
+            }
+        });
+        bso.prepend(overlay);
+        jQuery('.nav-close').click(function() {
+            closeMNav();
+        });
+    }
+
+    jQuery('li a.social').click(function(e){
+        if (jQuery('.social-drop').hasClass('active')){
+            closeMenus();
+            jQuery('li a.social').removeClass('active');
+        } else {
+            closeMenus();
+            jQuery('.social-drop').addClass('active');
+            jQuery('li a.social').addClass('active');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+            jQuery('.social-drop').click(function(e){
+                e.stopPropagation();
+            });
+        }
+        e.stopPropagation();
+    });
+    jQuery('li a.currency').click(function(e){
+        if (jQuery('.currency-content').hasClass('active')){
+            closeMenus();
+            jQuery('li a.currency').removeClass('active');
+        } else {
+            closeMenus();
+            jQuery('.currency-content').addClass('active');
+            jQuery('li a.currency').addClass('active');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+            jQuery('.currency-content').click(function(e){
+                e.stopPropagation();
+            });
+        }
+        e.stopPropagation();
+    });
+
+    jQuery('li a.wantlist-top').click(function(e){
+        if (jQuery('.wantlist-drop').hasClass('active')){
+            closeMenus();
+            jQuery('li a.wantlist-top').removeClass('active');
+        } else {
+            closeMenus();
+            jQuery('.wantlist-drop').addClass('active');
+            jQuery('li a.wantlist-top').addClass('active');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+            jQuery('.wantlist-drop').click(function(e){
+                e.stopPropagation();
+            });
+        }
+        e.stopPropagation();
+    });
+    jQuery('li a.search').click(function(e){
+        if (jQuery('.search-nav').hasClass('active')){
+            closeMenus();
+            jQuery('li a.search').removeClass('active');
+        } else {
+            closeMenus();
+            jQuery('.search-nav').addClass('active');
+            jQuery('li a.search').addClass('active');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+            jQuery('.search-nav').click(function(e){
+                e.stopPropagation();
+            });
+        }
+        e.stopPropagation();
+    });
+    jQuery('li a.skip-account').click(function(e){
+        if (jQuery('.account-nav').hasClass('skip-active')){
+            closeMenus();
+            jQuery('li a.skip-account').removeClass('skip-active');
+        } else {
+            closeMenus();
+            jQuery('.account-nav').addClass('skip-active');
+            jQuery('li a.skip-account').addClass('skip-active');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+            jQuery('.account-nav').click(function(e){
+                e.stopPropagation();
+            });
+        }
+        e.stopPropagation();
+    });
+
+</script>

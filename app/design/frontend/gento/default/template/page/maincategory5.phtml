@@ -1,0 +1,107 @@
+
+<?php
+$parentCategoryId = Mage::registry('current_category')->getId();
+$cat = Mage::getModel('catalog/category')->load($parentCategoryId);
+$subcats = $cat->getChildren();
+
+$category_id = 311;
+$category_id1 = 312;
+$category_id2 = 294;
+
+?>
+
+
+<div id="maincategory">
+    <div class="main_category">
+    <div class="test2">
+
+        <a style="color:#000000;" href="<?php echo $this->getUrl('new-arrivals-gifts'); ?>">
+            <div class="test" >
+
+                New Arrivals >
+
+            </div>
+        </a>
+        <a style="color:#000000;" href="<?php echo $this->getUrl('popular-gifts'); ?>">
+            <div class="test" >
+
+                Featured >
+
+            </div>
+        </a>
+        <a style="color:#000000;display: none;" href="<?php echo Mage::getModel("catalog/category")->load($category_id1)->getUrl(); ?>">
+            <div class="test" >
+
+                SALE >
+
+            </div>
+        </a>
+
+    </div>
+    <div style="clear:both;"></div>
+<?php
+
+foreach(explode(',',$subcats) as $subCatid)
+{
+  ?>
+    <div id="subcate">
+    <?php
+    $_category = Mage::getModel('catalog/category')->load($subCatid);
+    if($_category->getIsActive()) {
+        ?>
+
+
+            <a href="<?php echo $_category->getURL('') ?>">
+                <?php $thumbnail_url = Mage::getBaseUrl('media').'catalog/category/'. $_category->getImage(); ?>
+                <?php if($_category->getImage()==''):?>
+                    <img style="width: 147px; height: 147px;" src="<?php echo $this->getSkinUrl('images/logo.gif') ?>">
+               <?php else : ?>
+                    <img style="width: 147px; height: 147px" src="<?php echo $thumbnail_url; ?>">
+               <?php endif;?>
+            </a>
+
+
+        <?php
+        echo '<ul id="title"><a style="color: #FFF" href="'.$_category->getURL().'" title="View the products for the "'.$_category->getName().'" category">'.$_category->getName().'</a>';
+        echo '</ul>';
+        ?>
+        <ul><a style="font-size: 16px;" href="<?php echo $_category->getURL('') ?>"><?php echo $this->__('View All') ?></a></ul>
+       <?php
+        $parentCategoryId = $_category->getId();
+        $cat = Mage::getModel('catalog/category')->load($parentCategoryId);
+        $subcats = $cat->getChildren();
+        foreach(explode(',',$subcats) as $subCatid)
+        {
+            $_category = Mage::getModel('catalog/category')->load($subCatid);
+            if($_category->getIsActive()) {
+                echo '<ul><a href="'.$_category->getURL().'" title="View the products for the "'.$_category->getName().'" category">'.$_category->getName().'</a>';
+                echo '</ul>';
+            }
+        }
+
+
+
+    }
+   ?>
+    </div>
+    <?php
+}
+
+?>
+        </div>
+    <div class="wrap-bottom">
+        <div style="width:99%;float:left;padding:1%;font-size:0.8em;border-top: 1px solid #ccc;padding-top: 2%;">
+
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('men-women-top-categories')->toHtml(); ?>
+
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('top-brands-and-new-shops')->toHtml(); ?>
+
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('sell-with-us-online')->toHtml(); ?>
+
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('payment-methods')->toHtml(); ?>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+

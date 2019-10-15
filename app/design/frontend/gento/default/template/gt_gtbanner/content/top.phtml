@@ -1,0 +1,15 @@
+<?php $collection = $this->_getCollection(); ?>
+<?php if (count($collection) > 0) : ?>
+	<ul class="bxslider" style="overflow: hidden; height: 307px;">
+	<?php foreach ($collection as $item) : ?>
+		<?php $_imageList = $item->getImageList(); ?>
+		<?php if (is_array($_imageList) and sizeof($_imageList) > 0) : ?>
+			<?php foreach ($_imageList as &$_item) : ?>
+				<li>
+					<a href="<?php echo $_item['label']; ?>"><img style="max-width:875px; width: 100%; height: 100%" src="<?php echo $this->helper('gtbanner/image')->init($_item['file'])->constrainOnly(TRUE)->keepAspectRatio(FALSE)->keepFrame(TRUE)->resize(1500,525); ?>"/></a>
+				</li>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	<?php endforeach; ?>
+</ul>
+<?php endif; ?>

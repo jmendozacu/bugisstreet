@@ -1,0 +1,35 @@
+<?php 
+	$partner=$this->getProfileDetail(); 
+	$logo=$partner->getlogopic()==''?"noimage.png":$partner->getlogopic();
+	$logo=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).'avatar/'.$logo;
+?>
+
+<?php //if ($productowner['userid'] != ""): ?>
+    <div style="height: 90px" id="demoretailer243" class="retailer premium vendordiv">
+        <div class="r-name">
+            <div style="float:left;padding-left:5px;">
+                <a class="shop-title"
+                   style="color:#333; font-weight: bold; font-size: 1.3em;"
+                   href="<?php echo $this->getUrl('marketplace/seller/profile') . $partner['profileurl'] ?>">
+                    <?php echo $partner['shoptitle'] ?>
+                </a>
+                <br>
+                <a style="font-size:0.8em;padding:3px;border:1px solid;font-weight:normal; color: #333;margin-right: 5px"
+                   href="<?php echo rtrim($this->getUrl('seller_detail?seller=' . $partner['profileurl']), '/'); ?>">
+                    See All Products
+                </a>
+                <a style="font-size:0.8em;padding:3px;border:1px solid;font-weight:normal; color: #333"
+                   href="<?php echo $this->getUrl('marketplace/seller/profile') . $partner['profileurl'] ?>">
+                    Shop Info
+                </a>
+            </div>
+        </div>
+    </div>
+<?php //endif; ?>
+
+
+<div class="wk_logo_block">
+	<a href="<?php echo $this->getUrl('marketplace/seller/profile').$partner->getProfileurl() ?>" >
+		<img width="219" class="bannerpicrs-remove" src="<?php echo $logo;?>" />
+	</a>
+</div>

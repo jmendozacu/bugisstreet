@@ -1,0 +1,181 @@
+<form method="post" action="<?php echo $this->getUrl('mprmasystem/index/saverma/')?>" enctype="multipart/form-data" id="wk_rs_new_rma">
+    <input type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" name="form_key"/>
+    <div class="fieldset">
+        <h2 class="legend"><?php echo Mage::helper("mprmasystem")->__("New RMA Information"); ?></h2>
+        <ul class="form-list">
+            <li class="wide">
+                <label class="required"><em>*</em><?php echo Mage::helper("mprmasystem")->__("Order"); ?></label>
+                <div class="input-box" style="position:relative;">
+                    <select class="validate-select required-entry" title="<?php echo Mage::helper('mprmasystem')->__('Order'); ?>" name="order" id="wk_rs_orders">
+                        <option value=""><?php echo Mage::helper("mprmasystem")->__("Please select order"); ?></option>
+                        <?php
+                        $collection = Mage::getModel("sales/order")->getCollection()->addAttributeToSelect('*')
+                                        ->addFieldToFilter("customer_id",Mage::getSingleton('customer/session')->getId());
+                        foreach ($collection as $order)
+                            echo "<option value='".$order->getId()."'>".$order->getIncrementId().", ".Mage::app()->getStore()->formatPrice($order->getGrandTotal())."</option>";            ?>
+                    </select>
+                    <img id="wk_rs_order_loader" src="<?php echo $this->getSkinUrl('marketplace/images/spinner.gif'); ?>">
+                </div>
+            </li>
+            <li class="wide">
+                <label><?php echo Mage::helper("mprmasystem")->__("Items Ordered"); ?></label>
+                <div class="input-box">
+                    <table name="items" class="data-table" id="wk_rs_order_details">
+                        <thead>
+                            <tr>
+                                <th><?php echo Mage::helper("mprmasystem")->__("Product Name"); ?></th>
+                                <th><?php echo Mage::helper("mprmasystem")->__("SKU"); ?></th>
+                                <th><?php echo Mage::helper("mprmasystem")->__("Qty"); ?></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="a-center"><?php echo Mage::helper("mprmasystem")->__("No order selected"); ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+            <li class="wide">
+                <label><?php echo Mage::helper("mprmasystem")->__("Images of Product"); ?></label>
+                <div class="input-box">
+                    <input multiple="" id="" name="wk_rs_images[]" type="file" accept="image/*" tabindex="1"/>
+                </div>
+            </li>
+            <li class="wide">
+                <label class="required"><em>*</em><?php echo Mage::helper("mprmasystem")->__("Select Reason") ?></label>
+                <div class="input-box">
+                    <select class="validate-select required-entry" name="wk_rs_reason_details" id="wk_rs_reason_details">
+                        <option value=""><?php echo Mage::helper("mprmasystem")->__("Plese Select") ?></option>
+<?php                   $reasons = Mage::getModel("mprmasystem/rmareason")->getCollection();
+                        foreach($reasons as $each)
+                            echo "<option value=".$each->getId().">".$each->getReason()."</option>";        ?>
+                    </select>
+                </div>
+            </li>
+            <li class="wide">
+                <label class="required"><?php echo Mage::helper("mprmasystem")->__("Additional Information"); ?></label>
+                <div class="input-box">
+                    <textarea name="wk_rs_additional_info" id="wk_rs_additional_info"></textarea>
+                </div>
+            </li>
+            <li class="wide">
+                <label><?php echo Mage::helper("mprmasystem")->__("Product Delivery Status"); ?></label>
+                <div class="input-box">
+                    <select title="<?php echo Mage::helper('mprmasystem')->__('Delivery Status'); ?>" name="delivery_status" id="wk_rs_delivery_status">
+                        <option value="0"><?php echo Mage::helper("mprmasystem")->__("Not Delivered Yet"); ?></option>
+                        <option value="1"><?php echo Mage::helper("mprmasystem")->__("Delivered"); ?></option>
+                    </select>
+                </div>
+            </li>
+            <li class="wide" id="wk_rs_depends_del_status">
+                <label><?php echo Mage::helper("mprmasystem")->__("Enter Consignment Number"); ?></label>
+                <div class="input-box">
+                    <input id="wk_rs_consignment_no" type="text" name="consignment_no"/>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <a href="<?php echo $this->getUrl('mprmasystem/')?>">&laquo;<?php echo Mage::helper("mprmasystem")->__("back"); ?></a>
+    <div class="buttons-set">
+        <p class="required">* <?php echo Mage::helper("mprmasystem")->__("Required Fields"); ?></p>
+        <button id="wk_rs_button_submit" class="button" title="<?php echo Mage::helper('mprmasystem')->__('Submit Request'); ?>" type="submit">
+            <span><?php echo Mage::helper("mprmasystem")->__("Submit Request"); ?></span>
+        </button>
+    </div>
+</form>
+<script type="text/javascript">
+    jQuery.noConflict();
+    jQuery("#wk_rs_orders").change(function(){
+        jQuery("#wk_rs_order_loader").show();
+        jQuery.ajax({
+            url: "<?php echo $this->getUrl('mprmasystem/index/getorderdetails')?>",
+            type: "POST",
+            dataType: "json",
+            data:{id:jQuery("#wk_rs_orders").val()},
+            success:function(content)   {
+                if(!content[0])
+                    jQuery("#wk_rs_order_details").find("tbody").html("<tr><td colspan='4'><?php echo Mage::helper('mprmasystem')->__('No order selected'); ?></td></tr>");
+                else{
+                    var row = "";
+                    for(var i=0 ; i<content.length ; i++){
+                        row += "<tr><td colspan='1'>"+content[i].name+"</td><td colspan='1'>"+content[i].sku+"</td><td colspan='1'>"+content[i].qty+"</td><td colspan='1' class='wk_rs_check'>";
+                        if(content[i].availablerma){
+                            row += "<input value='"+content[i].itemid+"' type='radio' class='wk_rs_pro_check' name='wk_rs_pro_check'/>";
+                        }else{
+                            row += "<span>Disabled</span>";
+                        }
+                        row += "</td></tr>";
+                    }
+                    jQuery("#wk_rs_order_details").find("tbody").html(row);
+                }
+                jQuery("#wk_rs_order_loader").hide();
+            }
+        });
+    });
+    jQuery("#wk_rs_checkall").change(function(){
+        if(jQuery(this).is(":checked"))
+            jQuery("#wk_rs_order_details").find("tbody").find(".wk_rs_pro_check").prop("checked",true);
+        else
+            jQuery("#wk_rs_order_details").find("tbody").find(".wk_rs_pro_check").prop("checked",false);
+    });
+    var wk_rs_new_rma = new VarienForm("wk_rs_new_rma", true);
+    jQuery(document).ready(function(){
+            var obj = jQuery("<div/>",{id:"wk_rs_overlay",style:"height:"+jQuery(window).height()})
+            .append(
+                jQuery("<div/>",{id:"wk_rs_agreement_wrapper"})
+                .append(
+                    jQuery("<div/>",{id:"wk_rs_agreement_cntnt_overflow"})
+                    .append(
+                        jQuery("<div/>",{id:"wk_rs_agreement_cntnt",}).html("<?php echo preg_replace('/\s\s+/','<br>',addslashes(Mage::getStoreConfig('mprmasystem/mprmasystem/policy'))); ?>")
+                    )
+                )
+                .append(
+                    jQuery("<div/>",{id:"wk_rs_iagree"}).attr('onclick','hideoverlay()').text("<?php echo Mage::helper('mprmasystem')->__('I Agree'); ?>")
+                )
+            );
+            jQuery("body").append(obj);
+            
+        jQuery(".block-content ul li").each(function(){
+            this_this = jQuery(this);
+            a_a = this_this.find("a");
+            a_href = a_a.attr("href");
+            if(a_href.indexOf("mprmasystem/index") != -1)
+                this_this.addClass("current").html("<strong>"+a_a.text()+"</strong>");
+        });
+    });
+    function hideoverlay(){
+        jQuery("#wk_rs_overlay").fadeOut(1000);
+    }
+    jQuery("#wk_rs_delivery_status").change(function(){
+        var dependent = jQuery("#wk_rs_depends_del_status");
+        if(jQuery("#wk_rs_delivery_status").val() == 1){
+            dependent.find("label").addClass("required").prepend("<em>*</em>");
+            dependent.find("input").addClass("required-entry");
+            dependent.show();
+        }
+        else{
+            dependent.find("label").removeClass("required").html("<?php echo Mage::helper('mprmasystem')->__('Enter Consignment Number'); ?>");
+            dependent.find("input").removeClass("required-entry"); 
+            dependent.hide();
+        }
+    });
+    jQuery("#wk_rs_button_submit").click(function(){
+        var error = false;var item_checked = false;
+        jQuery("#wk_rs_new_rma").find(".validation-failed").removeClass("validation-failed");
+        jQuery("#wk_rs_new_rma").find(".validation-advice").remove();
+        jQuery("#wk_rs_order_details tbody tr").each(function(){
+            if(jQuery(this).find(".wk_rs_pro_check").is(":checked")){
+                item_checked = true;
+            }
+        });
+        if(item_checked == false){
+            jQuery("#wk_rs_order_details").addClass("validation-failed").after("<div style='display:none;' class='validation-advice'><?php echo Mage::helper('mprmasystem')->__('Please select item (s)'); ?>.</div>");
+            jQuery(".validation-advice").fadeIn(1000);
+            error = true;
+        }
+        if(wk_rs_new_rma.validator.validate() != true || error == true)
+            return false;
+    });
+</script>

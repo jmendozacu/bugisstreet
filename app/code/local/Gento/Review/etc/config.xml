@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_Review>
+            <version>0.1.0</version>
+        </Gento_Review>
+    </modules>
+
+    <frontend>
+        <routers>
+            <review>
+                <args>
+                    <modules>
+                        <gento_review before="Mage_Review">Gento_Review</gento_review>
+                    </modules>
+                </args>
+            </review>
+        </routers>
+    </frontend>
+
+
+</config>

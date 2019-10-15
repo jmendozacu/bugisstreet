@@ -1,0 +1,150 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Customer login form template
+ *
+ * @see app/design/frontend/base/default/template/customer/form/login.phtml
+ */
+/** @var $this Mage_Customer_Block_Form_Login */
+?>
+<div class="content">
+<div class="account-login<?php if (!$this->helper('customer')->isRegistrationAllowed()) echo ' login-only' ?>">
+    <div class="page-title">
+        <h1><?php if ($this->helper('customer')->isRegistrationAllowed()): ?>
+                <?php echo $this->__('LOGIN') ?>
+            <?php else: ?>
+                <?php echo $this->__('Login'); ?>
+            <?php endif; ?></h1>
+    </div>
+    <div id="register-detail">
+        <p>Why waste time typing when you can shop? Login with just one click with Facebook below.</p>
+        <center><a href="#" title="Login with Facebook" onclick="login();return false;"><img src="<?php echo $this->getSkinUrl('images/loginwithfacebook.jpg') ?>" width="281" height="42" alt="loginwithfacebook" id="loginwithfacebook"></a></center>
+        <script src="https://connect.facebook.net/en_US/all.js"></script>
+        <script type="text/javascript">
+            var newwindow;
+            var intId;
+            function login(){
+                var  screenX    = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+                var	 screenY    = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+                var	 outerWidth = typeof window.outerWidth != 'undefined' ? window.outerWidth : document.body.clientWidth;
+                var	 outerHeight = typeof window.outerHeight != 'undefined' ? window.outerHeight : (document.body.clientHeight - 22);
+                var	 width    = 500;
+                var	 height   = 270;
+                var	 left     = parseInt(screenX + ((outerWidth - width) / 2), 10);
+                var	 top      = parseInt(screenY + ((outerHeight - height) / 2.5), 10);
+                var	 features = (
+                'width=' + width +
+                ',height=' + height +
+                ',left=' + left +
+                ',top=' + top
+                );
+
+                newwindow=window.open('<?php echo $this->getLayout()->createBlock('fblogin/fblogin')->getFbLoginButtonUrl(); ?>','Login_by_facebook',features);
+
+                if (window.focus) {
+                    newwindow.focus()
+                }
+                return false;
+            }
+        </script>
+        <div class="option-or">
+            <span class="or">OR</span>
+        </div>
+        <div id="register-form">
+            <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form" class="scaffold-form">
+                <?php echo $this->getBlockHtml('formkey'); ?>
+                <h3>Registered Customers</h3>
+                <p>If you have an account with us, please log in.</p><br><br>
+                <ul class="form-list">
+                    <li>
+                        <label for="email" class="required">Email Address <em>*</em></label>
+                        <div class="input-box">
+                            <input type="text" name="login[username]" value="" id="email" class="input-text required-entry validate-email" title="Email Address">
+                        </div>
+                    </li>
+                    <li>
+                        <label for="pass" class="required">Password <em>*</em></label>
+                        <div class="input-box">
+                            <input type="password" name="login[password]" class="input-text required-entry validate-password" id="pass" title="Password">
+                        </div>
+                    </li>
+                </ul>
+
+
+                <script type="text/javascript">
+                    //<![CDATA[
+                    function toggleRememberMepopup(event){
+                        if($('remember-me-popup')){
+                            var viewportHeight = document.viewport.getHeight(),
+                                docHeight      = $$('body')[0].getHeight(),
+                                height         = docHeight > viewportHeight ? docHeight : viewportHeight;
+                            $('remember-me-popup').toggle();
+                            $('window-overlay').setStyle({ height: height + 'px' }).toggle();
+                        }
+                        Event.stop(event);
+                    }
+
+                    document.observe("dom:loaded", function() {
+                        new Insertion.Bottom($$('body')[0], $('window-overlay'));
+                        new Insertion.Bottom($$('body')[0], $('remember-me-popup'));
+
+                        $$('.remember-me-popup-close').each(function(element){
+                            Event.observe(element, 'click', toggleRememberMepopup);
+                        })
+                        $$('#remember-me-box a').each(function(element) {
+                            Event.observe(element, 'click', toggleRememberMepopup);
+                        });
+                    });
+                    //]]>
+                </script>
+                <div class="buttons-set">
+                    <button type="submit" class="button" title="Login" name="send" id="send2"><span><span>Login</span></span></button>
+                    <a href="<?php echo $this->getUrl('customer/account/forgotpassword/') ?>" class="f-left">Forgot Password?</a>
+                </div>
+            </form>
+
+            <h3>Don't have an account yet?</h3>
+            <dl><dt><a href="<?php echo $this->getUrl('customer/account/create/') ?>" class="defaultbutton plain" title="Sign Up" type="submit"><span><span>Sign Up</span></span></a></dt></dl>
+        </div>
+
+    </div>
+    <?php echo $this->getMessagesBlock()->toHtml() ?>
+
+    <script type="text/javascript">
+    //<![CDATA[
+        var dataForm = new VarienForm('login-form', true);
+
+    jQuery(document).ready(function () {
+        if (jQuery('.error-msg > ul > li > span:contains("Message rejected: Email address is not verified.")').length > 0) {
+            jQuery(".error-msg").css("display", "none");
+        }
+    });
+    //]]>
+    </script>
+</div>
+</div>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_Rma>
+            <version>0.1.0</version>
+        </Gento_Rma>
+    </modules>
+    <global>
+        <models>
+            <gento_rma>
+                <class>Gento_Rma_Model</class>
+            </gento_rma>
+        </models>
+        <helpers>
+            <gento_rma>
+                <class>Gento_Rma_Helper</class>
+            </gento_rma>
+        </helpers>
+    </global>
+    <crontab>
+        <jobs>
+            <gento_rma>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>gento_rma/observer::setStatus</model>
+                </run>
+            </gento_rma>
+        </jobs>
+    </crontab>
+</config>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Awix_CustomAttri>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends></depends>
+        </Awix_CustomAttri>
+    </modules>
+</config>

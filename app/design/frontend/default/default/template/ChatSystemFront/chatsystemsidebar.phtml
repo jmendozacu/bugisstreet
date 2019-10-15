@@ -1,0 +1,65 @@
+<?php 
+$customerid=Mage::getSingleton('customer/session')->getCustomerId();
+if($customerid){
+	$partner = Mage::getModel('marketplace/userprofile')->getPartnerProfileById($customerid);
+	if($partner['wantpartner']){?>
+		
+		<div id="wk_cs_buddy_list_container">
+			<div id="wk_cs_buddy_list_opener">
+				<span id="wk_cs_buddy_list_opener_icon"></span>
+			</div>
+			<div id="wk_cs_buddy_list">		
+				<div id="wk_cs_buddy_list_movable c_movable">
+				<?php 
+					$contactbuyer = Mage::getModel('chatsystem/conversation')->getCollection()
+								->addFieldToFilter('toid',array('eq'=>$customerid))
+								->addFieldToSelect('forid')
+								->distinct(true);
+					$conbuyerids = array();	
+					foreach($contactbuyer as $buyer){
+						array_push($conbuyerids,$buyer->getForid());
+					}					
+					$collection = Mage::getModel('log/visitor_online')->getCollection()
+							->addFieldToFilter('customer_id',array('in'=>$conbuyerids))
+							->addFieldToFilter('customer_id',array('neq'=>$customerid))
+							->addFieldToSelect('customer_id')
+							->distinct(true);		
+					$buyerids = array();					
+					foreach($collection as $buyer){
+						array_push($buyerids,$buyer->getCustomerId());
+						$buyer=Mage::getModel('customer/customer')->load($buyer->getCustomerId());?>
+						<div class="wk_cs_chat_buddies" id="list-<?php echo $buyer->getId() ?>">							
+							<span class="wk_cs_buddy_icon c_i"></span>
+							<span class="wk_cs_buddy_name"><?php echo $buyer->getName();?></span>
+							<span id="wk_cs_admin_signal c_l" class="wk_cs_signal_on"></span>
+						</div>	
+				<?php 
+					}
+					$resultids = array_diff($conbuyerids, $buyerids);
+					foreach($resultids as $id){
+						$buyer=Mage::getModel('customer/customer')->load($id);?>
+						<div class="wk_cs_chat_buddies" id="list-<?php echo $buyer->getId() ?>">							
+							<span class="wk_cs_buddy_icon c_i"></span>
+							<span class="wk_cs_buddy_name"><?php echo $buyer->getName();?></span>
+							<span id="wk_cs_admin_signal" class="wk_cs_signal_off c_i_o"></span>
+						</div>	
+				<?php 
+					}
+					?>				
+				</div>
+			</div>
+		</div>
+	<?php
+	}?>
+	<script>
+		jQuery(function(){
+			jQuery("#wk_cs_buddy_list_opener").click(function(){
+				if(jQuery("#wk_cs_buddy_list_container").css("left") != "-255px")
+					jQuery("#wk_cs_buddy_list_container").animate({"left":"-255px"});
+				else
+					jQuery("#wk_cs_buddy_list_container").animate({"left":"0"});
+			});		
+		});	
+	</script>
+	<?php 
+} ?>

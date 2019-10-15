@@ -1,0 +1,99 @@
+<?php
+
+    $query = $this->getRequest()->getParam('q');
+    if (!$query) {
+        Mage::app()->getResponse()->setRedirect(Mage::getBaseUrl());
+    }
+    //$is_vendor_search = Mage::getSingleton('cms/page')->getIdentifier() == "vendorsearch";
+    //$is_search_page = Mage::app()->getFrontController()->getAction()->getFullActionName() == "catalogsearch_result_index";
+    if (!$query) {
+        Mage::app()->getResponse()->setRedirect(Mage::getBaseUrl());
+    }
+    $vendors = Mage::getModel('marketplace/userprofile')->getCollection()
+        ->addFieldToFilter('partnerstatus',array('eq'=>'Seller'))
+        ->addFieldToFilter('wantpartner',array('eq'=>1))
+        ->addFieldToFilter('shoptitle', array('like' => '%'.$query.'%'))->load();
+
+        /*$count = 0;
+        foreach ($vendors as $v) {
+            $count ++;
+        }*/
+    if(!$vendors->count()){
+        ?>
+        <p class="note-msg-vendorsearch">
+            <?php echo $this->__("Your search '<strong>%s</strong>' did not match any Stores.", Mage::helper('core')->escapeHtml(strip_tags(Mage::app()->getFrontController()->getRequest()->getParam('q')))) ?>
+        </p>
+        <?php
+    }
+    else{
+?>
+    <!--<div class="block_filter">
+        <ul class="productlisting-filters-vendor">
+            <?php /*if ($is_vendor_search): */?>
+
+                <li class="searchtoggle retailersearch <?php /*echo $is_vendor_search ? "active" : ""; */?>" style="font-size: 12px">
+                    <a href="<?php /*echo Mage::getUrl('vendorsearch'); */?>?q=<?php /*echo urlencode($this->getRequest()->getParam('q')); */?>">
+                        <span class="label">Shops</span> <span class="search-indi" id="shops-search-indi"><?php /*echo $count; */?></span>
+                    </a>
+                </li>
+            <?php /*endif; */?>
+        </ul>
+    </div>-->
+    <div class="page-title">
+        <h1><?php echo $this->__("Search Results for '".$query."'"); ?></h1>
+    </div>
+    <div class="category-products">
+            <ul class="products-grid products-grid--max-4-col content clearfix bso-product-listing product-columns"
+                id="productlist_content">
+                <?php
+                foreach ($vendors as $_vendor):
+                    $logo=$_vendor->getlogopic()==''?"noimage.jpg":$_vendor->getlogopic();
+                    $logo=Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).'avatar/'.$logo;
+
+                    // create folder
+                    if(!file_exists("./media/avatar/resized")){
+                        mkdir("./media/avatar/resized",0777);
+                    }
+
+                    // get image name
+                    $imageName = substr(strrchr($logo,"/"),1);
+
+                    // resized image path (media/catalog/category/resized/IMAGE_NAME)
+                    $imageResized = Mage::getBaseDir('media').DS."avatar".DS."resized".DS.$imageName;
+
+                    // changing image url into direct path
+                    $dirImg = Mage::getBaseDir().str_replace("/",DS,strstr($logo,'/media'));
+
+                    // if resized image doesn't exist, save the resized image to the resized directory
+                    if (!file_exists($imageResized)&&file_exists($dirImg)) {
+                        $imageObj = new Varien_Image($dirImg);
+                        $imageObj->constrainOnly(TRUE);
+                        $imageObj->keepAspectRatio(true);
+                        $imageObj->keepFrame(true);
+                        $imageObj->backgroundColor(array(255,255,255));
+                        $imageObj->resize(480, 480);
+                        $imageObj->save($imageResized);
+                    }
+                    $newImageUrl = Mage::getBaseUrl('media')."avatar/resized/".$imageName;
+                ?>
+                    <li class="item last box individual-item productitems">
+                        <a href="<?php echo $this->getUrl('marketplace/seller/profile').$_vendor->getProfileurl() ?>"
+                           class="product-image">
+                            <img id="product-collection-image-"
+                                 src="<?php echo $newImageUrl; ?>"/>
+                        </a>
+                        <div class="desc">
+                            <a href="<?php echo $this->getUrl('marketplace/seller/profile').$_vendor->getProfileurl() ?>"
+                               class="product-description clearfix">
+                                    <span class="item-name seller">
+                                        <h3><?php echo $_vendor->getShoptitle(); ?></h3>
+                                    </span>
+                            </a>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <script
+                type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd', 'even', 'first', 'last'])</script>
+    </div>
+    <?php } ?>

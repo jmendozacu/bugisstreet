@@ -1,0 +1,61 @@
+<?xml version="1.0"?>   
+<layout version="0.1.0">   
+  	<customer_account>
+		<block name="marketplacenavigation">
+			<block type="core/template" name="shippingleftlink" template="mpshippingmanager/shippingleftlink.phtml"/>
+		</block>
+    </customer_account>
+
+	<mpshippingmanager_shipping_index>
+        <update handle="customer_account"/>
+		<reference name="head">
+			<action method="addCss"><stylesheet>marketplace/mpshippingmanager/css/mpshipping.css</stylesheet></action>
+			<action method="addCss"><stylesheet>marketplace/css/style.css</stylesheet></action>
+		</reference>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+		</reference>
+        <reference name="content">
+			 <block type="core/template" name="mpshippingmanager" as="mpshippingmanager" template="mpshippingmanager/index.phtml" />
+        </reference>
+    </mpshippingmanager_shipping_index>
+
+	<marketplace_account_salesdetail>
+		<reference name="head">
+			<action method="addCss"><stylesheet>marketplace/mpshippingmanager/css/mpshipping.css</stylesheet></action>
+		</reference>
+		 <update handle="customer_account"/>
+		  <reference name="content">
+            <block type="mpshippingmanager/salesdetail" name="marketplace_salesdetail" as="marketplace_salesdetail" template="mpshippingmanager/salesdetail.phtml"/>
+        </reference>
+	</marketplace_account_salesdetail>
+
+	<marketplace_account_invoice>
+		<reference name="head">
+			<action method="addCss"><stylesheet>marketplace/mpshippingmanager/css/mpshipping.css</stylesheet></action>
+		</reference>
+		<update handle="customer_account"/>
+		  <reference name="content">
+            <block type="mpshippingmanager/invoice" name="marketplace_invoice" template="mpshippingmanager/invoice.phtml"/>
+        </reference>
+	</marketplace_account_invoice>
+
+	<marketplace_account_orderhistory>
+		<reference name="head">
+			<action method="addCss"><stylesheet>marketplace/mpshippingmanager/css/mpshipping.css</stylesheet></action>
+			<action method="addCss"><stylesheet>marketplace/mpshippingmanager/css/datepicker/jquery-ui.css</stylesheet></action>	
+		</reference>
+        <reference name="content">
+			<remove name="marketplace_myorderhistory"></remove>
+            <block type="mpshippingmanager/invoice" name="mpshipping_invoice" template="mpshippingmanager/ordershipslip.phtml" before="_"/>
+            <block type="marketplace/products" name="marketplace_myorderhistory_shipping" template="mpshippingmanager/myorderhistory.phtml" />
+        </reference>
+    </marketplace_account_orderhistory>
+    <marketplace_account_productlist>
+        <reference name="content">
+			<remove name="marketplace_myproductslist"></remove>
+            <block type="marketplace/marketplace" name="marketplace_myproductslist_shipping" template="mpshippingmanager/myproductlist.phtml"/>
+        </reference>
+    </marketplace_account_productlist>  
+</layout>   
+	

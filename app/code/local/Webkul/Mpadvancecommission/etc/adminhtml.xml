@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+	<config>
+		<menu></menu>
+		<acl>
+			
+			<resources>
+				<all>
+					<title>Allow Everything</title>		.
+				</all>	
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<mpadvancecommission translate="title" module="mpadvancecommission">
+											<title>Advance Commission Section</title>
+											<sort_order>0</sort_order>
+										</mpadvancecommission>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+	</config>

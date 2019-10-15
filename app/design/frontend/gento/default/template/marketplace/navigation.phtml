@@ -1,0 +1,176 @@
+<?php 
+	$partner = Mage::getModel('marketplace/userprofile')->isPartner(Mage::getSingleton('customer/session')->getCustomerId()); 
+	$magentoCurrentUrl = Mage::helper('core/url')->getCurrentUrl(); 
+	$helper=Mage::helper('marketplace');
+	$allow_pro_type=Mage::getStoreConfig('marketplace/marketplace_options/allow_for_seller');
+?>	<div class="block block-account mp_header_block">
+		<div class="block-title">
+			<strong><span class="mp_title"><a href="javascript:void(0)"> <?php echo $helper->__('Seller') ?></a></span></strong>
+		</div>
+		<div class="block-content">
+			<ul class="wk_cont_ul" style="display: none;">
+				<?php if($partner){ ?>	
+					<li  <?php echo strpos($magentoCurrentUrl,'marketplace/marketplaceaccount/editprofile')? "class=current":"";?>>
+					<?php if(strpos($magentoCurrentUrl,'marketplace/marketplaceaccount/editprofile')){ ?>	
+						<strong><?php echo $helper->__('Seller Profile') ?></strong>		
+						<?php }			
+						else{ ?>	
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/editprofile'); ?>">
+								<?php echo $helper->__('Seller Profile') ?>
+							</a>				
+					<?php } ?>		
+					</li>
+					<?php 
+					if(strpos($allow_pro_type,'configurable') !== false){ ?>
+						<li  style="display: none" <?php echo strpos($magentoCurrentUrl,'newattribute')? "class=current":"";?>>
+						<?php if(strpos($magentoCurrentUrl,'newattribute')){ ?>					
+							<strong><?php echo $helper->__('Create Attribute') ?></strong>	
+							<?php }		
+							else{ ?>		
+								<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/newattribute'); ?>">
+									<?php echo $helper->__('Create Attribute') ?></a>			
+							<?php } ?>				
+						</li>
+						<?php
+					}
+					?>
+					<li  <?php echo (strpos($magentoCurrentUrl,'marketplaceaccount/new') && strpos($magentoCurrentUrl,'marketplaceaccount/newattribute')===false)? "class=current":"";?>>
+					<?php if(strpos($magentoCurrentUrl,'marketplaceaccount/new') && strpos($magentoCurrentUrl,'marketplaceaccount/newattribute')===false){ ?>		
+						<strong><?php echo $helper->__('New Products') ?></strong>	
+						<?php }					
+						else{ ?>					
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/new'); ?>">
+								<?php echo $helper->__('New Products') ?>
+							</a>						
+						<?php } ?>			
+					</li>					
+					<li  <?php echo strpos($magentoCurrentUrl,'myproductslist')? "class=current":"";?>>
+					<?php if(strpos($magentoCurrentUrl,'myproductslist')){ ?>		
+						<strong><?php echo $helper->__('My Products List') ?></strong>	
+						<?php }					
+						else{ ?>					
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/myproductslist'); ?>">
+								<?php echo $helper->__('My Products List') ?>
+							</a>						
+						<?php } ?>			
+					</li>
+								
+					<li style="display: none;" <?php echo strpos($magentoCurrentUrl,'mydashboard')? "class=current":"";?>>
+						<?php if(strpos($magentoCurrentUrl,'mydashboard')){ ?>		
+						<strong><?php echo $helper->__('My Dashboard') ?></strong>				
+						<?php }					
+						else{ ?>		
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/mydashboard'); ?>">
+								<?php echo $helper->__('My Dashboard') ?>
+							</a>					
+						<?php } ?>					
+					</li>
+					
+					<li  style="display: none" <?php echo strpos($magentoCurrentUrl,'mytransaction')? "class=current":"";?>>
+						<?php if(strpos($magentoCurrentUrl,'mytransaction')){ ?>
+							<strong><?php echo $helper->__('My Transaction List') ?></strong>
+						<?php }
+						else{ ?>
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/mytransaction'); ?>"><?php echo $helper->__('My Transaction List') ?></a>
+						<?php } ?>					
+					</li>
+
+					<?php //echo $this->getChildHtml();?>
+                    <li style="display:none" <?php echo strpos($magentoCurrentUrl,'mpshippingmanager/shipping')? "class=current":"";?>>
+                        <?php if(strpos($magentoCurrentUrl,'mpshippingmanager/shipping')){ ?>
+                            <strong><?php echo Mage::helper('mpshippingmanager')->__('Manage Shipping') ?></strong>
+                        <?php }
+                        else{ ?>
+                            <a href="<?php echo $this->getUrl('mpshippingmanager/shipping'); ?>"><?php echo Mage::helper('mpshippingmanager')->__('Manage Shipping') ?></a>
+                        <?php } ?>
+                    </li>
+                    <li  class="wk_rmalink <?php echo (strpos($magentoCurrentUrl,'seller/allrma'))? "current":"";?>">
+                        <?php
+                        if(strpos($magentoCurrentUrl,'seller/allrma')){ ?>
+                            <strong><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></strong>
+                        <?php
+                        }else{ ?>
+                            <a href="<?php echo $this->getUrl('mprmasystem/seller/allrma'); ?>"><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></a>
+                        <?php
+                        } ?>
+                    </li>
+
+                    <?php ?>
+					<li class="last <?php echo strpos($magentoCurrentUrl,'myorderhistory')? "current":"";?>">
+						<?php if(strpos($magentoCurrentUrl,'myorderhistory')){ ?>	
+							<strong><?php echo $helper->__('My Order History') ?></strong>	
+						<?php }		
+						else{ ?>		
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/myorderhistory'); ?>">
+								<?php echo $helper->__('My Order History') ?>
+							</a>						
+						<?php } ?>	
+					</li>	
+					<?php }		
+					else{ ?>	
+					<?php //echo $this->getChildHtml();?>
+                        <li  class="wk_rmalink <?php echo (strpos($magentoCurrentUrl,'seller/allrma'))? "current":"";?>">
+                            <?php
+                            if(strpos($magentoCurrentUrl,'seller/allrma')){ ?>
+                                <strong><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></strong>
+                            <?php
+                            }else{ ?>
+                                <a href="<?php echo $this->getUrl('mprmasystem/seller/allrma'); ?>"><?php echo Mage::helper('mprmasystem')->__('RMA System') ?></a>
+                            <?php
+                            } ?>
+                        </li>
+					<li class="last <?php echo strpos($magentoCurrentUrl,'marketplace/marketplaceaccount/becomepartner')? "current":"";?>">
+						<?php if(strpos($magentoCurrentUrl,'marketplace/marketplaceaccount/becomepartner')){ ?>	
+							<strong><?php echo $helper->__('Become Seller') ?></strong>
+						<?php }			
+						else{ ?>	
+							<a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/becomepartner'); ?>">
+								<?php echo $helper->__('Become Seller') ?>
+							</a>					
+						<?php } ?>		
+					</li>		
+				<?php } ?>	
+			</ul>
+		</div>
+	</div>
+<script>
+    function closeMenus() {
+        //jQuery('.filter-over').removeClass('toggled');
+        jQuery('.filter-cat').removeClass('toggled');
+        jQuery('.sort-over').removeClass('toggled');
+        jQuery('.mobilecurrency').hide();
+        jQuery('.search-nav').removeClass('active');
+        jQuery('.account-nav').removeClass('skip-active');
+        jQuery('li a.search').removeClass('active');
+        jQuery('li a.login').removeClass('active');
+        jQuery('.wantlist-drop').removeClass('active');
+        jQuery('li a.wantlist-top').removeClass('active');
+        jQuery('.skip-active').removeClass('active');
+        jQuery(' li a.skip-account').removeClass('skip-active');
+        jQuery('li a.skip-cart').removeClass('skip-active');
+        jQuery('.social-drop').removeClass('active');
+        jQuery('li a.social').removeClass('active');
+        jQuery('.currency-content').removeClass('active');
+        jQuery('li a.currency').removeClass('active');
+        jQuery('.content_cart').removeClass('skip-active');
+        jQuery('.mb-top-layered-navigation').removeClass('test_mana');
+        //jQuery('.mb-mana-catalogsearch-leftnav').removeClass('test_mana');
+        //jQuery('.mb-mana-catalogsearch-leftnav').removeClass('test-search-mana');
+        jQuery('.wk_cont_ul').removeClass('test-view');
+
+    }
+	jQuery('.mp_title').click(function(e){
+		//jQuery('.wk_cont_ul').toggle();
+        if (jQuery('.wk_cont_ul').hasClass('test-view')){
+            closeMenus();
+            jQuery('.wk_cont_ul').removeClass('test-view');
+        } else {
+            closeMenus();
+            jQuery('.wk_cont_ul').addClass('test-view');
+            jQuery('.wrapper').click(function(){
+                closeMenus();
+            });
+        }
+        e.stopPropagation();
+	});
+</script>

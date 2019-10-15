@@ -1,0 +1,38 @@
+<?php
+	$allowedshipping=json_decode($this->getAllowedShipping(),true);
+	$shippingdata=$this->getAllCarriersList();
+	$customerObj  = Mage::getSingleton('customer/session')->getCustomer();
+?>
+<form action="<?php echo $this->getUrl('mpmultishipmethod/index') ?>" method="post" enctype="multipart/form-data" >
+	<div class="page-title" style="margin-top:20px">
+		<h1 style="float:left;"><?php echo Mage::helper('mpmultishipmethod')->__('Choose Your Allowed Shipping') ?></h1>
+		<button class="button wk_mp_btn" title="<?php echo Mage::helper('mpmultishipmethod')->__('Submit') ?>" type="submit" id="save_butn">
+			<span><span><?php echo Mage::helper('mpmultishipmethod')->__('Submit') ?></span></span>
+		</button>
+	</div>
+	<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+	<div class="wk_mp_design">
+		<div class="block block-account">	
+			<div class="block-title">	
+				<strong><span><h4><?php echo Mage::helper('marketplace')->__('Choose Your Allowed Shipping') ?></h4></span></strong>
+			</div>
+		</div>
+		<div class="fieldset wk_mp_fieldset shipping_selection">
+			<ul id="wk_bodymain" class="form-list">
+				<?php foreach($shippingdata as $shipinfo){?>
+				<li>
+					<span class="input-box">
+						<label><?php echo $shipinfo['label'];?></label>
+						<input type="checkbox" name="shippingmethod[]" <?php echo in_array($shipinfo['value'],$allowedshipping)? "checked='checked'":"";?> value="<?php echo $shipinfo['value'];?>" />
+
+<!--						--><?php //if($is_custom==1){ ?>
+<!--							<input type="text" name="--><?php //echo $shipinfo['label_attr'] ?><!--" value="--><?php //echo $shipinfo['label_c'] ?><!--" />-->
+<!--						--><?php //} ?>
+					</span>
+					
+				</li>
+				<?php } ?>
+			</ul>
+		</div>
+	</div>
+</form>

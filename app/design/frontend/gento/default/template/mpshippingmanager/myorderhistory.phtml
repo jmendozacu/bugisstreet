@@ -1,0 +1,280 @@
+
+<?php
+$isPartner = Mage::getModel('marketplace/userprofile')->isPartner();
+$helper = Mage::helper('marketplace');
+if ($isPartner == 1) {
+    ?>
+
+    <script type="text/javascript">
+        if (typeof jQuery == 'undefined') {
+            document.write(unescape("%3Cscript src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js' type='text/javascript'%3E%3C/script%3E"));
+        }
+
+    </script>
+    <div class="page-title">
+        <h1 style="float:left;"><?php echo $helper->__('My Order History') ?></h1>
+    </div>
+    <div class="wk_mp_design">
+        <div class="block block-account">
+            <div class="block-title">
+                <strong><span><h4><?php echo $helper->__('Order History') ?></h4></span></strong>
+            </div>
+        </div>
+        <div class="fieldset wk_mp_fieldset">
+            <div class="grid">
+                <div class="hor-scroll">
+                    <form action="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" method="post">
+                        <table cellspacing="0" class="border wk_mp_list_table">
+                            <thead>
+                            <tr id="wk_mp_tr_heading">
+                                <th><span><?php echo $helper->__('Order Id') ?></span></th>
+                                <th><span><?php echo $helper->__('Date') ?></span></th>
+                                <th><span><?php echo $helper->__('Order Status') ?></span></th>
+                                <th><span>&nbsp;</span></th>
+                            </tr>
+                            </thead>
+                            <tbody class="wk_mp_body">
+                            <tr>
+                                <td>
+                                    <input type="text" class="input-text" name="s"
+                                           placeholder='<?php echo $helper->__('Search by Order Id') ?>'
+                                           value="<?php echo $this->getRequest()->getParam('s') ?>"
+                                           style="width:99%; margin-bottom: 30px"/>
+                                </td>
+                                <td>
+						    			<span class="wk_mp_td_span">
+						    				<?php echo $helper->__('From: ') ?>
+                                            <input name="from_date" id="special_from_date" class="input-text"
+                                                   value="<?php echo $this->getRequest()->getParam('from_date') ?>"/>
+						    			</span>				    			
+						    			<span class="wk_mp_td_span">
+						    				<?php echo $helper->__('To: ') ?>
+                                            <input name="to_date" id="special_to_date" class="input-text"
+                                                   value="<?php echo $this->getRequest()->getParam('to_date') ?>"/>
+						    			</span>
+                                </td>
+                                <td>
+                                    <select name="orderstatus" class="input-text" style="margin-bottom: 33px">
+                                        <option value=""><?php echo $helper->__('All') ?></option>
+                                        <?php
+                                        $orderstatus_coll = Mage::getModel('sales/order_status')->getResourceCollection()->getData();
+                                        foreach ($orderstatus_coll as $orderstatus) {
+                                            ?>
+                                            <option
+                                                value="<?php echo $orderstatus['status'] ?>" <?php if ($this->getRequest()->getParam('orderstatus') == $orderstatus['status']) echo 'selected="selected"' ?>>
+                                                <?php echo $orderstatus['label'] ?>
+                                            </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="button" title="Save" id="save_butn" type="submit">
+                                        <span><span><span><?php echo $helper->__('Submit') ?></span></span></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <?php
+                    if (count($this->getCollection()) == 0) { ?>
+                        <div class="fieldset wk_mp_fieldset">
+                            <div class="wk_emptymsg">
+                                <?php echo $helper->__('No Order Available') ?>
+                            </div>
+                        </div>
+                    <?php
+                    } else { ?>
+                        <?php $i = 0;
+                        //Mage::log(count($this->getCollection()), null, 'count_order.log', true);
+                        ?>
+                        <div class="list_orders_seller">
+                        <?php
+                        foreach ($this->getCollection() as $res) {
+                            $order = Mage::getModel('sales/order')->load($res['mageorderid']);
+                            $date = $order->getCreatedAt();
+                            $dateformat = new DateTime($date);
+
+
+                            $sTime = Mage::app()
+                                ->getLocale()
+                                ->date(strtotime($order->getCreatedAtStoreDate()), null, null, false)
+                                ->toString('H:m:s');
+
+                            $status = $order->getStatus();
+                            $name = $order->getCustomerName();
+                            $shipping_coll = Mage::getModel('mpshippingmanager/tracking')->getCollection()
+                                ->addFieldToFilter('order_id', array('eq' => $order->getId()))
+                                ->addFieldToFilter('seller_id', array('eq' => Mage::getSingleton('customer/session')->getCustomerId()));
+                            $flag = 0;
+                            foreach ($shipping_coll as $col) {
+                                if ($col['tracking_number'] != '') {
+                                    $flag = 1;
+                                }
+                            }
+                            if ($res['mageorderid'] > 0) {
+                                //if ($status == 'processing' || $status == 'complete') {
+                                    $i++; ?>
+                                    <div class="wk_orderbox <?php if ($i == 1) echo "wk_first_order" ?>">
+                                        <div style="padding:7px 7px 0px 7px;">
+                                            <div class="wk_orderbox_content1">
+                                                <div class="wk_orderbox_details">
+                                                    <div class="color">
+                                                        <span
+                                                            class="wk_ordertitle_label"><?php echo $helper->__('Order') ?></span>
+                                                        <strong>#<?php echo $res['magerealorderid']; ?></strong>
+                                                    </div>
+                                                    <div class="name">
+                                                        <?php echo Mage::getModel('marketplace/saleslist')->getpronamebyorder($res['mageorderid']); ?>
+                                                        <a href="<?php echo $this->getUrl('marketplace/marketplaceaccount/vieworder', array('id' => $res['mageorderid'])) ?>">
+                                                            <button class="button"
+                                                                    title="<?php echo $helper->__('View Order') ?>"
+                                                                    type="button">
+                                                                <span><span><span><?php echo $helper->__('View Order') ?></span></span></span>
+                                                            </button>
+                                                        </a>
+                                                        <?php
+                                                        $shipping_coll = Mage::getModel('mpshippingmanager/tracking')->getCollection()
+                                                            ->addFieldToFilter('order_id', array('eq' => $res['mageorderid']))
+                                                            ->addFieldToFilter('seller_id', array('eq' => $res['mageproownerid']));
+                                                        if (count($shipping_coll)): ?>
+                                                            <a href="<?php echo $this->getUrl('mpshippingmanager/shipping/invoice', array('id' => $res['mageorderid'])) ?>">
+                                                                <button class="button"
+                                                                        title="<?php echo $helper->__('View Order') ?>"
+                                                                        type="button">
+                                                                    <span><span><span><?php echo $helper->__('Invoice') ?></span></span></span>
+                                                                </button>
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                    </div>
+                                                </div>
+                                                <div class="wk_dash_orderstatus">
+                                                    <label for="name" class="wk_dash_label">
+                                                        <?php if ($status == "processing" && $flag == 1) {
+                                                            $realstatus = "complete";
+                                                        } else {
+                                                            $realstatus = $status;
+                                                        } ?>
+                                                        <div
+                                                            class="status <?php echo strtolower($realstatus); ?>"><?php echo strtoupper($realstatus); ?> </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="wk_orderbox_content2">
+                                                <div class="wk_orderbox_details">
+                                                    <span
+                                                        class="wk_title_label"><?php echo $helper->__('Customer: '); ?></span>
+                                                    <span class="wk_label"><?php echo $name; ?></span>&nbsp;&nbsp;
+                                                    <span
+                                                        class="wk_title_label"><?php echo $helper->__('Date: '); ?></span>
+                                                    <span
+                                                        class="wk_label"><?php echo $dateformat->format('Y-m-d '); ?><?php echo $sTime; ?></span>
+                                                </div>
+
+                                                <?php
+                                                //Start - Getting new total price
+                                                $_order = Mage::getModel('sales/order')->load($res['mageorderid']);
+
+
+                                                ?>
+                                                <?php $_items = $_order->getItemsCollection(); ?>
+                                                <?php $i = 0; ?>
+                                                <?php $_count = $_items->count(); ?>
+                                                <?php
+                                                $subtotal = 0;
+                                                $customerid = Mage::getSingleton('customer/session')->getCustomerId();
+                                                $shippingamount = 0;
+                                                $itemPrice = 0;
+                                                foreach ($_items as $_item) {
+                                                    $row_total = 0;
+                                                    $available_seller_item = 0;
+                                                    $seller_item_cost = 0;
+                                                    $orderid = $res['mageorderid'];
+                                                    $vendor_item_status = $this->getItemStatus($orderid, $_item->getProductId());
+                                                    $seller_orderslist = Mage::getModel('marketplace/saleslist')->getCollection()
+                                                        ->addFieldToFilter('mageproownerid', array('eq' => $customerid))
+                                                        ->addFieldToFilter('mageorderid', array('eq' => $orderid))
+                                                        ->addFieldToFilter('mageproid', array('eq' => $_item->getProductId()))
+                                                        // ->addFieldToFilter('mageproprice',array('eq'=>$_item->getPrice()))
+                                                        ->setOrder('mageorderid', 'DESC');
+                                                    foreach ($seller_orderslist as $seller_item) {
+                                                        $parentitem_falg = 0;
+                                                        $available_seller_item = 1;
+                                                        $seller_item_commission = $seller_item->getTotalcommision();
+                                                        $shippingcharges = $seller_item->getShippingCharges();
+                                                        $itemPrice = $seller_item->getMageproprice();
+                                                    }
+                                                    if ($available_seller_item == 1) {
+                                                        $i++;
+                                                        $seller_item_qty = $_item->getQtyOrdered();
+                                                        $row_total = $itemPrice * $seller_item_qty;
+                                                        $seller_item_cost = $row_total - $seller_item_commission;
+                                                        $subtotal = $subtotal + $row_total;
+                                                        $shippingamount = $shippingamount + $shippingcharges;
+
+
+                                                    }
+
+
+                                                }
+                                                if ($shippingamount == 0) {
+                                                    $shippingamount = Mage::getModel("mpshippingmanager/tracking")->getShippingPrice($res['mageorderid']);
+                                                }
+                                                //End - Getting new total price
+                                                ?>
+
+
+
+
+
+                                                <div class="wk_orderbox_total">
+                                                    <span
+                                                        class="wk_title_label"><?php echo $helper->__('Order Total - '); ?></span>
+												<span
+                                                    class="wk_label">
+
+                                                    					        	 <strong><?php echo Mage::helper('core')->currency($subtotal + $shippingamount, true, false); ?></strong>
+
+
+                                                </span>
+                                                    <!--												<span class="wk_label"><strong>-->
+                                                    <?php //echo Mage::helper('core')->currency($order->getBaseGrandTotal());
+                                                    ?><!--</strong></span>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="wk_clear"></div>-->
+
+                                <?php //}
+                            }
+
+                        }
+                    } ?>
+                    </div>
+
+                </div>
+            </div>
+            <?php echo $this->getPagerHtml(); ?>
+        </div>
+        <div class="buttons-set">
+            <p class="back-link">
+                <a href="javascript:;" onclick="javascript: window.history.back();"
+                   class="left"> <?php echo $helper->__('Back') ?></a>
+            </p>
+        </div>
+    </div>
+    <script>
+        var $wk_jq = jQuery.noConflict();
+        (function ($wk_jq) {
+            $wk_jq("#special_from_date").datepicker({dateFormat: "yy-mm-dd"});
+            $wk_jq("#special_to_date").datepicker({dateFormat: "yy-mm-dd"});
+        })($wk_jq);
+    </script>
+<?php
+}else {
+    echo "<h2 class='wk_new_msg'>" . $helper->__("To BECOME SELLER PLEASE CONTACT TO ADMIN.") . "</h2>";
+} ?>

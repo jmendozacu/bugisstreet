@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Webkul_Mpadvancecommission>
+      <version>0.1.0</version>
+    </Webkul_Mpadvancecommission>
+  </modules>
+  
+   <admin>
+        <!--<routers>
+			<mpadvancecommission>
+				<use>admin</use>
+				<args>
+					<module>Webkul_Mpadvancecommission</module>
+					<frontName>mpadvancecommission</frontName>
+				</args>
+			</mpadvancecommission>
+        </routers>-->
+	   	<routers>
+		   <adminhtml>
+			   <args>
+				   <modules>
+					   <webkul_mpadvancecommission after="Mage_Adminhtml">Webkul_Mpadvancecommission_Adminhtml</webkul_mpadvancecommission>
+				   </modules>
+			   </args>
+		   </adminhtml>
+	   	</routers>
+        
+    </admin>
+    <adminhtml>
+    
+    </adminhtml>
+  
+  <global>
+    <helpers>
+      <mpadvancecommission>
+        <class>Webkul_Mpadvancecommission_Helper</class>
+      </mpadvancecommission>
+    </helpers>
+	<models>
+	  <mpadvancecommission>
+		<class>Webkul_Mpadvancecommission_Model</class>
+		<resourceModel>mpadvancecommission_mysql4</resourceModel>
+	  </mpadvancecommission>
+	</models>
+	<blocks>
+		<mpadvancecommission>
+                <class>Webkul_Mpadvancecommission_Block</class>
+		</mpadvancecommission>
+     </blocks>
+	
+	<resources>
+	  <mpadvancecommission_setup>
+		<setup>
+		  <module>Webkul_Mpadvancecommission</module>
+		</setup>
+		<connection>
+		  <use>core_setup</use>
+		</connection>
+	  </mpadvancecommission_setup>
+	  <mpadvancecommission_write>
+		<connection>
+		  <use>core_write</use>
+		</connection>
+	  </mpadvancecommission_write>
+	  <mpadvancecommission_read>
+		<connection>
+		  <use>core_read</use>
+		</connection>
+	  </mpadvancecommission_read>
+	  <categoryattribute1403678243_setup>
+		<setup>
+		  <module>Webkul_Mpadvancecommission</module>
+		  <class>Mage_Catalog_Model_Resource_Eav_Mysql4_Setup</class>
+		</setup>
+		<connection>
+		  <use>core_setup</use>
+		</connection>
+	  </categoryattribute1403678243_setup>
+	  <categoryattribute1403678243_write>
+		<connection>
+		  <use>core_write</use>
+		</connection>
+	  </categoryattribute1403678243_write>
+	  <categoryattribute1403678243_read>
+		<connection>
+		  <use>core_read</use>
+		</connection>
+	  </categoryattribute1403678243_read>
+	</resources>
+    <events> 
+    
+        <mp_advance_commission> <!--  to check commmission -->
+                <observers>
+                    <Webkul_Mpadvancecommission_Model_Observer>
+                      <type>singleton</type>
+                      <class>Webkul_Mpadvancecommission_Model_Observer</class>
+                      <method>setcommission</method>
+                    </Webkul_Mpadvancecommission_Model_Observer>
+               </observers>
+         </mp_advance_commission>
+         
+    </events>
+  </global>
+</config> 

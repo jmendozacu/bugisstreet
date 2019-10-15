@@ -1,0 +1,38 @@
+<?php $collection = $this->_getCollection(); ?>
+<?php if (count($collection) > 0) : ?>
+	<section class="main-home-3-1">
+		<header>Brands we serve</header>
+		<figure class="scroller-button-left">
+			<a class="prev"><img src="<?php echo $this->getSkinUrl('images/arow-left.png') ?>" alt="Previous"></a>
+		</figure>
+		<figure class="brands-slider">
+			<ul>
+				<?php foreach ($collection as $item) : ?>
+					<?php $_imageList = $item->getImageList(); ?>
+					<?php if (is_array($_imageList) and sizeof($_imageList) > 0) : ?>
+						<?php $i=0;foreach ($_imageList as &$_item) : ?>
+							<li class="image-2">
+								<a href="<?php echo $_item['label']; ?>" target="_blank">
+									<img src="<?php echo $this->helper('gtbanner/image')->init($_item['file'])->resize(86,86); ?>" />				
+								</a>
+							</li>
+							<?php $i++; ?>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</ul>
+		</figure>
+		<figure class="scroller-button-right">
+			<a class="next"><img src="<?php echo $this->getSkinUrl('images/arow-right.jpg') ?>" alt="Next"></a>
+		</figure>
+	</section>
+	<script type="text/JavaScript">
+		jQuery(window).load(function() {
+			jQuery('.brands-slider').jCarouselLite({
+				visible:1,
+				btnNext: ".next",
+				btnPrev: ".prev"
+			});
+		}); 
+	</script>
+<?php endif; ?>

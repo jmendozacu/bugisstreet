@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_Customer>
+            <version>0.1.0</version>
+        </Gento_Customer>
+    </modules>
+
+    <frontend>
+        <routers>
+            <customer>
+                <args>
+                    <modules>
+                        <gento_customer before="Mage_Customer">Gento_Customer</gento_customer>
+                    </modules>
+                </args>
+            </customer>
+        </routers>
+    </frontend>
+</config>

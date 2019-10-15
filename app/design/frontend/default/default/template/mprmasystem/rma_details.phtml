@@ -1,0 +1,69 @@
+<div id="wk_rs_new_request">
+	<a href="<?php echo $this->getUrl('mprmasystem/index/new/'); ?>">
+		<span id="wk_rs_rma_sign"></span>
+		<?php echo Mage::helper("mprmasystem")->__("Request New RMA"); ?>
+	</a>
+</div>
+<div id="wk_rs_rma_history" class="pager"><?php echo Mage::helper("mprmasystem")->__("RMA History"); ?></div>
+<?php echo $this->getPagerHtml(); 	?>
+<table class="data-table">
+    <thead>
+        <tr class="first last">
+            <th><?php echo Mage::helper("mprmasystem")->__("Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Order Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Product Id"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Price"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("RMA Status"); ?></th>
+            <th><?php echo Mage::helper("mprmasystem")->__("Date"); ?></th>
+            <th class="a-center"><?php echo Mage::helper("mprmasystem")->__("Action"); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+		<?php 	
+		$collection = $this->getCollection();
+		$totalcount = count($collection);
+		$count = 1;
+		if($totalcount >0 ){
+			foreach ($collection as $row) 	{	
+				$order = Mage::getModel("sales/order")->load($row->getOrderid());		?>
+		    	<tr class="<?php if($count == 1)echo 'first ';if($count == $totalcount)echo 'last ';if($count % 2 == 0)echo 'even';else echo 'odd';?>">
+		            <td><?php echo $row->getId(); ?></td>
+		            <td><?php echo $order->getIncrementId(); ?></td>
+		            <td><?php echo $row->getitemid(); ?></td>
+		            <td><?php echo Mage::helper("core")->currency($order->getBaseGrandTotal(), true, false)?></td>
+		            <td>
+	            		<?php 	$status_with_translation = Mage::helper("mprmasystem")->__($row->getStatus());
+	            				$status_without_translation = $row->getStatus();
+	            				if($status_without_translation == "Solved")
+	            					echo "<strong class='wk_rs_status_solve'>".$status_with_translation."</strong>";
+            					if($status_without_translation == "Cancelled")
+	            					echo "<strong class='wk_rs_status_cancel'>".$status_with_translation."</strong>";
+	            				if($status_without_translation == "Pending")
+	            					echo "<strong class='wk_rs_status_pending'>".$status_with_translation."</strong>";
+	            				if($status_without_translation == "Processing")
+	            					echo "<strong class='wk_rs_status_processing'>".$status_with_translation."</strong>";		?>
+		            </td>
+		            <td><?php $date = date_create($row->getCreatedAt());echo date_format($date, "g:ia jS F Y"); ?></td>
+		            <td class="a-center last">
+		                <span class="nobr">
+		                	<a href="<?php echo $this->getUrl('mprmasystem/index/view/').'id/'.$row->getId()?>"><?php echo Mage::helper("mprmasystem")->__("View Details"); ?></a>
+		        		</span>
+						<?php   
+						if($status_without_translation != "Cancelled" && $status_without_translation != "Solved")	{	?>
+							<span class="separator">|</span>
+							<a onclick="return confirm('<?php echo Mage::helper("mprmasystem")->__("Are You sure"); ?> ?');" class="link-reorder" href="<?php echo $this->getUrl('mprmasystem/index/cancel/').'id/'.$row->getId()?>"><?php echo Mage::helper("mprmasystem")->__("Cancel"); ?></a>
+						<?php 
+						}?>
+		            </td>
+		        </tr>
+				<?php $count++;
+			}
+		}else{?>
+			<tr class="first last">
+	            <td colspan="6" class="a-center"><?php echo Mage::helper("mprmasystem")->__("Congratulation! you havn't filed any RMA yet"); ?>.</td>
+		    </tr>
+		<?php	
+		}?>
+    </tbody>
+</table>
+<?php echo $this->getPagerHtml();?>

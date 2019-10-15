@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Webkul_Mprmasystem>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+            	<Webkul_Marketplace/>
+            </depends>
+        </Webkul_Mprmasystem>
+    </modules>
+</config>

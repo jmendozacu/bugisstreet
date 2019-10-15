@@ -1,0 +1,13 @@
+<?php $magentoCurrentUrl = Mage::helper('core/url')->getCurrentUrl(); ?>
+<?php
+$partner = Mage::getModel('marketplace/userprofile')->isPartner(Mage::getSingleton('customer/session')->getCustomerId());
+if($partner){ ?>
+<li <?php echo strpos($magentoCurrentUrl,'mpreportsystem/mpreportsystem')? "class=current":"";?>>
+	<?php if(strpos($magentoCurrentUrl,'mpreportsystem/mpreportsystem')){ ?>
+		<strong><?php echo Mage::helper('mpreportsystem')->__('View Report') ?></strong>
+	<?php }
+	else { ?>
+		<a href="<?php echo $this->getUrl('mpreportsystem/mpreportsystem'); ?>"><?php echo Mage::helper('mpreportsystem')->__('View Report') ?></a>
+	<?php } ?>
+</li>
+<?php } ?>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_Checkout>
+            <version>0.1.0</version>
+        </Gento_Checkout>
+    </modules>
+
+    <frontend>
+        <routers>
+            <review>
+                <args>
+                    <modules>
+                        <gento_checkout before="Mage_Checkout">Gento_Checkout</gento_checkout>
+                    </modules>
+                </args>
+            </review>
+        </routers>
+    </frontend>
+
+
+</config>

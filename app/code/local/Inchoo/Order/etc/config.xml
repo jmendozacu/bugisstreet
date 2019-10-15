@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Inchoo_Order>
+            <version>0.0.1</version>
+        </Inchoo_Order>
+    </modules>
+    <global>
+
+        <helpers>
+            <order>
+                <class>Inchoo_Order_Helper</class>
+            </order>
+        </helpers>
+        <models>
+            <inchoo_order>
+                <class>Inchoo_Order_Model</class>
+            </inchoo_order>
+        </models>
+        <!--<events>
+            <catalog_product_save_after>
+                <observers>
+                    <inchoo_order>
+                        <type>singleton</type>
+                        <class>inchoo_order/observer</class>
+                        <method>updateStockAvailability</method>
+                    </inchoo_order>
+                </observers>
+
+            </catalog_product_save_after>
+        </events>-->
+
+        <template>
+            <email>
+                <cancel_order_email_template module="order">
+                    <label>Order Complete after 3 days Email Template</label>
+                    <file>cancel_order_email_template.html</file>
+                    <type>html</type>
+                </cancel_order_email_template>
+            </email>
+        </template>
+
+    </global>
+    <crontab>
+        <jobs>
+            <inchoo_order>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>inchoo_order/observer::cancelPendingOrders</model>
+                </run>
+            </inchoo_order>
+        </jobs>
+    </crontab>
+</config>

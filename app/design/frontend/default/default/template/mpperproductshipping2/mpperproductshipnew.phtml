@@ -1,0 +1,10 @@
+
+<?php 
+	$shipcharges=Mage::getModel('catalog/product')->load($this->getRequest()->getParam('id'))->getMpShippingCharge2();
+?>
+<li>
+	<label><?php echo Mage::Helper('mpperproductshipping2')->__('Shipping Cost 2') ?><b><?php $currency_code = Mage::app()->getStore()->getCurrentCurrencyCode(); echo  " (". Mage::app()->getLocale()->currency( $currency_code )->getSymbol().")"; ?></b>:</label>
+	<div class="input-box">
+		<input type="text" class="validate-zero-or-greater input-text" value="<?php echo $shipcharges;?>" name="mp_shipping_charge2" id="mp_shipping_charge2"/>
+	</div>
+</li>

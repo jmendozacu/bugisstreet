@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <marketplace_account_simpleproduct>
+        <reference name="marketplace_addproduct">
+            <block type="core/template" name="mpperproductshipnew4" template="mpperproductshipping4/mpperproductshipnew.phtml" />
+        </reference>
+    </marketplace_account_simpleproduct>
+    <marketplace_marketplaceaccount_editapprovedsimple>
+        <reference name="marketplace_editproducts">
+            <block type="core/template" name="mpperproductshipnew4" template="mpperproductshipping4/mpperproductshipnew.phtml" />
+        </reference>
+    </marketplace_marketplaceaccount_editapprovedsimple>
+    <marketplace_account_configurableproduct>
+        <reference name="marketplace_addproduct">
+            <block type="core/template" name="mpperproductshipnew4" template="mpperproductshipping4/mpperproductshipnew.phtml" />
+        </reference>
+    </marketplace_account_configurableproduct>
+    <marketplace_account_configurableproductedit>
+        <reference name="marketplace_editproducts">
+            <block type="core/template" name="mpperproductshipnew4" template="mpperproductshipping4/mpperproductshipnew.phtml" />
+        </reference>
+    </marketplace_account_configurableproductedit>
+</layout> 

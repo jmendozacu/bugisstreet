@@ -1,0 +1,54 @@
+<?php
+$helper = Mage::helper('marketplace');
+?>
+<form action="<?php echo $this->getUrl('mpadaptivepayment/savepaypal') ?>" enctype="multipart/form-data" method="post" id="paypal-detail" class="paypal-detail">
+	<div class="page-title">
+		<h1 style="float:left;"><?php echo $helper->__('Set Paypal Detail') ?></h1>
+		<button type="submit" title="Pay" class="button wk_mp_btn">		
+			<span><?php echo $this->__('Save Paypal Detail') ?></span>
+		</button>
+	</div>
+	<div class="wk_mp_design">
+		<div class="block block-account">	
+			<div class="block-title">	
+				<strong><span><h4><?php echo $helper->__('Paypal Detail') ?></h4></span></strong>
+			</div>
+		</div>
+		<div class="fieldset wk_mp_fieldset">
+			<?php echo $this->getBlockHtml('formkey')?>
+			<ul class="form-list">
+				<li>
+					<?php $customerid=Mage::getSingleton('customer/session')->getCustomer()->getId();
+					$temp=Mage::getModel('mpadaptivepayment/mpadaptivepayment')->getCollection()
+																			   ->addFieldToFilter('partner_id',array('eq'=>$customerid));
+					foreach($temp as $data){ 
+						$paypalid=$data->getPaypalId(); 
+						$paypal_fname=$data->getPaypalFname(); 
+						$paypal_lname=$data->getPaypalLname(); 
+					} ?>
+					<label><?php echo $this->__('Paypal ID') ?></label>
+					<div class="input-box">
+						<input name="paypal_id" id="paypalid" value="<?php echo $paypalid;?>" class="compdesi1 input-text required-entry" />
+						<input type="hidden" name="partner_id" id="userid" value="<?php echo $customerid ; ?>" title="userid" class="input-text"  />
+					</div>
+				</li>
+				<li>
+					<label><?php echo $this->__('Paypal First Name') ?></label>
+					<div class="input-box">
+						<input type="text" name="paypal_fname" id="paypal_fname" value="<?php echo $paypal_fname;?>" class="compdesi1 input-text required-entry" />
+					</div>
+				</li>
+				<li>
+					<label><?php echo $this->__('Paypal Last NAme') ?></label>
+					<div class="input-box">
+						<input type="text" name="paypal_lname" id="paypal_lname" value="<?php echo $paypal_lname;?>" class="compdesi1 input-text required-entry" />
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</form>
+<br/><br/>
+<script>
+	var paypaldetail = new VarienForm('paypal-detail', true);
+</script>

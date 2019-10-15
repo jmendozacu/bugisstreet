@@ -1,0 +1,33 @@
+<?php $_shipment=$this->getShipment() ?>
+<?php $_order=$this->getOrder() ?>
+<?php if ($_shipment && $_order && $_shipment->getAllTracks()): ?>
+    <?php $i=0; foreach ($_shipment->getAllTracks() as $_item): $i++ ?>
+        <?php $carrier = $_item->getTitle(); ?>
+        <?php $tracking_number = $_item->getNumber(); ?>
+        <?php $url = Mage::helper('shipping')->getTrackingPopupUrlBySalesModel($_order) ?>
+    <?php endforeach ?>
+<?php endif; ?>
+<?php $carrier = $carrier?$carrier:'SingPost'; ?>
+<table width="521" height="319" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td colspan="2" style="padding: 30px; font-size: 12px; font-family:Arial, Helvetica, sans-serif; line-height:1.2; color: #333333;"><strong><span style="font-size: 21px; font-family:Arial, Helvetica, sans-serif; color: #333333;">Hi {{htmlescape var=$order.getCustomerName()}},</span></strong><br />
+        <br />
+        <p style="margin-bottom: 1em;">Great news!  Your order has been shipped! You can check the status of your order by <a href="<?php echo $this->getUrl("customer/account/"); ?>" style="color: #fd8245">logging into your account at any time.</a></p>
+			<?php /*if($tracking_number) { */?><!--
+				<?php /*echo $carrier; */?>
+			<?php /*} else {*/?>
+				local
+			<?php /*} */?>
+				delivery.-->
+        <p style="margin-bottom: 1em;">Your shipping confirmation is below for your reference.</p>
+        <p style="margin-bottom: 1em;">Thank you for shopping with us.</p>
+        <p style="text-decoration: underline;margin-bottom: 1em;">Bugis Street Online Store Team</p>
+        <?php /*if($tracking_number): */?><!--
+        <p>If you get impatient, you can follow the shipment with this tracking number: <a href="<?php /*echo $url.'?id='.$_shipment->getIncrementId(); */?>" target="_BLANK"><?php /*echo $tracking_number; */?></a><br /></p>
+        <?php /*endif; */?>
+        <p>Got questions about your order?</p>
+        <p><a href="<?php /*echo Mage::getBaseUrl(). 'webforms/index/index/id/2/'; */?>"><img src="<?php /*echo Mage::getBaseUrl('skin').'frontend/gento/default/img/edm/get_in_touch.jpg'; */?>" width="136" height="30" /></a></p>
+        <p>With love from your friends at<br />
+        <strong>Bugis Street</strong></p></td>-->
+    </tr>
+</table>

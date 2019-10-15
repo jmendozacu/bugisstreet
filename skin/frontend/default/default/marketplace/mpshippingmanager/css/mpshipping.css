@@ -1,0 +1,191 @@
+.shipping_list .head {border-bottom:3px solid #CCC;font-size:15px;font-weight:600;}
+.shipping_list .head > span,.shipping_list .row > span {display:inline-block;text-align:center;width:120px;}
+.shipping_list .row {border-bottom:1px solid #ccc;}
+.file-link {float:right;}
+.headingh4 {float:left;}
+.notify{color:#ff0000;font-weight:600;}
+.scontent_status{padding:5px;color:#FF0000;}
+.wk_clear{clear:both;}
+.schartdata{width:593px; height:400px;}
+.track:hover, .trackingsave:hover {background-color: #EA7900;color: #FFFFFF;cursor: pointer;}
+.track, .trackingsave {
+    background-color: #CCCCCC;
+    border: 1px solid;
+    color: #000000;
+    margin-left: 5px;
+    padding: 0 5px;
+    text-decoration: none;
+}
+.tracking{
+    background-color: #F18200;
+    border: 1px solid #DE5400;
+    color: #FFFFFF;
+    float: right;
+    font-weight: bold;
+    padding: 0 5px;
+}
+.wk_track_input{width:80px!important;margin-left: 5px;}
+#order-list .head {
+    background-color:#FC9D36;
+    color:#FFF;
+    font-size:14px;
+    font-weight:600;
+    height:20px;
+    padding:5px 10px;
+}
+#order-list .head .label.buyer_name {width:120px;}
+#order-list .head .label.price {width:80px;}
+.wk_row .label {border-right:1px solid #CCC;}
+.wk_row .label.order_id {width:95px;}
+.wk_row .label.buyer_name {padding-left:30px;width:105px;}
+.wk_row .label.qty {padding-left:20px;width:30px;}
+.wk_row .label.price {padding-left:20px;width:55px;}
+.wk_row .label.sold_on {padding-left:20px;width:130px;}
+.wk_row {border-bottom:1px solid #CCC;padding:0 10px;}
+.wk_row:hover {background-color:#ccc;}
+#invoice-data .order-detail,#invoice-data .billing-detail,
+#invoice-data .shipping-detail,#invoice-data .shipping-information {
+    width:325px;
+    border:1px solid #CCC;
+    float:left;
+    margin-bottom:10px;
+}
+#invoice-data .billing-detail .content,#invoice-data .shipping-detail .content,
+#invoice-data .item-detail .content {adding:0 10px;}
+#invoice-data .content .top {
+    background-color:#CCC;
+    font-weight:600;
+    margin-top:5px;
+    padding:2px 5px;
+}
+#invoice-data .items .wk_item {border-bottom:1px solid #CCC;width:auto!important;padding:2px 5px;}
+#invoice-data .item-detail .items .wk_item:last-child {border:none!important;}
+#invoice-data .item-detail,#invoice-data .subtotal-detail {border:1px solid #CCC;margin-bottom:10px;padding-bottom:5px;}
+#invoice-data .content .top .product,#invoice-data .items .wk_item .product {width:250px;}
+#invoice-data .head {
+    background-color:#fc9d36;
+    color:#fff;
+    font-weight:600;
+    letter-spacing:1px;
+    padding:2px 5px;
+}
+.wk_ship_light label.required em {
+font-style: normal;
+color: #eb340a;
+}
+#invoice-data .wk_row .label {border:none;width:110px;}
+#invoice-data .wk_row {border:none;}
+#invoice-data .wk_row:hover {background-color:#fff;}
+#invoice-data .wk_row .value {font-weight:600;}
+#invoice-data .shipping_top {background-color:#CCC;font-weight:600;padding:0 5px;}
+#invoice-data .shipping-information .wk_save_button {float:right;margin:5px 12px;}
+.printinvoice {
+float: right;
+margin-right: 5px;
+}
+.wk_item .validation-advice {display:none;}
+#invoice-data .buyer-detail,#invoice-data .shipping-detail,
+#invoice-data .subtotal-detail {
+    width:330px;
+    border:1px solid #CCC;
+    float:left;
+    margin-left:20px;
+}
+#order-list .head .label,.wk_row .label,#invoice-data .content .top span,
+#invoice-data .items .wk_item span,#invoice-data .shipping_top span {display:inline-block;}
+#order-list .head .label.order_id,#order-list .head .label.sold_on {width:125px;}
+#order-list .head .label.qty,#invoice-data .shipping_top .qty,
+#invoice-data .shipping-information .wk_item .qty {width:40px;}
+#invoice-data .shipping_top .shipping_service{width:65px;}
+#invoice-data .wk_item .carrier{width:65px;}
+.shipping-information #shipping-form .items .wk_item .qty{width:35px;}
+#invoice-data .content .top .item_status,#invoice-data .items .wk_item .item_status,
+#invoice-data .content .top .row_total,#invoice-data .items .wk_item .row_total,
+#invoice-data .shipping-information .wk_item .row_total,
+#invoice-data .shipping-information .wk_item .row_total input {width:100px;}
+#invoice-data .content .top .price,#invoice-data .items .wk_item .price,
+#invoice-data .content .top .qty,#invoice-data .items .wk_item .qty {width:75px;}
+#invoice-data .shipping_top .product,#invoice-data .shipping-information .wk_item .product {width:90px;}
+#invoice-data .billing-detail .content, #invoice-data .shipping-detail .content,
+ #invoice-data .item-detail .content {padding: 0 10px;}
+
+@media print{
+    .col-main {
+        width:900px;
+        left:0;
+        position:absolute;
+        top:0;
+    }
+    #invoice-data .order-detail,#invoice-data .billing-detail,
+    #invoice-data .shipping-information,#invoice-data .buyer-detail,
+    #invoice-data .shipping-detail,#invoice-data .subtotal-detail {width:425px;}
+    .save_button ,.col-left.sidebar,#wk_cs_buddy_list_container{display:none;}
+}
+
+.wk_ship_fade{
+    display: none;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index:1001;
+    -moz-opacity: 0.7;
+    opacity:.70;
+    filter: alpha(opacity=70);
+}
+.wk_ship_light{
+    display: none;
+    position: absolute;
+    top: 25%;
+    left: 27%;  
+    padding: 10px;
+    border: 2px solid #FFF;
+    background: #CCC;
+    z-index:1002;
+    overflow:visible;
+}
+label.wk_ship_post-meta span.wk_ship_delete {
+    background: url("../img/sprite.png") no-repeat scroll -307px 4px transparent;
+    cursor: pointer;
+    float: right;
+    height: 10px;
+    margin-top: -32px;
+    opacity: 0.69;
+}
+label.wk_ship_post-meta span {
+    padding: 3px 0 3px 25px;
+}
+
+.wk_ship_rowlabel {
+    float: left;
+    width: 117px;
+}
+.wk_ship_Label {
+    font-weight: bold;
+}
+.wk_ship_field:before {
+    content: ":";
+    float: right;
+    font-weight: 600;
+    letter-spacing: 20px;
+}
+.wk_ship_rowfield {
+    float: left;
+}
+
+.wk_ship_rowinput {
+    clear: both;
+    height: 24px;
+    line-height: 24px;
+    margin: 0.4em 0 !important;
+    width: 420px;
+}
+
+.wk_ship_row .wk_ship_label,.wk_ship_row .wk_field {display: inline-block;width: 150px;}
+.wk_ship_row .wk_ship_field {width: auto;}
+.wk_ship_row .wk_ship_field input{width:200px;}
+.wk_ship_field:before {content: ":";float:right;font-weight: 600;letter-spacing: 20px;}
+.wk_ship_field .validation-advice{display:inline-block; background: url("../images/arrow.gif") no-repeat scroll 2px center transparent;}
+.wk_ship_row  .wk_ship_field  > #image{width:235px!important;}

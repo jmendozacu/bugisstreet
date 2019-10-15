@@ -1,0 +1,149 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/* @var $this Mage_Wishlist_Block_Customer_Wishlist */
+?>
+<?php if ($this->helper('wishlist')->isAllow()) : ?>
+    <div style="display: none" class="reponsive">
+        <h1 style="font-size: 25px !important;">MY ACCOUNT</h1>
+        <select style="width: 90%" onChange="window.location.href=this.value">
+            <option value="<?php echo $this->getUrl('customer/account/')?>" selected>My Profile</option>
+            <option value="<?php echo $this->getUrl('wishlist/')?>" selected>My Want List</option>
+            <option value="<?php echo $this->getUrl('checkout/cart/')?>">My Cart</option>
+            <option value="<?php echo $this->getUrl('sales/order/history/')?>">My Orders</option>
+            <option value="<?php echo $this->getUrl('review/customer/')?>" >My Reviews</option>
+            <option value="<?php echo $this->getUrl('mprmasystem/index/')?>" >My RMA</option>
+        </select>
+
+    </div>
+    <div style="float: left; width: 100%;" class="my-wishlist content">
+        <div class="page-title title-buttons wish_reponsive">
+            <?php if ($this->helper('wishlist')->isRssAllow() && $this->hasWishlistItems()): ?>
+                <a href="<?php echo $this->helper('wishlist')->getRssUrl($this->getWishlistInstance()->getId()); ?>" class="link-rss"><?php echo $this->__('RSS Feed') ?></a>
+            <?php endif; ?>
+            <h1>MY WANT LIST</h1>
+            <p style="text-align: left; margin-top: 10px; margin-bottom: 30px">See something you like but can’t buy it just yet? Add it to your want list and it’ll show up here. You know you want to. </p>
+        </div>
+        <?php echo $this->getMessagesBlock()->toHtml() ?>
+
+        <form id="wishlist-view-form" action="<?php echo $this->getUrl('*/*/update', array('wishlist_id' => $this->getWishlistInstance()->getId())) ?>" method="post">
+            <?php echo $this->getChildHtml('top'); ?>
+            <div class="fieldset">
+                <?php if ($this->hasWishlistItems()): ?>
+                        <?php echo $this->getBlockHtml('formkey');?>
+                        <?php $this->getChild('items')->setItems($this->getWishlistItems()); ?>
+                        <?php echo $this->getChildHtml('items');?>
+                        <script type="text/javascript">decorateTable('wishlist-table')</script>
+                <?php else: ?>
+                    <p style="padding-left: 33px" class="wishlist-empty"><?php echo $this->__('Your want list is empty!') ?></p>
+                <?php endif ?>
+                <div style="display: none" class="buttons-set buttons-set2">
+                    <?php echo $this->getChildHtml('control_buttons');?>
+                </div>
+            </div>
+        </form>
+
+        <form id="wishlist-allcart-form" action="<?php echo $this->getUrl('*/*/allcart') ?>" method="post">
+            <?php echo $this->getBlockHtml('formkey') ?>
+            <div class="no-display">
+                <input type="hidden" name="wishlist_id" id="wishlist_id" value="<?php echo $this->getWishlistInstance()->getId() ?>" />
+                <input type="hidden" name="qty" id="qty" value="" />
+            </div>
+        </form>
+
+        <script type="text/javascript">
+        //<![CDATA[
+            var wishlistForm = new Validation($('wishlist-view-form'));
+            var wishlistAllCartForm = new Validation($('wishlist-allcart-form'));
+
+            function calculateQty() {
+                var itemQtys = new Array();
+                $$('#wishlist-view-form .qty').each(
+                    function (input, index) {
+                        var idxStr = input.name;
+                        var idx = idxStr.replace( /[^\d.]/g, '' );
+                        itemQtys[idx] = input.value;
+                    }
+                );
+
+                $$('#qty')[0].value = JSON.stringify(itemQtys);
+            }
+
+            function addAllWItemsToCart() {
+                calculateQty();
+                wishlistAllCartForm.form.submit();
+            }
+        //]]>
+        </script>
+    </div>
+    <div class="account-sidemenu">
+
+        <?php echo $this->getChildHtml('customer_account_navigation') ?>
+        <h3>
+            MY ACCOUNT
+        </h3>
+        <ul>
+            <li>
+                <a  class="current" href="<?php echo $this->getUrl('customer/account/')?>">
+                    My Profile
+                </a>
+            </li>
+            <li>
+                <a style="color: #999;" href="<?php echo $this->getUrl('wishlist/')?>">
+                    My Want List
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->getUrl('checkout/cart/')?>">
+                    My Cart
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->getUrl('sales/order/history/')?>">
+                    My Orders
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->getUrl('review/customer/')?>">
+                    My Reviews
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->getUrl('mprmasystem/index/')?>">
+                    My RMA
+                </a>
+            </li>
+            <li>
+                <a  href="<?php echo $this->getUrl('customer/account/logout/')?>">Logout</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <?php echo $this->getChildHtml('bottom'); ?>
+    <div style="display: none" class="buttons-set">
+        <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+    </div>
+<?php endif ?>

@@ -1,0 +1,130 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $_item = $this->getItem() ?>
+<?php $_order = $this->getItem()->getOrder(); ?>
+<!--<tbody>
+    <tr>
+        <td class="cell-content product-info">
+            <p class="product-name"><?php /*echo $this->escapeHtml($_item->getName()) */?></p>
+            <?php /*if ($this->getItemOptions()): */?>
+                <dl style="margin:0; padding:0;">
+                    <?php /*foreach ($this->getItemOptions() as $option): */?>
+                        <dt><strong><em><?php /*echo $option['label'] */?></em></strong></dt>
+                        <dd style="margin:0; padding:0 0 0 9px;"><?php /*echo nl2br($option['value']) */?></dd>
+                    <?php /*endforeach; */?>
+                </dl>
+            <?php /*endif; */?>
+            <?php /*$addInfoBlock = $this->getProductAdditionalInformationBlock(); */?>
+            <?php /*if ($addInfoBlock) :*/?>
+                <?php /*echo $addInfoBlock->setItem($_item->getOrderItem())->toHtml(); */?>
+            <?php /*endif; */?>
+            <?php /*echo $this->escapeHtml($_item->getDescription()) */?>
+        </td>
+        <td class="cell-content align-center"><?php /*echo $this->escapeHtml($this->getSku($_item)) */?></td>
+        <td class="cell-content align-right"><?php /*echo $_item->getQty()*1 */?></td>
+    </tr>
+</tbody>-->
+
+<tbody>
+<tr>
+    <td class="cell-content product-info" style="padding: 10px;">
+        <p class="product-name"><?php echo $this->escapeHtml($_item->getName()) ?></p>
+        <p class="sku"><strong><?php echo $this->__('SKU'); ?>:</strong> <?php echo $this->escapeHtml($this->getSku($_item)) ?></p>
+        <?php if ($this->getItemOptions()): ?>
+            <dl style="margin:0; padding:0;">
+                <?php foreach ($this->getItemOptions() as $option): ?>
+                    <dt><strong><em><?php echo $option['label'] ?></em></strong></dt>
+                    <dd style="margin:0; padding:0 0 0 9px;"><?php echo nl2br($option['value']) ?></dd>
+                <?php endforeach; ?>
+            </dl>
+        <?php endif; ?>
+        <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addInfoBlock) :?>
+            <?php echo $addInfoBlock->setItem($_item->getOrderItem())->toHtml(); ?>
+        <?php endif; ?>
+        <?php echo $this->escapeHtml($_item->getDescription()) ?>
+        <p class="seller">
+            <?php
+            $productowner = Mage::getModel('marketplace/product')->isCustomerProduct($_item->getProductId());
+            ?>
+            <strong>
+                <?php echo $this->helper('sales')->__('Seller') ?>:
+            </strong>
+            <?php
+            $seller_info = Mage::getModel('marketplace/userprofile')->getPartnerProfileById($productowner['userid']);
+            echo "<span style='color:#ff823b'>".$seller_info['shoptitle']."</span>";
+            ?>
+        </p>
+    </td>
+    <td class="cell-content align-center" style="text-align: center;padding: 10px;"><?php echo $_item->getQty()*1 ?></td>
+    <td class="cell-content align-right" style="text-align: right;padding: 10px;">
+        <?php
+        $row_price = 0;
+        $row_price = $row_price + ($_item->getQty()* $_item->getPrice());
+        echo $_order->formatPrice($row_price); ?>
+
+    </td>
+</tr>
+</tbody>
+
+<tfoot>
+<tr class="subtotal">
+    <td colspan="2" align="right" style="padding:3px 9px">
+        Subtotal
+    </td>
+    <td align="right" style="padding:3px 9px">
+        <span class="price"><?php echo $_order->formatPrice($row_price); ?></span>
+    </td>
+</tr>
+<tr class="shipping">
+    <td colspan="2" align="right" style="padding:3px 9px">
+        Delivery:
+    </td>
+    <td align="right" style="padding:3px 9px">
+        <span class="price">
+            <?php
+            $collection = Mage::getModel("mpshippingmanager/tracking")->getCollection()
+                ->addFieldToFilter('order_id',array('eq'=>$_order->getEntityId()))
+                ->addFieldToFilter('seller_id',array('eq'=>$productowner['userid']));
+            foreach ($collection as $value) {
+                $shipping_amount  = $value->getShippingCharges();
+            }
+            echo $_order->formatPrice($shipping_amount);
+            //echo $_order->formatPrice($_item->getShippingAmount());
+            ?>
+        </span>
+    </td>
+</tr>
+<tr class="grand_total">
+    <td colspan="2" align="right" style="padding:3px 9px">
+        <strong>Total</strong>
+    </td>
+    <td align="right" style="padding:3px 9px">
+        <strong><span class="price"><?php echo $_order->formatPrice($row_price + $shipping_amount); ?></span></strong>
+    </td>
+</tr>
+</tfoot>

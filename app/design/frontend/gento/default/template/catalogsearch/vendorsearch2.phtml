@@ -1,0 +1,74 @@
+<?php
+
+
+    $query = $this->getRequest()->getParam('q');
+    if (!$query) {
+        Mage::app()->getResponse()->setRedirect(Mage::getBaseUrl());
+    }
+    $vendors = Mage::getModel('udropship/vendor')->getCollection()->addFieldToFilter('vendor_name', array('like' => '%'.$query.'%'))->load();
+	
+    if ($this->getRequest()->getParam('mode') == "quickview") {
+       $count = 0;
+        foreach ($vendors as $v) {
+            $count ++;
+			
+        }
+			
+        echo json_encode(array("list_count" => $count));
+		die();
+		
+    }
+?>
+
+
+                <div class="content clearfix bso-product-listing product-columns" id="productlist_content">
+                
+                
+                <?php 
+
+			
+                    foreach ($vendors as $_vendor):
+                        $_vendor = Mage::helper('udropship')->getVendor($_vendor->getVendorId());
+	
+                        $url = Mage::helper('umicrosite')->getVendorBaseUrl($_vendor);
+                        if (!$_vendor->getRatingSummary()) {
+                            Mage::helper('udratings')->useMyEt();
+                            Mage::getModel('review/review')->getEntitySummary($_vendor, Mage::app()->getStore()->getId());
+                            Mage::helper('udratings')->resetEt();
+                        }
+                        $mem_vendor = Mage::getModel('bug/vendor')->load($_vendor->getVendorId());
+
+                ?>
+                    <div class="box individual-item productitems">
+                        <div class="wrapper">
+                            <a href="<?php echo $url; ?>">
+                                <div class="imgwrap">
+
+                                    <a href="<?php echo $url; ?>"><img src="<?php echo Mage::getBaseUrl('media').'/'.$_vendor->getLogo() ?>" /></a>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="desc">
+                            <a href="<?php echo $url; ?>" class="product-description clearfix">
+                                <div class="<?php echo $mem_vendor->getPremiumAddOn() == 1 ? "sponsored" : "default"; ?>-retailer">
+                                    <div class="retailername"><h3><?php echo Mage::helper('udropship')->getVendorName($_vendor->getVendorId()); ?></h3></div>
+                                    <div class="retailerrating">
+                                        <?php if ($mem_vendor->getPremiumAddOn() == 1) { ?>
+                                        <div class="rating">
+                                        <?php for($i=0; $i<floor($_vendor->getRatingSummary()->getRatingSummary() * 5 / 100); $i++) { ?>
+                                            <div class="star filled"></div>
+                                        <?php } ?>
+                                        <?php for($i=0; $i<5 - floor($_vendor->getRatingSummary()->getRatingSummary() * 5 / 100); $i++) { ?>
+                                            <div class="star empty"></div>
+                                        <?php } ?>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                
+                
+              </div>

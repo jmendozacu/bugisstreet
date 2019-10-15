@@ -1,0 +1,180 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('mpadvancecommission/css/style.css'); ?>">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+var jQuery= jQuery.noConflict();
+
+    //<![CDATA[
+    function check() {
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl(); ?>', {
+            method:     'POST',
+            onSuccess: function(transport){
+            if (transport.responseText){
+               window.scrollTo(0,0);
+							document.getElementById('light').style.display='block';
+							document.getElementById('fade').style.display='block';
+            }
+            }
+        });
+    }
+    //]]>
+                       function lightbox_open(){
+							window.scrollTo(0,0);
+							document.getElementById('light').style.display='block';
+							document.getElementById('fade').style.display='block';  
+						}
+						function lightbox_close(){
+							document.getElementById('light').style.display='none';
+							document.getElementById('fade').style.display='none';
+						} 
+    
+jQuery(function(){  
+	
+	    jQuery('#config_edit_form').after(jQuery('#light'));
+       //jQuery('#light').remove();                
+		jQuery(document).on('click','#butn',function(){
+		  var ary = []; var obj = {};
+		  var i=0;
+		  	jQuery('.txt').each(function(){
+				//if(jQuery(this).val()!=''){
+					if(jQuery(this).val()=='' || (jQuery.isNumeric(jQuery(this).val()) && jQuery(this).val()>=0) ){jQuery(this).css('border-color','white');}
+					else{ jQuery(this).css('border-color','red'); jQuery(this).val(''); i++; }
+				    obj[jQuery(this).attr('id')] = jQuery(this).val();
+			   // }
+			    
+			});
+			if(i>0){ alert('please enter numeric and positive number'); return false; }
+            ary.push(obj);
+            
+			jQuery.ajax({
+						url: "<?php echo $this->getUrl('mpadvancecommission/adminhtml_mpadvancecategory/savecategorypercent'); ?>",
+						type:'GET',
+						dataType:   "html",
+						data:{objct:ary},
+						success: function(msg){
+							
+							document.getElementById('light').style.display='none';
+							document.getElementById('fade').style.display='none';
+						}
+				});
+			
+			
+		});	
+		
+		
+        jQuery(document).on('click','.wk_plus ,.wk_plusend,.wk_minus, .wk_minusend ',function(){
+		var thisthis=jQuery(this);	
+		if(thisthis.hasClass("wk_plus") || thisthis.hasClass("wk_plusend")){
+			if(thisthis.hasClass("wk_plus"))
+				thisthis.removeClass('wk_plus').addClass('wk_plus_click');
+			if(thisthis.hasClass("wk_plusend"))
+				thisthis.removeClass('wk_plusend').addClass('wk_plusend_click');
+			thisthis.prepend("<span class='wk_node_loader'></span>");
+			jQuery.ajax({
+				url  	:   "<?php echo $this->getUrl('mpadvancecommission/adminhtml_mpadvancecategory/categorytree');?>",
+				type 	:   "GET",
+				data 	:   {CID:thisthis.siblings("input").attr('id'),
+							ML:thisthis.parent(".wk_cat_container").css("margin-left").replace("px","")},
+				dataType:   "html",
+				success :   function(content){
+					
+					var newdata=  jQuery.parseJSON(content);
+					len= newdata.length;
+					var pxl= parseInt(thisthis.parent(".wk_cat_container").css("margin-left").replace("px",""))+20;
+					thisthis.find(".wk_node_loader").remove();
+					if(thisthis.attr("class") == "wk_plus")
+					thisthis.attr("class","wk_minus");
+					if(thisthis.attr("class") == "wk_plusend")
+						thisthis.attr("class","wk_minusend");
+					if(thisthis.attr("class") == "wk_plus_click")
+						thisthis.attr("class","wk_minus");
+					if(thisthis.attr("class") == "wk_plusend_click")
+						thisthis.attr("class","wk_minusend");
+				    for(i=0;i<len; i++){     
+						id=newdata[i].id;
+						comisn = newdata[i].comisn;
+						nam=newdata[i].name;
+						if(newdata[i].counting ==0){
+							thisthis.parent(".wk_cat_container").after('<div class="wk_removable wk_cat_container" style="display:none;margin-left:'+pxl+'px;"><span  class="wk_no"></span><span class="wk_foldersign"></span><span class="wk_elements wk_cat_name">'+ nam +'</span><input class="wk_elements txt" type="text" name="category[]" id='+ id +' value='+ comisn +'></div>');
+						}else{
+							thisthis.parent(".wk_cat_container").after('<div class="wk_removable wk_cat_container" style="display:none;margin-left:'+pxl+'px;"><span  class="wk_plusend"></span><span class="wk_foldersign"></span><span class="wk_elements wk_cat_name">'+ nam +'</span><input class="wk_elements txt" type="text" name="category[]" id='+ id +' value='+ comisn +'></div>');   
+						}
+					}
+					thisthis.parent(".wk_cat_container").nextAll().slideDown(300);
+				}
+			});			
+		}
+		if(thisthis.hasClass("wk_minus") || thisthis.hasClass("wk_minusend")){
+			if(thisthis.attr("class") == "wk_minus")
+				thisthis.attr("class","wk_plus");
+			if(thisthis.attr("class") == "wk_minusend")
+				thisthis.attr("class","wk_plusend");
+			var thiscategory = thisthis.parent(".wk_cat_container");
+			var marg= parseInt(thiscategory.css("margin-left").replace("px",""));
+			while(thiscategory.next().hasClass("wk_removable")){
+			  
+			if(parseInt(thiscategory.next().css("margin-left").replace("px",""))>marg)
+				thiscategory.next().slideUp("slow",function(){jQuery(this).remove();});
+				thiscategory = thiscategory.next();	
+				if(typeof thiscategory.next().css("margin-left")!= "undefined"){
+					if( marg==thiscategory.next().css("margin-left").replace("px",""))
+					{
+					  break;
+					}
+				}
+			}
+		}		
+	});
+		
+				 
+        
+
+    });
+</script>
+
+<div id="light" class="categry">
+<?php 
+
+ $root= Mage::app()->getStore()->getRootCategoryId(); 
+      $categoriesArray = Mage::getModel('catalog/category')
+        ->getCollection()
+        ->addAttributeToSelect('name')
+        ->addAttributeToSelect('entity_id')
+        ->addAttributeToSort('path', 'asc')
+        ->addFieldToFilter('is_active', array('eq'=>'1'))
+        ->addFieldToFilter('parent_id',array('eq' => '2'))
+        ->load()
+        ->toArray();
+    // echo "<pre>";
+   //  print_r($categoriesArray); 
+ ?>
+<form id ='catpercent'>
+ <div class='labl fnt'>Categories</div> <span class=' fnt'>Commission</span>	<br></br>
+ <?php   foreach ($categoriesArray as $categoryId => $category) {
+	 
+	      $_category = Mage::getModel('catalog/category')->load($category['entity_id']);?>
+	     <!-- <div class='labl'><?php echo $_category->getName(); ?></div> <input type="text" class='txt' id='<?php echo $_category->getId(); ?>' value='<?php echo Mage::getModel('catalog/category')->load($_category->getId())->getCommissionForAdmin(); ?>'/>	<br></br> -->
+  
+         <?php if($_category->getChildrenCount()!=0) { ?>
+            <div class="wk_cat_container" style="margin-left:0px;"><span class="wk_plus">
+		      </span><span class="wk_foldersign"></span>
+		    <span class="wk_elements wk_cat_name"><?php echo $_category->getName() ?></span><input class="wk_elements txt" type="text" name="category[]" id='<?php echo $_category->getId(); ?>' value='<?php echo Mage::getModel('catalog/category')->load($_category->getId())->getCommissionForAdmin(); ?>' /></div>
+         <?php } 
+          else { ?>
+			 <div class="wk_cat_container" >
+		      </span><span class="wk_foldersign"></span>
+		    <span class="wk_elements wk_cat_name"><?php echo $_category->getName() ?></span><input class="wk_elements txt" type="text" name="category[]" id='<?php echo $_category->getId(); ?>' value='<?php echo Mage::getModel('catalog/category')->load($_category->getId())->getCommissionForAdmin(); ?>' /></div> 
+	 <?php  }
+         ?> 
+          
+          <?php 
+          }?>
+          <button type="button" class="button" id='butn' ><span><span>Save</span></span></button>
+    
+</div>
+</form>	
+<div id="fade" onClick="lightbox_close();"></div>
+							
+<?php echo $this->getButtonHtml() ?>
+
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gento_Order>
+            <version>0.0.1</version>
+        </Gento_Order>
+    </modules>
+    <global>
+        <helpers>
+            <order>
+                <class>Gento_Order_Helper</class>
+            </order>
+        </helpers>
+        <models>
+            <order>
+                <class>Gento_Order_Model</class>
+            </order>
+        </models>
+    </global>
+
+    <crontab>
+        <jobs>
+            <order>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>order/observer::cancelPendingOrders</model>
+                </run>
+            </order>
+        </jobs>
+    </crontab>
+</config>

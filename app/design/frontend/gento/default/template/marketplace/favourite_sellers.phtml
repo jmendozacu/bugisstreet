@@ -1,0 +1,97 @@
+<div class="fav-retailer">
+    <div class="title1" >
+        <h1 style="margin-top: -25px">FAVOURITE SELLERS</h1>
+    </div>
+<?php
+//$partner = $this->getLayout()->createBlock('marketplace/profile')->getProfileDetail();
+/*$partner=$this->getProfileDetail();*/
+
+$baseurl=$this->getUrl('marketplace/seller');
+if(Mage::getSingleton('customer/session')->isLoggedIn()) {
+    if ($_GET['delete_id']) {
+        $delete_id = $_GET['delete_id'];
+    }
+    $delete_id = explode(' ', $delete_id);
+    /*print_r($delete_id);*/
+    $customerData = Mage::getSingleton('customer/session')->getCustomer();
+    $id_customer = $customerData->getId();
+    $favourites = $customerData->getFavourite();
+    $arrays = explode(',', $favourites);
+
+    /*if (in_array($delete_id, $arrays)) {*/
+    $arrays = array_diff($arrays, $delete_id);
+    /*}*/
+    $arrays = implode(",", $arrays);
+    $customerData->setFavourite($arrays);
+    $customerData->save();
+    $favourites = $customerData->getFavourite();
+    $arrays = explode(',', $arrays);
+    /*$my_array = array('a', 'b', 'c', 'd');
+    $to_remove = array('b');
+    $result = array_diff($my_array, $to_remove);*/
+
+    ?>
+
+        <?php
+        if (empty($favourites)) {
+            echo '<p class="no-favourite">' . $this->__('You have not added any favorite retailers.') . '</p>';
+        } else {
+            ?>
+            <div class="retailers">
+                <ul style="clear: both;overflow: hidden;margin-bottom: 10px">
+                    <?php
+                    /*$test = array_diff($arrays, array('7'));
+
+                    print_r($test);*/
+
+                    foreach ($arrays as $array) {
+                        /*$customer = Mage::getModel('customer/customer')->load($array);*/
+                        $rowsocial = Mage::getModel('marketplace/userprofile')->getPartnerProfileById($array);
+                        $logo = $rowsocial['logopic'] == '' ? "noimage.png" : $rowsocial['logopic'];
+                        $logo = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'avatar/' . $logo;
+                        ?>
+                        <li style="float: left; width: 21%">
+                            <a href="<?php echo $baseurl . "profile/" . $rowsocial['profileurl']; ?>"
+                               target="_blank">
+                                <!--<div class="thumbnail">-->
+                                <img src="<?php echo $logo; ?>" width="150px" height="150px"/>
+                                <!--</div>-->
+                            </a>
+
+                            <div class="info">
+                                <a href="<?php echo $baseurl . "profile/" . $rowsocial['profileurl']; ?>"
+                                   target="_blank">
+                                    <div class="shopname flag">
+                                        <h3><?php echo $rowsocial['shoptitle'] ?></h3>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <input type="hidden" name="delete_fav" value="<?php echo $array ?>">
+
+                            <a href="<?php echo '?delete_id=' . $array ?>" class="popup">
+                                <div class="deletelink"></div>
+                            </a>
+
+
+                            <!--<input type='submit' name='deluser' value='<?php /*$array */ ?>' class="deletelink">-->
+
+                        </li>
+
+                    <?php
+                    }
+                    ?>
+                </ul>
+            </div>
+        <?php
+        }
+        ?>
+
+
+
+
+    <?php
+    /*}*/
+}
+?>
+</div>
